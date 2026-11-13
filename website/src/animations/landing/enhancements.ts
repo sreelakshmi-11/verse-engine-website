@@ -1,9 +1,10 @@
-export function createEnhancements({gsap,ST,reduced,scrollToTarget}){
- const $=<T extends HTMLElement=HTMLElement>(s:string)=>document.querySelector<T>(s),cards=[...document.querySelectorAll<HTMLElement>('.possibility-card')];
+import type {LandingTools} from './index.ts';
+export function createEnhancements({gsap,ST,reduced,scrollToTarget}:LandingTools){
+ const $=<T extends HTMLElement=HTMLElement>(s:string)=>document.querySelector<T>(s)!,cards=[...document.querySelectorAll<HTMLElement>('.possibility-card')];
  const section=$('.possibility-gallery'),viewport=$('.gallery-viewport'),track=$('.gallery-track');
- const abort=new AbortController(),options={signal:abort.signal};let tween=null,index=0;
+ const abort=new AbortController(),options={signal:abort.signal};let tween:gsap.core.Tween|null=null,index=0;
  const total=cards.length;
- function setIndex(next){index=Math.max(0,Math.min(total-1,next));$('#gallery-current').textContent=String(index+1).padStart(2,'0');$<HTMLButtonElement>('[data-gallery-prev]').disabled=index===0;$<HTMLButtonElement>('[data-gallery-next]').disabled=index===total-1;$('.gallery-progress i').style.transform=`scaleX(${(index+1)/total})`;cards.forEach((card,i)=>{if(i===index)card.setAttribute('aria-current','true');else card.removeAttribute('aria-current');});}
+ function setIndex(next:number){index=Math.max(0,Math.min(total-1,next));$('#gallery-current').textContent=String(index+1).padStart(2,'0');$<HTMLButtonElement>('[data-gallery-prev]').disabled=index===0;$<HTMLButtonElement>('[data-gallery-next]').disabled=index===total-1;$('.gallery-progress i').style.transform=`scaleX(${(index+1)/total})`;cards.forEach((card,i)=>{if(i===index)card.setAttribute('aria-current','true');else card.removeAttribute('aria-current');});}
  function positionCards(){
   const center=viewport.getBoundingClientRect().left+viewport.clientWidth/2;
   let closest=0,distance=Infinity;
@@ -14,9 +15,9 @@ export function createEnhancements({gsap,ST,reduced,scrollToTarget}){
   setIndex(tween||innerWidth>800?Math.round(progress*(total-1)):closest);
  }
  const maxTravel=()=>Math.max(0,track.scrollWidth-viewport.clientWidth);
- function goTo(next,instant=false){
+ function goTo(next:number,instant=false){
   const target=Math.max(0,Math.min(total-1,next));
-  if(tween){const s=tween.scrollTrigger;scrollToTarget(s.start+(target/(total-1))*(s.end-s.start),instant);if(instant)tween.progress(target/(total-1));}
+  if(tween){const s=tween.scrollTrigger!;scrollToTarget(s.start+(target/(total-1))*(s.end-s.start),instant);if(instant)tween.progress(target/(total-1));}
   else{const left=innerWidth>800?maxTravel()*target/(total-1):cards[target].offsetLeft-(viewport.clientWidth-cards[target].offsetWidth)/2;viewport.scrollTo({left,behavior:instant||reduced?'instant':'smooth'});}
   setIndex(target);
  }

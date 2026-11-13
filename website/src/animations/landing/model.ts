@@ -1,7 +1,12 @@
 import * as THREE from 'three';
 import {buildWorld} from './world-data.ts';
 
-export async function createExperience(host){
+/** The camera pose for a moment of the story (index.ts applyStory): x, y, scale, progress, view, focus, dark and more. */
+export type Pose=Record<string,number>;
+export type Experience=Awaited<ReturnType<typeof createExperience>>;
+
+
+export async function createExperience(host:HTMLElement){
  const mobile=innerWidth<600;
  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
  renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.3:1.6));renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
@@ -34,13 +39,13 @@ export async function createExperience(host){
  const targets=[[0,.98,0],[.1,.62,-.1],[-.6,1.05,-.6],[-.5,8,-.5],[0,8,-17],[0,8,-17]];
  const directions=[[.85,.34,1.35],[1,.47,1.5],[1,.82,1.3],[1,1.05,1.3],[1,1.12,1.45],[1,1.22,1.35]];
  const eye=new THREE.Vector3(),target=new THREE.Vector3(),direction=new THREE.Vector3(),focusTarget=new THREE.Vector3(-.5,11.5,-.5),focusEye=new THREE.Vector3(),viewTarget=new THREE.Vector3();let w=1,h=1,device={x:0,y:0,scale:1};
- const buildingCorners=[];for(const x of [-5.6,4.6])for(const y of [0,23])for(const z of [-4.7,3.7])buildingCorners.push(new THREE.Vector3(x,y,z));
+ const buildingCorners:THREE.Vector3[]=[];for(const x of [-5.6,4.6])for(const y of [0,23])for(const z of [-4.7,3.7])buildingCorners.push(new THREE.Vector3(x,y,z));
  const projected=new THREE.Vector3();
  function projectedBounds(){let left=Infinity,right=-Infinity,top=Infinity,bottom=-Infinity;camera.updateMatrixWorld(true);for(const p of buildingCorners){projected.copy(p).project(camera);const x=(projected.x*.5+.5)*w,y=(.5-projected.y*.5)*h;left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);}return{width:right-left,height:bottom-top,x:(left+right)/2,y:(top+bottom)/2};}
- function resize(){const rect=host.getBoundingClientRect();w=Math.max(1,rect.width);h=Math.max(1,rect.height);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();uniforms.uHeight.value=h;const svg=document.querySelector('.device-morph'),r=svg.getBoundingClientRect(),scale=Math.min(r.width/720,r.height/420);device={x:r.left-rect.left+(r.width-720*scale)/2,y:r.top-rect.top+(r.height-420*scale)/2,scale};}
+ function resize(){const rect=host.getBoundingClientRect();w=Math.max(1,rect.width);h=Math.max(1,rect.height);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();uniforms.uHeight.value=h;const svg=document.querySelector('.device-morph')!,r=svg.getBoundingClientRect(),scale=Math.min(r.width/720,r.height/420);device={x:r.left-rect.left+(r.width-720*scale)/2,y:r.top-rect.top+(r.height-420*scale)/2,scale};}
  resize();const observer=new ResizeObserver(resize);observer.observe(host);
- const ease=x=>x*x*(3-2*x);
- function update(pose,time,pointer,paused=false){
+ const ease=(x:number)=>x*x*(3-2*x);
+ function update(pose:Pose,time:number,pointer:{x:number;y:number},paused=false){
   const progress=Math.max(0,Math.min(5,pose.progress??0)),i=Math.min(4,Math.floor(progress)),f=ease(progress-i);
   const mobileScale=[1.5,1.8,2.0,1.4,2.0,1.45];
   const radius=Math.exp(THREE.MathUtils.lerp(Math.log(radii[i]),Math.log(radii[i+1]),f))*(mobile?THREE.MathUtils.lerp(mobileScale[i],mobileScale[i+1],f):innerWidth<=900?1.32:1);

@@ -2,24 +2,28 @@
 // when the Playground routes or re-renders (see Studio.tsx), with the same markup as before
 // (public/js/studio.js), including the line breaks between blocks.
 import { createContext, useContext, useLayoutEffect, useRef, useState } from "react";
-import type { ReactNode } from "react";
+import type { FormEvent, ReactNode } from "react";
 import { mountViewer } from "./viewer.ts";
 import {
   CONFIRMS, EVENTS, FOCUS, FORMATS, HEAVY, PLUGINS, ROOMS, THUMBS, WALLS0,
   bytes, dayLabel, fmt, fmtDate, freshPlan, hms, now, sceneUrl, series, status,
 } from "./data.ts";
+import type { Hook, Opening, Plan, PlanTool, Scene, SceneKind, SceneOption, Store } from "./data.ts";
 
 const NL = "\n  ", NL4 = "\n    ";
-const slug = (t) => String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const slug = (t: string) => String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 /* ---------- live parts (updated in place, without rebuilding the view) ---------- */
-export const LiveContext = createContext(null);
+/** What the in-place parts read: the store and the floor plan's redraw counter. */
+export interface Live { S: Store; planKey: number; tick: number }
+export const LiveContext = createContext<Live | null>(null);
+const useLive = () => useContext(LiveContext)!;
 
 /* ---------- shared bits ---------- */
 const PH = { scenes: "Search scenes", analytics: "Search scenes to analyze", webhooks: "Search webhooks", plugins: "Search plug-ins and keys", scene: "Search scenes" };
 const NewButton = () => <a className="btn" href="/studio/new">+ New scene</a>;
 
-function StudioHead({ S, title, sub, scope = "scenes", action = <NewButton /> }: { S: { qs: Record<string, string> }; title: string; sub?: string; scope?: keyof typeof PH; action?: ReactNode }) {
+function StudioHead({ S, title, sub, scope = "scenes", action = <NewButton /> }: { S: Pick<Store, "qs">; title: string; sub?: string; scope?: keyof typeof PH; action?: ReactNode }) {
   return (
     <header className="page-head">
       <div>
@@ -28,18 +32,18 @@ function StudioHead({ S, title, sub, scope = "scenes", action = <NewButton /> }:
         {sub ? <p className="sub">{sub}</p> : null}
       </div>
       <div className="row">
-        <input className="search" id="q" data-scope={scope} type="search" placeholder={PH[scope]} aria-label={PH[scope]} defaultValue={S.qs[scope] || ""} />
+        <input className="search" id="q" data-scope={scope} type="search" placeholder={PH[scope]} aria-label={PH[scope]} defaultValue={(S.qs as Partial<Record<keyof typeof PH, string>>)[scope] || ""} />
         {action}
       </div>
     </header>
   );
 }
 
-function Pill({ s }) {
+function Pill({ s }: { s: Scene }) {
   return status(s) === "ready" ? <span className="pill ok">● Ready</span> : <span className="pill proc">◐ Processing</span>;
 }
 
-export function BarChart({ values, labelFn }) {
+export function BarChart({ values, labelFn }: { values: number[]; labelFn: (i: number) => string }) {
   const w = 720, h = 100, max = Math.max(...values, 1), bw = w / values.length;
   return (
     <>
@@ -60,17 +64,17 @@ export function BarChart({ values, labelFn }) {
     </>
   );
 }
-const peakLabel = (v, f) => { const m = Math.max(...v); const i = v.lastIndexOf(m); return `PEAK ${fmt(m)} ${i === v.length - 1 ? "TODAY" : "· " + f(i).toUpperCase()}`; };
+const peakLabel = (v: number[], f: (i: number) => string) => { const m = Math.max(...v); const i = v.lastIndexOf(m); return `PEAK ${fmt(m)} ${i === v.length - 1 ? "TODAY" : "· " + f(i).toUpperCase()}`; };
 
 /** The 3D preview; a new one is made whenever the view is rebuilt (as before). */
-function Viewer({ kind }) {
-  const el = useRef(null);
+function Viewer({ kind }: { kind: SceneKind }) {
+  const el = useRef<HTMLDivElement>(null);
   const [unavailable, setUnavailable] = useState(false);
   useLayoutEffect(() => {
-    const cleanups = [];
+    const cleanups: (() => void)[] = [];
     let active = true;
     setUnavailable(false);
-    mountViewer(el.current, kind, cleanups)
+    mountViewer(el.current!, kind, cleanups)
       .then((available) => { if (active && available === false) setUnavailable(true); })
       .catch((error) => {
         console.error("Unable to initialize the Studio 3D preview.", error);
@@ -90,7 +94,7 @@ function Viewer({ kind }) {
 }
 
 /* ---------- scenes ---------- */
-function SceneCard({ s }) {
+function SceneCard({ s }: { s: Scene }) {
   return (
     <article className="scene-card">
       <a className="scene-thumb" href={`/studio/scene/${s.id}`} tabIndex={-1} aria-hidden="true">
@@ -117,10 +121,10 @@ function SceneCard({ s }) {
   );
 }
 
-function viewScenes(S) {
+function viewScenes(S: Store) {
   const { state } = S;
   const views = state.scenes.reduce((a, s) => a + s.views, 0), sessions = state.scenes.reduce((a, s) => a + s.sessions, 0), watch = state.scenes.reduce((a, s) => a + s.watch, 0);
-  const total = series("all", views).slice(-30), dl = (i) => dayLabel(i, 30);
+  const total = series("all", views).slice(-30), dl = (i: number) => dayLabel(i, 30);
   const list = state.scenes.filter((s) => (S.filter === "all" || status(s) === S.filter) && s.title.toLowerCase().includes(S.qs.scenes.toLowerCase()));
   return (
     <>
@@ -162,7 +166,7 @@ function viewScenes(S) {
 }
 
 /* ---------- one scene ---------- */
-function ShareControls({ s }) {
+function ShareControls({ s }: { s: Scene }) {
   return (
     <>
       <div className="card">
@@ -195,7 +199,7 @@ function ShareControls({ s }) {
       </div>
       {NL}
       <div className="toggles">
-        {[["comments", "Allow comments"], ["branding", "Show Verse Engine branding"], ["expires", "Link expires in 30 days"]].map(([k, l]) => (
+        {([["comments", "Allow comments"], ["branding", "Show Verse Engine branding"], ["expires", "Link expires in 30 days"]] as [SceneOption, string][]).map(([k, l]) => (
           <label key={k} className="toggle">
             <span>{l}</span>
             <input type="checkbox" data-action="opt" data-id={s.id} data-k={k} defaultChecked={!!s.opts[k]} />
@@ -213,7 +217,7 @@ function ShareControls({ s }) {
   );
 }
 
-function viewScene(S, id) {
+function viewScene(S: Store, id?: string) {
   const s = S.state.scenes.find((x) => x.id === id);
   if (!s) return viewNotFound();
   return (
@@ -240,7 +244,7 @@ function viewScene(S, id) {
 }
 
 /* ---------- analytics ---------- */
-function viewAnalytics(S, id = undefined) {
+function viewAnalytics(S: Store, id?: string): ReactNode {
   const { state } = S;
   if (id) S.anId = id;
   if (!state.scenes.find((x) => x.id === S.anId)) S.anId = state.scenes[0]?.id;
@@ -248,7 +252,7 @@ function viewAnalytics(S, id = undefined) {
   if (!s) return (<><StudioHead S={S} title="Analytics" sub="How your scenes are landing." scope="analytics" action="" /><div className="empty">Create a scene to see analytics.</div></>);
   const full = series(s.id + "v", s.views * 3 || 0).map((v) => (s.views ? v : 0)), vals = full.slice(-S.anRange), sum = vals.reduce((a, b) => a + b, 0);
   const ses = Math.round(sum * (s.views ? s.sessions / s.views : 0)), watch = Math.round(sum * (s.views ? s.watch / s.views : 0));
-  const dev = [["Phone", 58], ["Desktop", 34], ["Headset", 8]];
+  const dev: [string, number][] = [["Phone", 58], ["Desktop", 34], ["Headset", 8]];
   const rows = s.views ? [["Today 10:42", "Phone · Chrome", "Bengaluru", "6m 12s"], ["Today 09:15", "Desktop · Safari", "Mumbai", "11m 40s"], ["Yesterday 21:03", "Phone · Safari", "Pune", "3m 05s"], ["Yesterday 18:27", "Headset · Quest Browser", "San Francisco", "14m 22s"], ["20 Oct 16:50", "Desktop · Edge", "Hyderabad", "7m 48s"]] : [];
   const aq = S.qs.analytics.toLowerCase(), amatch = state.scenes.filter((x) => x.title.toLowerCase().includes(aq)), aopts = amatch.length ? amatch : state.scenes;
   if (!aopts.some((x) => x.id === S.anId)) { S.anId = aopts[0].id; return viewAnalytics(S); }
@@ -260,7 +264,7 @@ function viewAnalytics(S, id = undefined) {
       <div className="toolbar">
         <label className="field" style={{ minWidth: "min(100%,320px)" }}>
           Scene
-          <select id="an-scene" defaultValue={S.anId}>
+          <select id="an-scene" defaultValue={S.anId ?? undefined}>
             {aopts.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}
           </select>
         </label>
@@ -323,10 +327,10 @@ function viewAnalytics(S, id = undefined) {
 }
 
 /* ---------- webhooks ---------- */
-function HookBadge({ status: st }) {
+function HookBadge({ status: st }: { status: Hook["status"] }) {
   return st === "active" ? <span className="pill ok">● Active</span> : st === "paused" ? <span className="pill">‖ Paused</span> : <span className="pill bad">! Failing</span>;
 }
-function viewWebhooks(S) {
+function viewWebhooks(S: Store) {
   const { state } = S;
   const wq = S.qs.webhooks.toLowerCase(), hooks = state.hooks.filter((x) => (x.name + " " + x.url).toLowerCase().includes(wq));
   const h = hooks.find((x) => x.id === S.whSel) || hooks[0];
@@ -400,7 +404,7 @@ function viewWebhooks(S) {
 
 /* ---------- plug-ins & API ---------- */
 export const QUICKSTART = `curl -X POST https://api.verse.example/v1/scenes \\\n  -H "Authorization: Bearer $VERSE_KEY" \\\n  -F "file=@living-room.glb"`;
-function viewPlugins(S) {
+function viewPlugins(S: Store) {
   const { state } = S;
   const pq = S.qs.plugins.toLowerCase(), plugs = PLUGINS.filter((p) => (p[0] + " " + p[1]).toLowerCase().includes(pq)), keys = state.keys.filter((k) => k.name.toLowerCase().includes(pq));
   return (
@@ -452,7 +456,7 @@ function viewPlugins(S) {
 }
 
 /* ---------- new scene: upload → review → preview & share ---------- */
-function Stepper({ n }) {
+function Stepper({ n }: { n: number }) {
   return (
     <ol className="stepper" aria-label="Progress">
       {["1 UPLOAD", "2 REVIEW", "3 PREVIEW & SHARE"].map((l, i) => (
@@ -462,7 +466,7 @@ function Stepper({ n }) {
   );
 }
 
-function viewNew(S) {
+function viewNew(S: Store) {
   const { draft } = S, ok = !!draft.file;
   return (
     <>
@@ -485,8 +489,8 @@ function viewNew(S) {
         <span className="label">{`DROP YOUR ${draft.type === "plan" ? "FLOOR PLAN" : "3D FILE OR SCAN"} HERE`}</span>
         {ok ? (
           <>
-            <h3>{draft.file.name}</h3>
-            <p className="note">{bytes(draft.file.size) + (draft.sample ? " · sample file" : "")}</p>
+            <h3>{draft.file!.name}</h3>
+            <p className="note">{bytes(draft.file!.size) + (draft.sample ? " · sample file" : "")}</p>
           </>
         ) : (
           <p className="note">{`${draft.type === "plan" ? "PNG, JPG or PDF." : "Accepts models, point clouds, splats and BIM."} FBX, OBJ and ZIP files are converted for you.`}</p>
@@ -514,8 +518,8 @@ function viewNew(S) {
   );
 }
 
-const rotate = (o, x, y) => (o === "v" ? `rotate(90 ${x} ${y})` : undefined);
-export function PlanSvg({ p }) {
+const rotate = (o: Opening[2], x: number, y: number) => (o === "v" ? `rotate(90 ${x} ${y})` : undefined);
+export function PlanSvg({ p }: { p: Plan }) {
   return (
     <svg className="plan-svg" id="plan" viewBox="12 -18 396 356" role="group" aria-label="Floor plan editor">
       <g transform={`translate(210 160) rotate(${p.rot}) scale(${p.fx} ${p.fy}) translate(-210 -160)`}>
@@ -543,15 +547,15 @@ export function PlanSvg({ p }) {
   );
 }
 // Parts of the review page that change in place while editing the plan.
-function LivePlan() { const { S, planKey } = useContext(LiveContext); return <PlanSvg key={planKey} p={S.draft.plan} />; }
-function LiveCount({ of }) { const { S } = useContext(LiveContext); return String(S.draft.plan[of].length); }
-function LiveChecked() { const { S } = useContext(LiveContext); return String(S.draft.plan.checks.filter(Boolean).length); }
-function LiveBar() { const { S } = useContext(LiveContext); const n = S.draft.plan.checks.filter(Boolean).length; return <i id="c-bar" style={{ width: (n / 3) * 100 + "%" }} />; }
+function LivePlan() { const { S, planKey } = useLive(); return <PlanSvg key={planKey} p={S.draft.plan!} />; }
+function LiveCount({ of }: { of: "doors" | "wins" }) { const { S } = useLive(); return String(S.draft.plan![of].length); }
+function LiveChecked() { const { S } = useLive(); return String(S.draft.plan!.checks.filter(Boolean).length); }
+function LiveBar() { const { S } = useLive(); const n = S.draft.plan!.checks.filter(Boolean).length; return <i id="c-bar" style={{ width: (n / 3) * 100 + "%" }} />; }
 
-const TIPS = { select: "Click a wall to remove it or bring it back.", door: "Click a wall to place a door. Click a door to remove it.", win: "Click a wall to place a window. Click a window to remove it.", gap: "Click a wall to turn it into an open archway, and again to close it." };
-function viewReview(S, redirect) {
-  const { draft } = S;
-  if (!draft.file) return redirect("new");
+const TIPS: Record<PlanTool, string> = { select: "Click a wall to remove it or bring it back.", door: "Click a wall to place a door. Click a door to remove it.", win: "Click a wall to place a window. Click a window to remove it.", gap: "Click a wall to turn it into an open archway, and again to close it." };
+function viewReview(S: Store, redirect: Redirect) {
+  const { draft } = S, file = draft.file;
+  if (!file) return redirect("new");
   if (draft.type === "plan") {
     const p = draft.plan || (draft.plan = freshPlan());
     return (
@@ -559,7 +563,7 @@ function viewReview(S, redirect) {
         <a className="under-link" href="/studio/new">← Back</a>
         <div className="page-head" style={{ marginTop: "8px" }}>
           <div>
-            <p className="eyebrow">{`NEW SCENE · ${draft.file.name}`}</p>
+            <p className="eyebrow">{`NEW SCENE · ${file.name}`}</p>
             <h1>Review floor plan</h1>
             <p className="sub">Check what we detected, fix anything that’s off, then build your 3D home.</p>
           </div>
@@ -628,13 +632,13 @@ function viewReview(S, redirect) {
       </>
     );
   }
-  const ext = (draft.file.name.split(".").pop() || "").toUpperCase(), heavy = HEAVY.test(draft.file.name);
+  const ext = (file.name.split(".").pop() || "").toUpperCase(), heavy = HEAVY.test(file.name);
   return (
     <>
       <a className="under-link" href="/studio/new">← Back</a>
       <div className="page-head" style={{ marginTop: "12px" }}>
         <div>
-          <p className="eyebrow">{`NEW SCENE · ${draft.file.name}`}</p>
+          <p className="eyebrow">{`NEW SCENE · ${file.name}`}</p>
           <h1>Review file</h1>
         </div>
       </div>
@@ -644,7 +648,7 @@ function viewReview(S, redirect) {
         <div className="card">
           <label className="field">
             Scene name
-            <input id="scene-name" defaultValue={draft.name || draft.file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ")} />
+            <input id="scene-name" defaultValue={draft.name || file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ")} />
           </label>
           {NL}
           <label className="field" style={{ marginTop: "18px" }}>
@@ -660,9 +664,9 @@ function viewReview(S, redirect) {
         <div className="card paper">
           <p className="label">What we found</p>
           <dl className="kv" style={{ marginTop: "12px" }}>
-            <dt>File</dt><dd>{draft.file.name}</dd>
+            <dt>File</dt><dd>{file.name}</dd>
             <dt>Format</dt><dd>{ext + (/^(fbx|obj|zip)$/i.test(ext) ? " · converted for you" : "")}</dd>
-            <dt>Size</dt><dd>{bytes(draft.file.size)}</dd>
+            <dt>Size</dt><dd>{bytes(file.size)}</dd>
             <dt>Processing</dt><dd>{heavy ? "Heavier capture, takes longer" : "Quick"}</dd>
           </dl>
         </div>
@@ -676,10 +680,10 @@ function viewReview(S, redirect) {
   );
 }
 
-function viewShare(S, redirect) {
-  const { draft, state } = S;
-  if (!draft.file) return redirect("new");
-  if (!draft.tmp) draft.tmp = { id: "sc-" + state.next, title: draft.name || draft.file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ") || "Untitled scene", source: draft.type === "plan" ? "Floor plan" : "Upload · " + (draft.file.name.split(".").pop() || "").toUpperCase(), kind: draft.type === "plan" ? "room" : /\.(e57|las|laz|xyz|ply|splat)$/i.test(draft.file.name) ? "scan" : "room", views: 0, sessions: 0, watch: 0, date: new Date().toISOString().slice(0, 10), privacy: "private", opts: { comments: true, branding: true, expires: false }, readyAt: HEAVY.test(draft.file.name) ? now() + 12000 : 0 };
+function viewShare(S: Store, redirect: Redirect) {
+  const { draft, state } = S, file = draft.file;
+  if (!file) return redirect("new");
+  if (!draft.tmp) draft.tmp = { id: "sc-" + state.next, title: draft.name || file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ") || "Untitled scene", source: draft.type === "plan" ? "Floor plan" : "Upload · " + (file.name.split(".").pop() || "").toUpperCase(), kind: draft.type === "plan" ? "room" : /\.(e57|las|laz|xyz|ply|splat)$/i.test(file.name) ? "scan" : "room", views: 0, sessions: 0, watch: 0, date: new Date().toISOString().slice(0, 10), privacy: "private", opts: { comments: true, branding: true, expires: false }, readyAt: HEAVY.test(file.name) ? now() + 12000 : 0 };
   const s = draft.tmp;
   return (
     <>
@@ -722,7 +726,10 @@ function viewNotFound() {
 }
 
 /** The view for the current Playground address (below /studio), and which sidebar entry is current. */
-export function viewFor(S, page, redirect) {
+/** Goes to another Playground page instead of this one (e.g. Review without a file); the view shows nothing meanwhile. */
+export type Redirect = (page: string) => null;
+
+export function viewFor(S: Store, page: string, redirect: Redirect): { nav: string; view: ReactNode } {
   const [a, b] = (page || "scenes").split("/");
   if (a === "scenes") return { nav: a, view: viewScenes(S) };
   if (a === "scene") return { nav: "scenes", view: viewScene(S, b) };
@@ -734,16 +741,16 @@ export function viewFor(S, page, redirect) {
 }
 
 /* ---------- dialogs ---------- */
-const DialogHead = ({ title }) => (
+const DialogHead = ({ title }: { title: string }) => (
   <div className="dlg-head">
     <h3>{title}</h3>
     <button className="dlg-x" data-action="close" id={`btn-dialog-close-${slug(title)}`}>Close ×</button>
   </div>
 );
-const embedSnippet = (s) => `<iframe src="${sceneUrl(s.id)}" width="100%" height="480" allow="xr-spatial-tracking; fullscreen" title="${s.title}"></iframe>`;
+const embedSnippet = (s: Scene) => `<iframe src="${sceneUrl(s.id)}" width="100%" height="480" allow="xr-spatial-tracking; fullscreen" title="${s.title}"></iframe>`;
 
 export const dialogs = {
-  export: (s) => (
+  export: (s: Scene) => (
     <>
       <DialogHead title="Export video" />
       <label className="field">Resolution<select><option>1080p</option><option>1440p</option><option>4K</option></select></label>
@@ -752,7 +759,7 @@ export const dialogs = {
       <div className="row"><button className="btn" data-action="queue-export" data-id={s.id} id={`btn-queue-export-${s.id}`}>Queue export</button></div>
     </>
   ),
-  embed: (s) => (
+  embed: (s: Scene) => (
     <>
       <DialogHead title="Embed" />
       <p className="label">iframe</p>
@@ -763,7 +770,7 @@ export const dialogs = {
       </div>
     </>
   ),
-  tour: (s) => (
+  tour: (s: Scene) => (
     <>
       <DialogHead title="Live tour" />
       <p>Share this code so others can join your tour.</p>
@@ -772,7 +779,7 @@ export const dialogs = {
       <div className="row"><button className="btn" data-action="copy-text" data-t={s.tour} id="btn-copy-tour-link">Copy code</button></div>
     </>
   ),
-  phone: (s) => (
+  phone: (s: Scene) => (
     <>
       <DialogHead title="Open on phone" />
       <p>Send yourself this link, then open it on your phone. Playground scenes live in this browser, so the link only resolves here.</p>
@@ -782,7 +789,7 @@ export const dialogs = {
       </div>
     </>
   ),
-  deleteHook: (id) => (
+  deleteHook: (id: string) => (
     <>
       <DialogHead title="Delete webhook?" />
       <p>This removes it from the Playground.</p>
@@ -792,7 +799,7 @@ export const dialogs = {
       </div>
     </>
   ),
-  newHook: (onSubmit) => (
+  newHook: (onSubmit: (event: FormEvent<HTMLFormElement>) => void) => (
     <>
       <DialogHead title="Create webhook" />
       <form id="hook-form" className="dlg" style={{ padding: "0" }} onSubmit={onSubmit}>
@@ -814,7 +821,7 @@ export const dialogs = {
       </form>
     </>
   ),
-  newKey: (onSubmit) => (
+  newKey: (onSubmit: (event: FormEvent<HTMLFormElement>) => void) => (
     <>
       <DialogHead title="Create API key" />
       <form id="key-form" className="dlg" style={{ padding: "0" }} onSubmit={onSubmit}>

@@ -3,14 +3,15 @@
 // hash without a new history entry. Arrow keys, Home and End move between the tabs.
 // (Was the About part of public/js/pages.js.)
 import { useEffect, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, KeyboardEvent } from "react";
 
-const TABS = ["ctruh", "verse-engine"];
-const fromHash = () => (location.hash === "#verse-engine" ? "verse-engine" : "ctruh");
+type Tab = "ctruh" | "verse-engine";
+const TABS: Tab[] = ["ctruh", "verse-engine"];
+const fromHash = (): Tab => (location.hash === "#verse-engine" ? "verse-engine" : "ctruh");
 
 export default function About() {
   const [tab, setTab] = useState(fromHash);
-  const buttons = useRef([]);
+  const buttons = useRef<(HTMLButtonElement | null)[]>([]);
 
   useEffect(() => {
     const onHash = () => setTab(fromHash());
@@ -18,23 +19,23 @@ export default function About() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  function choose(key) {
+  function choose(key: Tab) {
     setTab(key);
     history.replaceState(history.state, "", location.pathname + (key === "verse-engine" ? "#verse-engine" : "#ctruh"));
   }
-  function onKeyDown(event, index) {
+  function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
     const next = event.key === "Home" ? 0 : event.key === "End" ? 1 : 1 - index;
-    buttons.current[next].click();
-    buttons.current[next].focus();
+    buttons.current[next]!.click();
+    buttons.current[next]!.focus();
   }
-  const tabProps = (key, index) => ({
-    ref: (el) => (buttons.current[index] = el),
+  const tabProps = (key: Tab, index: number) => ({
+    ref: (el: HTMLButtonElement | null) => { buttons.current[index] = el; },
     "aria-selected": tab === key,
     tabIndex: tab === key ? 0 : -1,
     onClick: () => choose(key),
-    onKeyDown: (e) => onKeyDown(e, index),
+    onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => onKeyDown(e, index),
   });
 
   return (

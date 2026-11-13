@@ -24,7 +24,7 @@ const RESOURCE_PAGE = { bodyClass: "site-page", mainClass: "", noindex: false, p
 
 // Breadcrumb structured data for a documentation page (/docs/...): Docs > this page.
 // Used by the router (in the browser) and by vite.config.ts (in each page's server HTML).
-export const docsBreadcrumb = (path, title, origin) => ({
+export const docsBreadcrumb = (path: string, title: string, origin: string) => ({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
@@ -51,7 +51,14 @@ export type PageMeta = {
 
 // Structured data for a documentation page: the breadcrumb, plus a TechArticle for blog posts
 // (page.article: headline, datePublished and author from the post's frontmatter).
-export function docsJsonLd(path, page, origin) {
+/** A blog post's frontmatter (documentation payloads of blog posts carry it). */
+export interface DocsArticle {
+  headline: string;
+  datePublished: string;
+  author?: string;
+}
+
+export function docsJsonLd(path: string, page: { title: string; article?: DocsArticle }, origin: string) {
   const breadcrumb = docsBreadcrumb(path, page.title, origin);
   const a = page.article;
   if (!a) return breadcrumb;
@@ -328,4 +335,4 @@ export const META: Record<string, PageMeta> = {
 };
 
 // Structured data for the Resources pages, from their meta title and description.
-for (const key of Object.keys(RESOURCE_PAGES)) META[ROUTES[key].path].jsonld = resourcesJsonLd(key, META[ROUTES[key].path]);
+for (const key of Object.keys(RESOURCE_PAGES) as (keyof typeof RESOURCE_PAGES)[]) META[ROUTES[key].path].jsonld = resourcesJsonLd(key, META[ROUTES[key].path]);

@@ -5,40 +5,43 @@
 import Logo from "../components/Logo.tsx";
 import { useLayoutEffect, useRef, useState } from "react";
 import StudioGate from "./studio/StudioGate.tsx";
+import type { FormEvent, KeyboardEvent } from "react";
+
+type Mode = "pw" | "tok";
 
 const SESSION = "verse-playground-session";
 
 export default function Signin() {
   const params = useRef(new URLSearchParams(location.search)).current;
-  const [mode, setMode] = useState("pw"); // "pw": email & password, "tok": name + API token
+  const [mode, setMode] = useState<Mode>("pw"); // "pw": email & password, "tok": name + API token
   const [signup, setSignup] = useState(() => params.get("mode") === "signup");
   const [keep, setKeep] = useState(false); // data-keep is set once the visitor switches (as before)
   const [msg, setMsg] = useState("");
-  const email = useRef(null), name = useRef(null), tokenName = useRef(null), tabs = useRef({});
+  const email = useRef<HTMLInputElement>(null), name = useRef<HTMLInputElement>(null), tokenName = useRef<HTMLInputElement>(null), tabs = useRef<Partial<Record<Mode, HTMLButtonElement | null>>>({});
 
-  useLayoutEffect(() => { email.current.focus(); }, []);
+  useLayoutEffect(() => { email.current!.focus(); }, []);
 
   const next = (() => { const n = params.get("next") || "/studio"; return n.startsWith("/") && !n.startsWith("//") ? n : "/studio"; })();
-  function finish(who, mail) {
+  function finish(who: string, mail: string) {
     try { localStorage.setItem(SESSION, JSON.stringify({ name: who, email: mail, at: Date.now() })); } catch { /* still continue */ }
     document.dispatchEvent(new CustomEvent("verse:navigate", { detail: { href: next } }));
   }
-  function onSubmit(event) {
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (mode === "pw") {
-      const mail = email.current.value.trim(), who = name.current.value.trim();
-      finish(who || (mail.split("@")[0] || "Guest").replace(/[._-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) || "Guest", mail);
-    } else finish(tokenName.current.value.trim() || "Guest", "");
+      const mail = email.current!.value.trim(), who = name.current!.value.trim();
+      finish(who || (mail.split("@")[0] || "Guest").replace(/[._-]+/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()) || "Guest", mail);
+    } else finish(tokenName.current!.value.trim() || "Guest", "");
   }
-  function onTabKey(event) {
+  function onTabKey(event: KeyboardEvent<HTMLButtonElement>) {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
-    const other = mode === "pw" ? "tok" : "pw";
+    const other: Mode = mode === "pw" ? "tok" : "pw";
     setMode(other);
-    tabs.current[other].focus();
+    tabs.current[other]!.focus();
   }
-  const tabProps = (key) => ({
-    ref: (el) => (tabs.current[key] = el),
+  const tabProps = (key: Mode) => ({
+    ref: (el: HTMLButtonElement | null) => { tabs.current[key] = el; },
     "aria-selected": mode === key,
     tabIndex: mode === key ? 0 : -1,
     onClick: () => setMode(key),

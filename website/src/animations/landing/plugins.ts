@@ -1,9 +1,10 @@
 import {plugins} from '../../pages/landing/data.ts';
-export function createPluginShowcase({gsap,reduced}){
- const $=<T extends HTMLElement=HTMLElement>(s:string)=>document.querySelector<T>(s),abort=new AbortController(),options={signal:abort.signal};
+import type {LandingTools} from './index.ts';
+export function createPluginShowcase({gsap,reduced}:Pick<LandingTools,'gsap'|'reduced'>){
+ const $=<T extends HTMLElement=HTMLElement>(s:string)=>document.querySelector<T>(s)!,abort=new AbortController(),options={signal:abort.signal};
  const tabs=[...document.querySelectorAll<HTMLButtonElement>('[data-publisher]')],visual=$('[data-plugin-visual]'),tablist=$('.plugin-tabs');let current=0;
  const data=plugins;
- function select(index,focus=false,instant=false){
+ function select(index:number,focus=false,instant=false){
   current=index;tablist.dataset.input=instant?'keyboard':'pointer';const item=data[index];
   tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;if(focus&&i===index)tab.focus()});$('#plugin-view').setAttribute('aria-labelledby',tabs[index].id);
   $('#plugin-name').textContent=item.name;$('.plugin-source-label').textContent=`${item.name} → Verse Engine`;$('#plugin-description').textContent=item.description;$('#plugin-time').replaceChildren(document.createTextNode(String(item.time)),Object.assign(document.createElement('span'),{textContent:'s'}));$('#plugin-timing-label').textContent=item.label;$('#plugin-scene-label').textContent=item.scene;$('.workflow-editor').textContent=item.name;document.querySelectorAll('[data-publishing-model]').forEach(model=>model.setAttribute('href','#plugin-mesh-'+item.model));$('.publishing-drawing').setAttribute('aria-label',item.alt);

@@ -19,15 +19,16 @@ import {
   pricingHeading, plans, contactUrl,
   faqs,
 } from "./landing/data.ts";
+import type { SectionHeading, StoryChapter as StoryChapterData } from "./landing/data.ts";
 
 /** "01", "02", … */
-const nn = (i) => String(i + 1).padStart(2, "0");
+const nn = (i: number) => String(i + 1).padStart(2, "0");
 
 /** Lines joined with <br />. */
-const Lines = ({ lines }) => lines.map((line, i) => <Fragment key={i}>{i > 0 && <br />}{line}</Fragment>);
+const Lines = ({ lines }: { lines: string[] }) => lines.map((line, i) => <Fragment key={i}>{i > 0 && <br />}{line}</Fragment>);
 
 /** Section header used by the mx- sections: number, two-line heading (second line accented), intro and an optional link under it. */
-function SectionHead({ heading }) {
+function SectionHead({ heading }: { heading: SectionHeading }) {
   return (
     <header className="mx-head">
       <div>
@@ -52,11 +53,11 @@ function SectionHead({ heading }) {
 }
 
 /** Tab button attributes: first tab selected. */
-const tab = (i) => ({ role: "tab", "aria-selected": i === 0 });
+const tab = (i: number) => ({ role: "tab", "aria-selected": i === 0 });
 
 // ---------------------------------------------------------------- Story
 
-function StoryChapter({ c }) {
+function StoryChapter({ c }: { c: StoryChapterData }) {
   return (
     <article className={`story-panel ${c.className}`} id={`chapter-${c.chapter}`} data-chapter={c.chapter}>
       <div className="panel-copy">

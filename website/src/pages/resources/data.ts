@@ -2,6 +2,7 @@
 // infrastructure, Lyon demo), section by section: shared facts and links (and the header's
 // Resources menu), the claims register, then each page's content. Rendered by ResourcePage.jsx.
 import { href, link, strong, code, muted, pill, claim } from "./utils.ts";
+import type { Claim, ResourcePageData, Route } from "./types.ts";
 
 // ── Shared ──
 export const SITE = "https://verse.ctruh.com";
@@ -62,7 +63,7 @@ export const ROUTES = {
   howItWorks: { path: "/how-it-works", status: "planned", fallback: "/inside-the-engine" },
   formats: { path: "/supported-formats", status: "planned", fallback: "/how-to-start" },
   faq: { path: "/faq", status: "planned", fallback: "/faqs" },
-};
+} satisfies Record<string, Route>;
 
 /** Calls to action used on several pages. */
 export const ACTIONS = {
@@ -221,10 +222,10 @@ export const CLAIMS = {
     question: "Ctruh Worlds (coming soon) runs 'on our own open models'. Is that the same model family as VersaAI, or separate? Expected availability date?",
     confirmed: false,
   },
-};
+} satisfies Record<string, Claim>;
 
 // ── 3D commerce page (/use-cases/3d-commerce) ──
-const COMMERCE = {
+const COMMERCE: ResourcePageData = {
   crumbs: [CRUMB.home, CRUMB.useCases, { name: "3D commerce", href: href("commerce") }],
 
   hero: {
@@ -399,7 +400,7 @@ const COMMERCE = {
 // ── Architecture and real estate page (/use-cases/architecture-real-estate) ──
 const showFlat = "/assets/sample-0.webp";
 
-const ARCH_RE = {
+const ARCH_RE: ResourcePageData = {
   crumbs: [CRUMB.home, CRUMB.useCases, { name: "Architecture and real estate", href: href("archRe") }],
 
   hero: {
@@ -565,7 +566,7 @@ const ARCH_RE = {
 // ── AI and 3D infrastructure page (/ai-3d-infrastructure) ──
 const verse = "Verse Engine";
 
-const AI_INFRA = {
+const AI_INFRA: ResourcePageData = {
   crumbs: [CRUMB.home, { name: "AI and 3D infrastructure", href: href("aiInfra") }],
 
   hero: {
@@ -728,7 +729,7 @@ export const VIDEO = {
   uploadDate: "2026-11-09", duration: "PT1M", thumbnailUrl: "/media/verse-film-poster.webp",
 };
 
-const LYON = {
+const LYON: ResourcePageData = {
   crumbs: [CRUMB.home, { name: "Demos", href: EXISTING.samples }, { name: "Lyon 3D city", href: href("lyon") }],
 
   hero: {

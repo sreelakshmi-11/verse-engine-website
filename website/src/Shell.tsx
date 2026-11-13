@@ -11,7 +11,7 @@ import MobileMenu, { openMenu } from "./components/MobileMenu.tsx";
 import Announcer from "./components/Announcer.tsx";
 
 type ShellPage = ReactNode;
-type ShellView = {
+export type ShellView = {
   skipHidden: boolean;
   headerHidden: boolean;
   footerHidden: boolean;
@@ -28,7 +28,7 @@ type ShellView = {
 
 export default function Shell({ view }: { view: ShellView }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const dialogRef = useRef(null), menuButtonRef = useRef(null);
+  const dialogRef = useRef<HTMLDialogElement>(null), menuButtonRef = useRef<HTMLButtonElement>(null);
   return (
     <>
       {"\n"}

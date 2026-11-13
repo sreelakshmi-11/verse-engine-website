@@ -3,42 +3,44 @@
 // link, WhatsApp; arrow keys move between them. (Was public/js/challenge.js.)
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import type { FormEvent, KeyboardEvent } from "react";
 
-const TABS = ["upload", "link", "wa"];
+type Tab = "upload" | "link" | "wa";
+const TABS: Tab[] = ["upload", "link", "wa"];
 
 export default function Challenge() {
-  const [active, setActive] = useState("upload");
+  const [active, setActive] = useState<Tab>("upload");
   const [touched, setTouched] = useState(false); // tab attributes are set from the first choice on
   const [fileName, setFileName] = useState("Choose your 3D file");
   const [error, setError] = useState(""), [errorShown, setErrorShown] = useState(false);
   const [done, setDone] = useState(false);
-  const form = useRef(null), file = useRef(null), doneBox = useRef(null), tabs = useRef({});
+  const form = useRef<HTMLFormElement>(null), file = useRef<HTMLInputElement>(null), doneBox = useRef<HTMLDivElement>(null), tabs = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
 
-  function select(key, focus = false) {
+  function select(key: Tab, focus = false) {
     setActive(key); setTouched(true);
-    if (focus) tabs.current[key].focus();
+    if (focus) tabs.current[key]!.focus();
   }
-  function onKeyDown(event, index) {
-    const d = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+  function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    const d = ({ ArrowRight: 1, ArrowLeft: -1 } as Record<string, number>)[event.key];
     if (!d) return;
     event.preventDefault();
     select(TABS[(index + d + TABS.length) % TABS.length], true);
   }
-  const tabProps = (key) => ({
-    ref: (el) => (tabs.current[key] = el),
+  const tabProps = (key: Tab) => ({
+    ref: (el: HTMLButtonElement | null) => { tabs.current[key] = el; },
     "aria-selected": active === key,
     tabIndex: !touched && key === "upload" ? undefined : active === key ? 0 : -1,
     onClick: () => select(key),
-    onKeyDown: (e) => onKeyDown(e, TABS.indexOf(key)),
+    onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => onKeyDown(e, TABS.indexOf(key)),
   });
   function onFile() {
-    const f = file.current.files[0];
+    const f = file.current!.files![0];
     setFileName(f ? f.name + " · " + (f.size / 1048576).toFixed(1) + " MB" : "Choose your 3D file");
   }
-  function onSubmit(event) {
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const el = form.current, f = new FormData(el), msg = [], chosen = file.current.files[0];
-    const field = (name) => {
+    const el = form.current!, f = new FormData(el), msg: string[] = [], chosen = file.current!.files![0];
+    const field = (name: string) => {
       const value = f.get(name);
       return typeof value === "string" ? value : "";
     };
@@ -48,13 +50,13 @@ export default function Challenge() {
     if (active === "upload" && !chosen) msg.push("a 3D file");
     else if (active === "upload" && chosen.size > 1073741824) msg.push("a file under 1 GB, or send a link instead");
     if (active === "link" && !/^https?:\/\/\S+/.test(field("link"))) msg.push("a link to the file");
-    if (!el.rights.checked) msg.push("confirmation that you have the right to send the file");
+    if (!(el.elements.namedItem("rights") as HTMLInputElement).checked) msg.push("confirmation that you have the right to send the file");
     if (msg.length) {
       flushSync(() => { setDone(false); setError("Please add " + msg.join(", ") + "."); setErrorShown(true); });
       return;
     }
     flushSync(() => { setErrorShown(false); setDone(true); });
-    doneBox.current.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    doneBox.current!.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
   return (

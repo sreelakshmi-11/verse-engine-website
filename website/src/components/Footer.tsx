@@ -3,14 +3,14 @@
 import Logo from "./Logo.tsx";
 import { FOOTER_LINKS, PRODUCT } from "../pages/resources/data.ts";
 
-const extra = (links) =>
+const extra = (links: { href: string; label: string; id: string }[]) =>
   links.map((l) => (
     <a key={l.id} href={l.href} id={l.id}>
       {l.label}
     </a>
   ));
 
-export default function Footer({ hidden, intro }) {
+export default function Footer({ hidden, intro }: { hidden: boolean; intro: boolean }) {
   return (
     <footer id="site-footer" className="page-footer" hidden={hidden}>
       {intro && (

@@ -3,6 +3,10 @@
 // and answer engines resolve "Ctruh", "Verse Engine by Ctruh" and "VersaAI" to the same entities.
 import { SITE, ORG, PRODUCT, RESOURCE_PAGES, VIDEO } from "./data.ts";
 import { canonical, claimOk } from "./utils.ts";
+import type { Crumb } from "./types.ts";
+
+type PageKey = keyof typeof RESOURCE_PAGES;
+type JsonLdNode = Record<string, unknown>;
 
 const ID = {
   org: ORG.id,
@@ -10,7 +14,7 @@ const ID = {
   verse: `${SITE}/#verse-engine`,
   versaai: "https://www.ctruh.com/#versaai",
 };
-const abs = (h) => (h.startsWith("http") ? h : SITE + h);
+const abs = (h: string) => (h.startsWith("http") ? h : SITE + h);
 
 const organization = () => ({
   "@type": "Organization", "@id": ID.org, name: ORG.name, legalName: ORG.legalName,
@@ -28,11 +32,11 @@ const versaAI = () => ({
   description: "VersaAI is Ctruh's AI-powered 3D creation layer. It is a separate capability from Verse Engine by Ctruh.",
   publisher: { "@id": ID.org },
 });
-const breadcrumbs = (items) => ({
+const breadcrumbs = (items: Crumb[]) => ({
   "@type": "BreadcrumbList",
   itemListElement: items.map((it, i) => ({ "@type": "ListItem", position: i + 1, name: it.name, item: abs(it.href) })),
 });
-function faqPage(key) {
+function faqPage(key: PageKey): JsonLdNode | null {
   const items = RESOURCE_PAGES[key].faq.filter((f) => claimOk(f.claim));
   if (!items.length) return null;
   return {
@@ -42,18 +46,19 @@ function faqPage(key) {
 }
 
 /** The JSON-LD graph for a Resources page (key as in RESOURCE_PAGES), from its meta (title, description, social image). */
-export function resourcesJsonLd(key: string, { title, description, ogImage }: { title: string; description: string; ogImage?: string }) {
+export function resourcesJsonLd(key: PageKey, { title, description, ogImage }: { title: string; description: string; ogImage?: string }) {
   const ai = key === "aiInfra";
-  const page: Record<string, any> = {
+  const about: JsonLdNode[] = (ai ? [ID.verse, ID.versaai] : [ID.verse]).map((id) => ({ "@id": id }));
+  const page: JsonLdNode = {
     "@type": "WebPage", "@id": canonical(key) + "#webpage", url: canonical(key), name: title, description,
-    isPartOf: { "@id": ID.website }, about: (ai ? [ID.verse, ID.versaai] : [ID.verse]).map((id) => ({ "@id": id })),
+    isPartOf: { "@id": ID.website }, about,
     ...(ai && { mentions: [{ "@id": ID.org }] }),
-    inLanguage: "en", publisher: { "@id": ID.org }, primaryImageOfPage: { "@type": "ImageObject", url: abs(ogImage) },
+    inLanguage: "en", publisher: { "@id": ID.org }, primaryImageOfPage: { "@type": "ImageObject", url: abs(ogImage ?? "") },
   };
-  const nodes: Record<string, unknown>[] = [page, breadcrumbs(RESOURCE_PAGES[key].crumbs), faqPage(key), verseEngine()];
+  const nodes: (JsonLdNode | null)[] = [page, breadcrumbs(RESOURCE_PAGES[key].crumbs), faqPage(key), verseEngine()];
   if (ai) nodes.push(versaAI());
   if (key === "lyon") {
-    page.about.push({ "@type": "Place", name: "Lyon, France" });
+    about.push({ "@type": "Place", name: "Lyon, France" });
     if (claimOk("lyon-video") && (VIDEO.embedUrl || VIDEO.contentUrl)) nodes.push({
       "@type": "VideoObject", name: VIDEO.title, description: VIDEO.description, thumbnailUrl: abs(VIDEO.thumbnailUrl),
       uploadDate: VIDEO.uploadDate, duration: VIDEO.duration, embedUrl: VIDEO.embedUrl || undefined, contentUrl: VIDEO.contentUrl ? abs(VIDEO.contentUrl) : undefined,

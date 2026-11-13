@@ -4,25 +4,29 @@
 // and returns focus to the menu button when it closes, exactly as before.
 import { RESOURCES_MENU } from "../pages/resources/data.ts";
 import { Chevron } from "./ResourcesNav.tsx";
+import type { Dispatch, MouseEvent, RefObject, SetStateAction } from "react";
 
-const emit = (open) =>
+type DialogRef = RefObject<HTMLDialogElement | null>;
+type SetOpen = Dispatch<SetStateAction<boolean>>;
+
+const emit = (open: boolean) =>
   document.dispatchEvent(new CustomEvent("verse:menu", { detail: { open } }));
 
-export function openMenu(dialogRef, setMenuOpen) {
-  dialogRef.current.showModal();
+export function openMenu(dialogRef: DialogRef, setMenuOpen: SetOpen) {
+  dialogRef.current!.showModal();
   setMenuOpen(true);
   emit(true);
 }
 
-export default function MobileMenu({ dialogRef, menuButtonRef, setMenuOpen }) {
-  const onCloseButton = () => dialogRef.current.close();
+export default function MobileMenu({ dialogRef, menuButtonRef, setMenuOpen }: { dialogRef: DialogRef; menuButtonRef: RefObject<HTMLButtonElement | null>; setMenuOpen: SetOpen }) {
+  const onCloseButton = () => dialogRef.current!.close();
   const onClose = () => {
     setMenuOpen(false);
     emit(false);
-    menuButtonRef.current.focus();
+    menuButtonRef.current!.focus();
   };
-  const onClick = (event) => {
-    if (event.target.closest("a")) dialogRef.current.close();
+  const onClick = (event: MouseEvent<HTMLDialogElement>) => {
+    if ((event.target as Element).closest("a")) dialogRef.current!.close();
   };
   return (
     <dialog

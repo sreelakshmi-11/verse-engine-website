@@ -4,34 +4,36 @@
 // (Was the code-tabs part of public/js/pages.js.)
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import type { KeyboardEvent } from "react";
 
-const TABS = ["embed", "curl", "javascript"];
+type Tab = "embed" | "curl" | "javascript";
+const TABS: Tab[] = ["embed", "curl", "javascript"];
 const FIRST_SAMPLE = '<!-- Embed a scene -->\n<script src="https://verse.ctruh.com/embed.js"\n        data-scene="your-scene"></script>';
 
 export default function Developers() {
-  const [tab, setTab] = useState("embed");
+  const [tab, setTab] = useState<Tab>("embed");
   const [code, setCode] = useState(FIRST_SAMPLE);
   const [status, setStatus] = useState("");
-  const samples = useRef(null), serial = useRef(0), buttons = useRef({});
+  const samples = useRef<Promise<Record<Tab, string>> | null>(null), serial = useRef(0), buttons = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
 
   useEffect(() => {
-    samples.current = fetch("/code-samples.json").then((r) => { if (!r.ok) throw Error(); return r.json(); });
+    samples.current = fetch("/code-samples.json").then((r) => { if (!r.ok) throw Error(); return r.json() as Promise<Record<Tab, string>>; });
   }, []);
 
-  async function select(key, focus = false) {
+  async function select(key: Tab, focus = false) {
     const request = ++serial.current;
     try {
-      const data = await samples.current;
+      const data = (await samples.current)!;
       if (request !== serial.current) return;
       flushSync(() => { setTab(key); setCode(data[key]); });
-      if (focus) buttons.current[key].focus();
+      if (focus) buttons.current[key]!.focus();
       setStatus("");
     } catch {
       setStatus("The other examples could not be loaded. Please try again.");
     }
   }
-  function onKeyDown(event, index) {
-    let next;
+  function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    let next: number;
     if (event.key === "Home") next = 0;
     else if (event.key === "End") next = TABS.length - 1;
     else if (event.key === "ArrowRight") next = (index + 1) % TABS.length;
@@ -48,12 +50,12 @@ export default function Developers() {
       setStatus("Select the code and copy it with your keyboard.");
     }
   }
-  const tabProps = (key) => ({
-    ref: (el) => (buttons.current[key] = el),
+  const tabProps = (key: Tab) => ({
+    ref: (el: HTMLButtonElement | null) => { buttons.current[key] = el; },
     "aria-selected": tab === key,
     tabIndex: tab === key ? 0 : -1,
     onClick: () => select(key),
-    onKeyDown: (e) => onKeyDown(e, TABS.indexOf(key)),
+    onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => onKeyDown(e, TABS.indexOf(key)),
   });
 
   return (

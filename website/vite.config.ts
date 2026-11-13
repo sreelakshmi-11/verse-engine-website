@@ -1,4 +1,5 @@
 import { createServer, defineConfig } from "vite";
+import type { Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import crypto from "node:crypto";
@@ -6,32 +7,37 @@ import fs from "node:fs";
 import path from "node:path";
 import pkg from "./package.json" with { type: "json" };
 import { META, OG_DEFAULT, docsJsonLd } from "./src/pages/meta.ts";
+import type { DocsArticle, PageMeta } from "./src/pages/meta.ts";
+
+/** A page's meta (src/pages/meta.ts) or its documentation payload (public/content/*.json). */
+type Page = PageMeta & { article?: DocsArticle };
 
 // The site's public address, set once in package.json ("config": { "siteUrl" }). index.html uses
 // %SITE_URL% for the canonical link, og:url, og:image and the site-origin tag the router builds them from.
 const siteUrl = pkg.config.siteUrl.replace(/\/+$/, "");
-const siteUrlInHtml = { name: "site-url", transformIndexHtml: (html) => html.replaceAll("%SITE_URL%", siteUrl) };
+const siteUrlInHtml: Plugin = { name: "site-url", transformIndexHtml: (html: string) => html.replaceAll("%SITE_URL%", siteUrl) };
 
 // Link previews (WhatsApp, LinkedIn, Slack) do not run JavaScript, so each page's OG and Twitter tags must be in
 // its HTML. After the build, write dist/<page>/index.html (and update dist/index.html) with that page's tags.
 // A tag that is in index.html is updated; a missing one is added before </head>.
 // Every page also gets its own title, description, robots and canonical in that HTML, as the router sets them (SEO
 // blueprint, Parts C and D). Pages with `prerender` also get their content, stylesheets and structured data (Part E).
-const esc = (s) => String(s).replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;");
-function setTag(html, attr, key, value) {
+const esc = (s: unknown) => String(s).replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;");
+function setTag(html: string, attr: string, key: string, value: string) {
   const tag = new RegExp(`<meta\\b[^>]*\\b${attr}="${key}"[^>]*>`);
   const content = `content="${esc(value)}"`;
   if (tag.test(html)) return html.replace(tag, (t) => (/\bcontent="[^"]*"/.test(t) ? t.replace(/\bcontent="[^"]*"/, () => content) : t.replace(/\s*\/?>$/, () => ` ${content}>`)));
   return html.replace("</head>", () => `<meta ${attr}="${key}" ${content}>\n</head>`);
 }
-const pageSocialTags = {
+const pageSocialTags: Plugin = {
   name: "page-social-tags",
   apply: "build" as const,
   async writeBundle({ dir }) {
-    const shell = fs.readFileSync(path.join(dir, "index.html"), "utf8");
+    const out = dir!; // dist/
+    const shell = fs.readFileSync(path.join(out, "index.html"), "utf8");
     const ssr = await loadPrerender();
-    try { for (const { path: route } of JSON.parse(fs.readFileSync("public/content/manifest.json", "utf8"))) {
-      const page = META[route] ?? JSON.parse(fs.readFileSync(`public/content/${route.slice(1).replaceAll("/", "__")}.json`, "utf8"));
+    try { for (const { path: route } of JSON.parse(fs.readFileSync("public/content/manifest.json", "utf8")) as { path: string }[]) {
+      const page: Page = META[route] ?? (JSON.parse(fs.readFileSync(`public/content/${route.slice(1).replaceAll("/", "__")}.json`, "utf8")) as Page);
       let html = shell;
       for (const [attr, key, value] of [
         ["property", "og:title", page.ogTitle || page.title],
@@ -44,19 +50,19 @@ const pageSocialTags = {
         ["name", "twitter:title", page.ogTitle || page.title], // Twitter / X cards, as the SEO blueprint's own build (Part F)
         ["name", "twitter:description", page.ogDescription || page.description],
         ["name", "twitter:image", siteUrl + (page.ogImage || OG_DEFAULT.ogImage)],
-      ]) html = setTag(html, attr, key, value);
+      ] as [string, string, string][]) html = setTag(html, attr, key, value);
       if (route !== "/") html = html.replace(/<script id="script-jsonld"[\s\S]*?<\/script>\n?/, ""); // home page only
       const jsonld = route.startsWith("/docs/") ? docsJsonLd(route, page, siteUrl) : page.prerender ? page.jsonld : null;
       if (jsonld) html = html.replace("</head>", () => `<script id="script-jsonld" type="application/ld+json">${JSON.stringify(jsonld).replaceAll("<", "\\u003c")}</script>\n</head>`);
-      if (page.prerender) html = prerendered(html, page, await ssr.prerender(route));
+      if (page.prerender) html = prerendered(html, page, await ssr!.prerender(route));
       html = setHead(html, route, [
         [TITLE, page.title],
         [DESCRIPTION, page.description],
         [ROBOTS, page.noindex ? "noindex,follow" : "index,follow,max-image-preview:large"],
         [CANONICAL, siteUrl + route],
       ]);
-      fs.mkdirSync(path.join(dir, route), { recursive: true });
-      fs.writeFileSync(path.join(dir, route, "index.html"), html);
+      fs.mkdirSync(path.join(out, route), { recursive: true });
+      fs.writeFileSync(path.join(out, route, "index.html"), html);
     } } finally { await ssr?.close(); }
   },
 };
@@ -64,8 +70,8 @@ const pageSocialTags = {
 // A prerendered page: marked "prerendered" on <html> (index.html then shows it at once, without the intro), its
 // stylesheets (and React's preloads, e.g. the hero image) in <head>, its content in <body>. Without JavaScript the
 // "needs JavaScript" notice is hidden: the page is there. With JavaScript, React takes this markup over (main.jsx).
-function prerendered(html, page, { body, styles }) {
-  const preloads = body.match(/^(?:<link [^>]*\/>)*/)[0];
+function prerendered(html: string, page: Page, { body, styles }: { body: string; styles: string[] }) {
+  const preloads = body.match(/^(?:<link [^>]*\/>)*/)![0];
   const links = styles.map((href) => `<link rel="stylesheet" href="${href}" data-route-style id="css-${path.basename(href, ".css")}">`).join("\n");
   const noJs = "<noscript><style>body>noscript{display:none}</style></noscript>";
   return html
@@ -80,7 +86,8 @@ function prerendered(html, page, { body, styles }) {
 async function loadPrerender() {
   if (!Object.values(META).some((m) => m.prerender)) return null;
   const server = await createServer({ configFile: false, root: process.cwd(), plugins: [react()], logLevel: "error", server: { middlewareMode: true, hmr: false }, appType: "custom", optimizeDeps: { noDiscovery: true } });
-  return { prerender: (await server.ssrLoadModule("/src/prerender.tsx")).prerender, close: () => server.close() };
+  const module = (await server.ssrLoadModule("/src/prerender.tsx")) as typeof import("./src/prerender.tsx");
+  return { prerender: module.prerender, close: () => server.close() };
 }
 
 // The <head> tags the router sets in the browser; setHead writes them into a page's HTML.
@@ -88,10 +95,10 @@ const TITLE = /(<title id="doc-title">)[^<]*(<\/title>)/;
 const DESCRIPTION = /(<meta id="meta-description" name="description" content=")[^"]*(")/;
 const ROBOTS = /(<meta id="meta-robots" name="robots" content=")[^"]*(")/;
 const CANONICAL = /(<link id="link-canonical" rel="canonical" href=")[^"]*(")/;
-function setHead(html, route, tags) {
+function setHead(html: string, route: string, tags: [RegExp, string][]) {
   for (const [re, value] of tags) {
     if (!re.test(html)) throw new Error(`${route}: ${re} not found in index.html`);
-    html = html.replace(re, (_, open, close) => open + esc(value) + close);
+    html = html.replace(re, (_: string, open: string, close: string) => open + esc(value) + close);
   }
   return html;
 }
@@ -102,14 +109,14 @@ function setHead(html, route, tags) {
 // and so does what is not rewritten: the bundled React code (its file names are fixed before this step) and the
 // prerendered page bodies with their image preloads (React takes that markup over as it is).
 const VERSIONED = /\.(webp|jpe?g|png|svg|woff2?|otf|mp4)$/;
-const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
-const assetVersions = {
+const walk = (d: string): string[] => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
+const assetVersions: Plugin = {
   name: "asset-versions",
   apply: "build" as const,
   writeBundle: {
     sequential: true, // after page-social-tags has written every page's HTML
     handler({ dir }) {
-      const assets = path.join(dir, "assets"), copies = new Map();
+      const out = dir!, assets = path.join(out, "assets"), copies = new Map<string, string>();
       for (const file of walk(assets).filter((f) => VERSIONED.test(f))) {
         const rel = path.relative(assets, file).split(path.sep).join("/");
         const hash = crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex").slice(0, 8);
@@ -120,8 +127,8 @@ const assetVersions = {
       }
       const names = [...copies.keys()].sort((a, b) => b.length - a.length).map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
       const re = new RegExp(`/assets/(${names.join("|")})(?![\\w.-])`, "g");
-      const swap = (text) => text.replace(re, (_, rel) => "/assets/" + copies.get(rel));
-      for (const file of walk(dir)) {
+      const swap = (text: string) => text.replace(re, (_: string, rel: string) => "/assets/" + copies.get(rel));
+      for (const file of walk(out)) {
         if (file.startsWith(assets + path.sep) || file.includes(`${path.sep}_app${path.sep}`) || !/\.(html|css|json|js)$/.test(file)) continue;
         let text = fs.readFileSync(file, "utf8");
         if (file.endsWith(".html")) {

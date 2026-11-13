@@ -1,7 +1,7 @@
 // A plug-in package's SHA-256 checksum with a Copy button (was the copy-hash part of public/js/pages.js).
 import { useState } from "react";
 
-export default function HashRow({ hash, name, buttonId }) {
+export default function HashRow({ hash, name, buttonId }: { hash: string; name: string; buttonId: string }) {
   const [status, setStatus] = useState("");
   async function copy() {
     try {

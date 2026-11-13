@@ -2,7 +2,9 @@
 // Lyon demo) from its data in ./data.js. Styled by /css/resources.css in the site's light theme;
 // the site's header and footer come from the shell.
 import { Fragment, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { claimOk } from "./utils.ts";
+import type { Action as ActionData, Block, ClaimPart, BlockType, Claimed, Faq, FigureProps, Hero as HeroData, LiveDemoProps, ResourcePageData, Rich as RichValue, RichPart, Section as SectionData, TableProps } from "./types.ts";
 
 declare global {
   interface Window {
@@ -10,16 +12,20 @@ declare global {
   }
 } // GTM / GA4 (index.html)
 
-const nn = (i) => String(i + 1).padStart(2, "0");
-const shown = (items) => items.filter((item) => claimOk(item.claim));
-const each = (items, render) =>
+const nn = (i: number) => String(i + 1).padStart(2, "0");
+/** The claim an item carries, if it is an object with one (strings and lists carry none). */
+const claimOf = (item: unknown) => (typeof item === "object" && item !== null && "claim" in item ? (item as Claimed).claim : undefined);
+const shown = <T,>(items: T[]) => items.filter((item) => claimOk(claimOf(item)));
+const each = <T,>(items: T[], render: (item: T, i: number) => ReactNode) =>
   shown(items).map((item, i) => <Fragment key={i}>{render(item, i)}</Fragment>);
 
 /* ───────────── Rich text (see the part helpers in utils.js) ───────────── */
 
-function Part({ p }) {
+const isClaimPart = (p: RichPart): p is ClaimPart => typeof p === "object" && "claim" in p && "parts" in p;
+
+function Part({ p }: { p: RichPart }) {
   if (typeof p === "string") return p;
-  if ("claim" in p)
+  if (isClaimPart(p))
     return <Rich value={claimOk(p.claim) ? p.parts : p.fallback} />;
   if ("link" in p) {
     const { link, href, ...attrs } = p;
@@ -40,7 +46,7 @@ function Part({ p }) {
     );
   throw new Error("Unknown rich text part " + JSON.stringify(p));
 }
-function Rich({ value }) {
+function Rich({ value }: { value?: RichValue }) {
   if (value == null) return null;
   return Array.isArray(value) ? (
     value.map((p, i) => <Part key={i} p={p} />)
@@ -52,7 +58,7 @@ function Rich({ value }) {
 /* ───────────── Pieces ───────────── */
 
 /** A call-to-action link styled as the site's button (outlined when `outline`). */
-const Action = ({ a }) => (
+const Action = ({ a }: { a: ActionData }) => (
   <a
     className={"site-button" + (a.outline ? " rs-outline" : "")}
     href={a.href}
@@ -70,7 +76,7 @@ function Figure({
   width = 1600,
   height = 900,
   eager = false,
-}) {
+}: FigureProps) {
   return (
     <figure className="rs-figure">
       <img
@@ -98,7 +104,7 @@ function LiveDemo({
   embedClaim = "demo-iframe",
   note,
   buttonId,
-}) {
+}: LiveDemoProps) {
   const [on, setOn] = useState(false);
   const newTab = {
     href: src,
@@ -107,7 +113,7 @@ function LiveDemo({
     "data-event": "demo_open_new_tab",
     "data-demo": title,
   };
-  const posterWith = (label) => (
+  const posterWith = (label: string) => (
     <>
       <img
         src={poster}
@@ -158,7 +164,7 @@ function LiveDemo({
   );
 }
 
-function Table({ head, rows, caption }) {
+function Table({ head, rows, caption }: TableProps) {
   return (
     <div
       className={"rs-table" + (head.length >= 4 ? " rs-t-wide" : "")}
@@ -180,7 +186,7 @@ function Table({ head, rows, caption }) {
         <tbody>
           {shown(rows).map((r, i) => (
             <tr key={i}>
-              {(r.cells || r).map((c, j) =>
+              {("cells" in r ? r.cells : r).map((c, j) =>
                 j === 0 ? (
                   <th key={j} scope="row">
                     <Rich value={c} />
@@ -201,7 +207,8 @@ function Table({ head, rows, caption }) {
 
 /* ───────────── Blocks: the content of a section, from the data files ───────────── */
 
-const BLOCKS = {
+type BlockOf<K extends BlockType> = Extract<Block, { type: K }>;
+const BLOCKS: { [K in BlockType]: (b: BlockOf<K>) => ReactNode } = {
   p: (b) => (
     <p className={b.className}>
       <Rich value={b.text} />
@@ -212,7 +219,7 @@ const BLOCKS = {
     <ul className={b.ticks ? "rs-ticks" : undefined}>
       {each(b.items, (it) => (
         <li>
-          <Rich value={it.text ?? it} />
+          <Rich value={typeof it === "object" && it !== null && "text" in it ? it.text : it} />
         </li>
       ))}
     </ul>
@@ -342,16 +349,17 @@ const BLOCKS = {
     </noscript>
   ),
 };
-function Blocks({ blocks }) {
+function Blocks({ blocks }: { blocks: Block[] }) {
   return each(blocks, (b) => {
     if (!BLOCKS[b.type]) throw new Error("Unknown block " + b.type);
-    return BLOCKS[b.type](b);
+    // Each entry of BLOCKS takes its own block type; TypeScript cannot pair them up across the union.
+    return (BLOCKS[b.type] as (block: Block) => ReactNode)(b);
   });
 }
 
 /* ───────────── Page parts ───────────── */
 
-function Hero({ h }) {
+function Hero({ h }: { h: HeroData }) {
   const actions = (
     <div
       className={
@@ -408,7 +416,7 @@ function Hero({ h }) {
   );
 }
 
-function Section({ s }) {
+function Section({ s }: { s: SectionData }) {
   return (
     <section
       id={s.id}
@@ -426,7 +434,7 @@ function Section({ s }) {
 }
 
 /** FAQ as native <details>: crawlable and works without JavaScript. */
-function FAQ({ items }) {
+function FAQ({ items }: { items: Faq[] }) {
   return (
     <section id="faq" className="rs-section" aria-labelledby="faq-h">
       <div className="content-width rs-narrow">
@@ -453,7 +461,7 @@ function FAQ({ items }) {
   );
 }
 
-function CTA({ c }) {
+function CTA({ c }: { c: ResourcePageData["cta"] }) {
   return (
     <section className="rs-cta" id="cta" aria-labelledby="cta-h">
       <div className="content-width rs-cta-inner">
@@ -477,14 +485,14 @@ function CTA({ c }) {
 function useAnalytics() {
   useEffect(() => {
     const dataLayer = (window.dataLayer = window.dataLayer || []);
-    const push = (event, extra) =>
+    const push = (event: string | undefined, extra: Record<string, unknown>) =>
       dataLayer.push({ event, page_path: location.pathname, ...extra });
-    const onClick = (e) => {
-      const el = e.target.closest?.("[data-event]");
+    const onClick = (e: MouseEvent) => {
+      const el = (e.target as Element).closest?.<HTMLElement>("[data-event]");
       if (!el) return;
       // An FAQ (<details>): only when the reader opens it (click or keyboard on its question), not the one open on load.
       if (el.tagName === "DETAILS") {
-        if (e.target.closest("summary") && !el.open)
+        if ((e.target as Element).closest("summary") && !(el as HTMLDetailsElement).open)
           push(el.dataset.event, { faq_question: el.dataset.faq });
         return;
       }
@@ -492,10 +500,10 @@ function useAnalytics() {
       push(event, {
         ...rest,
         link_url: el.getAttribute("href") || undefined,
-        link_text: el.textContent.trim().slice(0, 80),
+        link_text: (el.textContent ?? "").trim().slice(0, 80),
       });
     };
-    const seen = new Set();
+    const seen = new Set<number>();
     const onScroll = () => {
       const percent =
         (100 * (scrollY + innerHeight)) / document.documentElement.scrollHeight;
@@ -514,7 +522,7 @@ function useAnalytics() {
   }, []);
 }
 
-export default function ResourcePage({ page }) {
+export default function ResourcePage({ page }: { page: ResourcePageData }) {
   useAnalytics();
   return (
     <div className="rs">

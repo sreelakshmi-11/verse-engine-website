@@ -5,20 +5,33 @@
 // "Have a code?" links go to verse.ctruh.com as before. (Was the pricing part of public/js/pages.js.)
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import type { FormEvent } from "react";
+
+type Currency = "USD" | "INR";
+type Period = "month" | "year";
+type PlanId = "free" | "starter" | "pro" | "scale";
+type SeatPlan = Exclude<PlanId, "free">;
+/** /pricing-data.json */
+interface PricingConfig {
+  inrPerUsd?: number;
+  annualMonths: number;
+  plans: Record<PlanId, { price: number; included: number; extra: number }>;
+}
+interface PlanView { price: string; period: string; note: string; seatNote: string; seatLine: string; href: string }
 
 const SOURCE_NOTE_USD = "Prices in USD. Taxes calculated at checkout. Final seats and payment are confirmed on Verse.";
-const usd = (value) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
-const savedCurrency = () => { try { if (localStorage.getItem("verse-currency") === "INR") return "INR"; } catch (e) {} return "USD"; };
+const usd = (value: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
+const savedCurrency = (): Currency => { try { if (localStorage.getItem("verse-currency") === "INR") return "INR"; } catch (e) {} return "USD"; };
 
 /** What each plan card shows, or null until /pricing-data.json has loaded. */
-function planViews(config, period, currency, seats) {
+function planViews(config: PricingConfig | null, period: Period, currency: Currency, seats: Record<SeatPlan, string>) {
   if (!config) return null;
   const rate = config.inrPerUsd || 90;
-  const money = (value) => (currency === "INR" ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Math.round(value * rate)) : usd(value));
-  const views = {};
-  for (const id of ["free", "starter", "pro", "scale"]) {
+  const money = (value: number) => (currency === "INR" ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Math.round(value * rate)) : usd(value));
+  const views = {} as Record<PlanId, PlanView>;
+  for (const id of ["free", "starter", "pro", "scale"] as const) {
     const p = config.plans[id], hasSeats = id !== "free";
-    const count = hasSeats ? Math.min(500, Math.max(p.included, Math.floor(Number(seats[id]) || p.included))) : p.included;
+    const count = hasSeats ? Math.min(500, Math.max(p.included, Math.floor(Number(seats[id as SeatPlan]) || p.included))) : p.included;
     const factor = period === "year" ? config.annualMonths : 1;
     const total = (p.price + Math.max(0, count - p.included) * p.extra) * factor;
     const per = period === "year" ? "year" : "month";
@@ -35,24 +48,24 @@ function planViews(config, period, currency, seats) {
 }
 
 export default function Pricing() {
-  const [period, setPeriod] = useState("month");
+  const [period, setPeriod] = useState<Period>("month");
   const [currency, setCurrency] = useState(savedCurrency);
   const [currencyShown, setCurrencyShown] = useState(false); // the currency buttons/note follow `currency` once data loads or a currency is chosen
-  const [config, setConfig] = useState(null);
-  const [seats, setSeats] = useState({ starter: "1", pro: "3", scale: "10" });
-  const [checkoutOverride, setCheckoutOverride] = useState({}); // checkout link while extra seats are chosen (set on click)
-  const inputs = useRef<Record<string, HTMLInputElement>>({}), loaded = useRef(false);
+  const [config, setConfig] = useState<PricingConfig | null>(null);
+  const [seats, setSeats] = useState<Record<SeatPlan, string>>({ starter: "1", pro: "3", scale: "10" });
+  const [checkoutOverride, setCheckoutOverride] = useState<Partial<Record<PlanId, string>>>({}); // checkout link while extra seats are chosen (set on click)
+  const inputs = useRef<Partial<Record<SeatPlan, HTMLInputElement | null>>>({}), loaded = useRef(false);
   // Recalculating the cards (only once prices have loaded) also resets the checkout links.
   const recalc = () => { if (loaded.current) setCheckoutOverride({}); };
 
   useEffect(() => {
-    fetch("/pricing-data.json").then((r) => { if (!r.ok) throw Error(); return r.json(); })
+    fetch("/pricing-data.json").then((r) => { if (!r.ok) throw Error(); return r.json() as Promise<PricingConfig>; })
       .then((data) => { loaded.current = true; setConfig(data); setCurrencyShown(true); setCheckoutOverride({}); }).catch(() => {});
   }, []);
 
   // Seat inputs: typing recalculates; leaving the field (change) also tidies the number.
   useEffect(() => {
-    const cleanups = Object.entries(inputs.current).map(([id, input]) => {
+    const cleanups = (Object.entries(inputs.current) as [SeatPlan, HTMLInputElement | null][]).filter((entry): entry is [SeatPlan, HTMLInputElement] => !!entry[1]).map(([id, input]) => {
       const onChange = () => {
         input.value = String(Math.min(500, Math.max(Number(input.min), Math.floor(Number(input.value) || Number(input.min)))));
         const value = input.value; setSeats((s) => ({ ...s, [id]: value })); recalc();
@@ -64,30 +77,30 @@ export default function Pricing() {
   }, []);
 
   const views = planViews(config, period, currency, seats);
-  const show = (id, key, fallback) => (views ? views[id][key] : fallback);
-  const pressed = (value) => (currencyShown ? currency === value : value === "USD");
+  const show = (id: PlanId, key: keyof PlanView, fallback: string) => (views ? views[id][key] : fallback);
+  const pressed = (value: Currency) => (currencyShown ? currency === value : value === "USD");
   const sourceNote = currencyShown && currency === "INR"
     ? "Prices in rupees are an approximate conversion at ₹" + ((config && config.inrPerUsd) || 90) + " per US$1 and are for reference. You are billed in USD; taxes are calculated at checkout and final seats and payment are confirmed on Verse."
     : SOURCE_NOTE_USD;
 
-  function chooseCurrency(value) {
+  function chooseCurrency(value: Currency) {
     try { localStorage.setItem("verse-currency", value); } catch (e) {}
     setCurrency(value); setCurrencyShown(true); recalc();
   }
-  function choosePeriod(value) { setPeriod(value); recalc(); }
-  const seatInput = (id) => ({
-    ref: (el) => (inputs.current[id] = el),
-    onInput: (e) => { const value = e.currentTarget.value; setSeats((s) => ({ ...s, [id]: value })); recalc(); },
+  function choosePeriod(value: Period) { setPeriod(value); recalc(); }
+  const seatInput = (id: SeatPlan) => ({
+    ref: (el: HTMLInputElement | null) => { inputs.current[id] = el; },
+    onInput: (e: FormEvent<HTMLInputElement>) => { const value = e.currentTarget.value; setSeats((s) => ({ ...s, [id]: value })); recalc(); },
   });
   // With more seats than included, checkout goes to the Verse pricing page (as before).
-  const checkout = (id, fallback) => ({
+  const checkout = (id: PlanId, fallback: string) => ({
     href: checkoutOverride[id] ?? show(id, "href", fallback),
     onClick: () => {
-      const input = inputs.current[id];
+      const input = id === "free" ? undefined : inputs.current[id];
       if (input && Number(input.value) > Number(input.min)) flushSync(() => setCheckoutOverride((o) => ({ ...o, [id]: "https://verse.ctruh.com/pricing?period=" + period + "#plans" })));
     },
   });
-  const priceClass = (id) => "plan-price" + (views && views[id].price.length > 6 ? " wide-price" : "");
+  const priceClass = (id: PlanId) => "plan-price" + (views && views[id].price.length > 6 ? " wide-price" : "");
 
   return (
     <>

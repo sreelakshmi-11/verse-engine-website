@@ -1,10 +1,11 @@
 // Deterministic surface vertices, in metres. Every reveal belongs to the same world.
 export function buildWorld(density=1){
- const buckets=Array.from({length:5},()=>[]);let seed=7219;
+ type Rgb=number[];
+ const buckets=Array.from({length:5},():number[]=>[]);let seed=7219;
  const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)|0;return(seed>>>0)/4294967296;};
  const palette={stone:[.69,.67,.62],wood:[.47,.31,.21],fabric:[.73,.74,.70],glass:[.47,.65,.71],metal:[.38,.42,.45],leaf:[.31,.43,.31],ground:[.45,.48,.43],white:[.82,.82,.78]};
- function point(x,y,z,l,c,nx=0,ny=1,nz=0){const r=rand(),v=.84+rand()*.22,k=Math.min(4,Math.round(l)),j=.001*(1+k*k);buckets[k].push(x+(rand()-.5)*j,y+(rand()-.5)*j,z+(rand()-.5)*j,c[0]*v,c[1]*v,c[2]*v,nx,ny,nz,l+r*.17,r);}
- function box(x,y,z,w,h,d,l,c,step=.1,round=0,angle=0){
+ function point(x:number,y:number,z:number,l:number,c:Rgb,nx=0,ny=1,nz=0){const r=rand(),v=.84+rand()*.22,k=Math.min(4,Math.round(l)),j=.001*(1+k*k);buckets[k].push(x+(rand()-.5)*j,y+(rand()-.5)*j,z+(rand()-.5)*j,c[0]*v,c[1]*v,c[2]*v,nx,ny,nz,l+r*.17,r);}
+ function box(x:number,y:number,z:number,w:number,h:number,d:number,l:number,c:Rgb,step=.1,round=0,angle=0){
   step/=Math.sqrt(density);const co=Math.cos(angle),si=Math.sin(angle),half=[w/2,h/2,d/2];
   for(let axis=0;axis<3;axis++)for(const side of [-1,1]){
    const a=(axis+1)%3,b=(axis+2)%3,na=Math.max(1,Math.ceil(half[a]*2/step)),nb=Math.max(1,Math.ceil(half[b]*2/step));
@@ -16,8 +17,8 @@ export function buildWorld(density=1){
    }
   }
  }
- function tube(x,y,z,r,h,l,c,step=.08){const n=Math.max(10,Math.ceil(2*Math.PI*r/step)),rows=Math.max(2,Math.ceil(h/step));for(let j=0;j<=rows;j++)for(let i=0;i<n;i++){const a=i/n*Math.PI*2;point(x+Math.cos(a)*r,y+j/rows*h,z+Math.sin(a)*r,l,c,Math.cos(a),0,Math.sin(a));}}
- function foliage(x,y,z,r,l){const count=Math.round(r*r*90*density);for(let i=0;i<count;i++){const a=rand()*Math.PI*2,v=rand()*2-1,s=Math.sqrt(1-v*v),radius=r*(.58+rand()*.42);point(x+Math.cos(a)*s*radius,y+v*radius*.85,z+Math.sin(a)*s*radius,l,palette.leaf,Math.cos(a)*s,v,Math.sin(a)*s);}}
+ function tube(x:number,y:number,z:number,r:number,h:number,l:number,c:Rgb,step=.08){const n=Math.max(10,Math.ceil(2*Math.PI*r/step)),rows=Math.max(2,Math.ceil(h/step));for(let j=0;j<=rows;j++)for(let i=0;i<n;i++){const a=i/n*Math.PI*2;point(x+Math.cos(a)*r,y+j/rows*h,z+Math.sin(a)*r,l,c,Math.cos(a),0,Math.sin(a));}}
+ function foliage(x:number,y:number,z:number,r:number,l:number){const count=Math.round(r*r*90*density);for(let i=0;i<count;i++){const a=rand()*Math.PI*2,v=rand()*2-1,s=Math.sqrt(1-v*v),radius=r*(.58+rand()*.42);point(x+Math.cos(a)*s*radius,y+v*radius*.85,z+Math.sin(a)*s*radius,l,palette.leaf,Math.cos(a)*s,v,Math.sin(a)*s);}}
  // 0. A fluted ceramic vessel, sitting at the centre of the coffee table.
  const profile=[[0,.075],[.025,.09],[.08,.118],[.18,.125],[.27,.09],[.31,.055],[.37,.052],[.385,.062]];
  for(let row=0;row<100;row++){const yy=row/99*.385;let k=0;while(k<profile.length-2&&yy>profile[k+1][0])k++;const t=(yy-profile[k][0])/(profile[k+1][0]-profile[k][0]);const radius=profile[k][1]*(1-t)+profile[k+1][1]*t;
@@ -44,7 +45,7 @@ export function buildWorld(density=1){
  tube(1.4,.04,-2.6,.12,.035,2,palette.metal);tube(1.4,.07,-2.6,.025,1.55,2,palette.metal,.04);tube(1.4,1.55,-2.6,.24,.30,2,palette.fabric,.045);
  for(const [x,z] of [[-3.3,2.2],[2.8,-3.2]]){tube(x,.02,z,.24,.42,2,palette.stone,.06);tube(x,.4,z,.025,.9,2,palette.wood,.04);foliage(x,1.25,z,.58,2);}
  // 3. The apartment belongs to a residential building, with real storeys and facade details.
- function building(x,z,w,d,floors,l,detail=1){const height=floors*3.15,c=palette.white;
+ function building(x:number,z:number,w:number,d:number,floors:number,l:number,detail=1){const height=floors*3.15,c=palette.white;
   box(x,height/2,z,w,height,d,l,c,detail?.67:1.35);
   for(let floor=0;floor<floors;floor++){
    const yy=floor*3.15;
@@ -71,7 +72,7 @@ export function buildWorld(density=1){
  for(let i=0;i<20;i++){const x=-85+(i%10)*18,z=i<10?-17:20;tube(x,0,z,.18,1.8,4,palette.wood,.4);foliage(x,3.2,z,2.0,4);}
  for(let i=0;i<18;i++){const x=i%2?-18:18,z=-83+i*8.7;box(x,.65,z,1.85,1.3,4.1,4,[.49,.52,.54],.65,.24);box(x,1.35,z-.15,1.65,.55,2.2,4,palette.glass,.6,.17);}
  const budget=[11000,15000,38000,24000,85000].map(n=>Math.round(n*density));
- const selected=buckets.map((b,k)=>{const count=b.length/11,limit=Math.min(count,budget[k]),out=[];for(let j=0;j<limit;j++){const at=Math.floor(j*count/limit)*11;for(let q=0;q<11;q++)out.push(b[at+q]);}return out;});
+ const selected=buckets.map((b,k)=>{const count=b.length/11,limit=Math.min(count,budget[k]),out:number[]=[];for(let j=0;j<limit;j++){const at=Math.floor(j*count/limit)*11;for(let q=0;q<11;q++)out.push(b[at+q]);}return out;});
  const count=selected.reduce((n,b)=>n+b.length/11,0),positions=new Float32Array(count*3),colors=new Float32Array(count*3),normals=new Float32Array(count*3),levels=new Float32Array(count),seeds=new Float32Array(count);let cursor=0;
  selected.forEach(b=>{for(let j=0;j<b.length;j+=11){positions.set(b.slice(j,j+3),cursor*3);colors.set(b.slice(j+3,j+6),cursor*3);normals.set(b.slice(j+6,j+9),cursor*3);levels[cursor]=b[j+9];seeds[cursor]=b[j+10];cursor++;}});
  return{positions,colors,normals,levels,seeds,count,counts:selected.map(b=>b.length/11)};

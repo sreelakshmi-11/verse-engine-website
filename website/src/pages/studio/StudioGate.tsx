@@ -1,8 +1,8 @@
 // "Your screen is too small" notice shown over the Playground and sign-in on small screens (CSS decides
 // when). "Email me a link" emails a link to this page. (The link was set by the router before.)
-const mailHref = (path) => "mailto:?subject=" + encodeURIComponent("Open the Verse Playground on a laptop") + "&body=" + encodeURIComponent("Open this link on a laptop or desktop: " + location.origin + path);
+const mailHref = (path: string) => "mailto:?subject=" + encodeURIComponent("Open the Verse Playground on a laptop") + "&body=" + encodeURIComponent("Open this link on a laptop or desktop: " + location.origin + path);
 
-export default function StudioGate({ path }) {
+export default function StudioGate({ path }: { path: string }) {
   return (
     <div className="st-gate" id="st-gate" role="alertdialog" aria-modal="true" aria-labelledby="st-gate-title" aria-describedby="st-gate-text">
       <div className="st-gate-card">

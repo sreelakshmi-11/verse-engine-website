@@ -24,31 +24,38 @@ export const notInSitemap = new Set([
   '/docs/unreal', // copy of /docs/guides/publish-from-unreal
 ]);
 
-const visibleText = (html) => html
+const visibleText = (html: string) => html
   .replace(/<!--[\s\S]*?-->/g, ' ')
   .replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, ' ')
   .replace(/<[^>]+>/g, ' ')
   .replace(/&nbsp;/g, ' ')
   .replace(/\s+/g, ' ')
   .trim();
-const jsxText = (src) => src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ').replace(/\s+/g, ' ').trim();
+const jsxText = (src: string) => src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ').replace(/\s+/g, ' ').trim();
 
-export function sitemapXml({project, origin, routes}) {
+/** A route of the site, as build-spa.ts lists them. */
+export interface SitemapRoute { path: string; noindex?: boolean }
+/** A page's format and its text. */
+/** A page payload (public/content/*.json): only the fields read here. */
+interface PagePayload { title: string; description: string; html?: string; docs?: {article: string; toc: {text: string}[]} }
+type PageText = [format: string, text: string];
+
+export function sitemapXml({project, origin, routes}: {project: string; origin: string; routes: SitemapRoute[]}) {
   const today = new Date().toISOString().slice(0, 10);
   const pagesIndex = fs.readFileSync(path.join(project, 'src/pages/index.ts'), 'utf8');
   const imports = new Map([...pagesIndex.matchAll(/^import (\w+) from "\.\/([^"]+)";/gm)].map((m) => [m[1], m[2]]));
   const jsxFor = new Map([...pagesIndex.matchAll(/^\s+"(\/[^"]*)": (\w+),/gm)].map((m) => [m[1], 'src/pages/' + imports.get(m[2])]));
 
-  let root = null;
+  let root: string | null = null;
   try { root = execFileSync('git', ['rev-parse', '--show-toplevel'], {cwd: project, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore']}).trim(); } catch {}
   const prefix = root ? path.relative(root, project).replaceAll('\\', '/') + '/' : '';
-  const git = (...args) => execFileSync('git', args, {cwd: project, encoding: 'utf8', maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'ignore']});
-  const shown = new Map();
+  const git = (...args: string[]) => execFileSync('git', args, {cwd: project, encoding: 'utf8', maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'ignore']});
+  const shown = new Map<string, string | null>();
   // A file's content at a commit (null = the working tree).
-  const fileAt = (commit, file) => {
+  const fileAt = (commit: string | null, file: string): string | null => {
     const key = commit + ':' + file;
     if (!shown.has(key)) {
-      let text = null;
+      let text: string | null = null;
       try { text = commit ? git('show', `${commit}:${prefix}${file}`) : fs.readFileSync(path.join(project, file), 'utf8'); }
       catch {
         const previousExtension = file.endsWith('.tsx') ? '.jsx' : file.endsWith('.ts') ? '.js' : null;
@@ -59,19 +66,19 @@ export function sitemapXml({project, origin, routes}) {
       }
       shown.set(key, text);
     }
-    return shown.get(key);
+    return shown.get(key)!;
   };
-  const metaAt = (commit, route) => {
+  const metaAt = (commit: string | null, route: string) => {
     const src = fileAt(commit, 'src/pages/meta.ts');
     const m = src && src.match(new RegExp(`\\n  ${JSON.stringify(route).replace(/[/]/g, '\\/')}: \\{\\n    kind: [^\\n]*\\n    chrome: [^\\n]*\\n    title: (.*),\\n    description: (.*),\\n`));
-    return m ? JSON.parse(m[1]) + ' ' + JSON.parse(m[2]) : null;
+    return m ? (JSON.parse(m[1]) as string) + ' ' + (JSON.parse(m[2]) as string) : null;
   };
   // The page's format and text at a commit, or null if it didn't exist.
-  const pageAt = (commit, route) => {
+  const pageAt = (commit: string | null, route: string): PageText | null => {
     const file = route === '/' ? 'index' : route.slice(1).replaceAll('/', '__');
-    const jsx = jsxFor.has(route) && fileAt(commit, jsxFor.get(route));
+    const jsx = jsxFor.has(route) && fileAt(commit, jsxFor.get(route)!);
     const payload = fileAt(commit, `public/content/${file}.json`) ?? fileAt(commit, `dist/content/${file}.json`);
-    const data = payload ? JSON.parse(payload) : null;
+    const data = payload ? (JSON.parse(payload) as PagePayload) : null;
     if (jsx) return ['react', jsxText(jsx) + ' ' + (metaAt(commit, route) ?? (data ? data.title + ' ' + data.description : ''))];
     if (data?.docs) return ['docs', [data.title, data.description, visibleText(data.docs.article), ...data.docs.toc.map((t) => t.text)].join(' ')];
     if (data?.html !== undefined) return ['payload', [data.title, data.description, visibleText(data.html)].join(' ')];
@@ -82,15 +89,15 @@ export function sitemapXml({project, origin, routes}) {
     const main = (html.match(/<main[^>]*>([\s\S]*)<\/main>/) || [, html])[1];
     return ['html', [title, description, visibleText(main)].join(' ')];
   };
-  const sources = (route) => {
+  const sources = (route: string) => {
     const file = route === '/' ? 'index' : route.slice(1).replaceAll('/', '__');
     const pageSource = jsxFor.get(route);
     return [`public/content/${file}.json`, `dist/content/${file}.json`, `dist/${route === '/' ? '' : route.slice(1) + '/'}index.html`,
       ...(pageSource ? [pageSource, pageSource.replace(/\.tsx$/, '.jsx'), 'src/pages/meta.ts', 'src/pages/meta.js'] : [])].map((f) => prefix + f);
   };
-  const lastModified = (route) => {
+  const lastModified = (route: string) => {
     const commits = git('log', '--reverse', '--format=%H %as', '--', ...sources(route).map((f) => ':(top)' + f)).trim().split('\n').filter(Boolean).map((l) => l.split(' '));
-    let last = null, previous = null;
+    let last: string | null = null, previous: PageText | null = null;
     for (const [hash, date] of commits) {
       const page = pageAt(hash, route);
       if (!page) { previous = null; continue; }
@@ -101,7 +108,7 @@ export function sitemapXml({project, origin, routes}) {
     if (now && previous && now[0] === previous[0] && now[1] !== previous[1]) last = today;
     return last ?? today;
   };
-  const kept = new Map();
+  const kept = new Map<string, string>();
   if (!root) {
     const old = fs.existsSync(path.join(project, 'public/sitemap.xml')) ? fs.readFileSync(path.join(project, 'public/sitemap.xml'), 'utf8') : '';
     for (const m of old.matchAll(/<loc>[^<]*?(\/[^<]*|)<\/loc><lastmod>([^<]+)<\/lastmod>/g)) kept.set(m[1] || '/', m[2]);
