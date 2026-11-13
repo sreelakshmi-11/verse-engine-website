@@ -10,6 +10,7 @@
 // Documentation pages get theirs from source/ (npm run content).
 import { resourcesJsonLd } from "./resources/schema.ts";
 import { RESOURCE_PAGES, ROUTES } from "./resources/data.ts";
+import { withTrailingSlash } from "./url.ts";
 
 /** The site's default social card image and its description (as in index.html). */
 export const OG_DEFAULT = {
@@ -25,8 +26,8 @@ export const docsBreadcrumb = (path: string, title: string, origin: string) => (
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Docs", item: origin + "/docs/what-is-verse-engine" },
-    { "@type": "ListItem", position: 2, name: title.replace(/ \| Verse Engine by Ctruh$/, ""), item: origin + path },
+    { "@type": "ListItem", position: 1, name: "Docs", item: origin + withTrailingSlash("/docs/what-is-verse-engine") },
+    { "@type": "ListItem", position: 2, name: title.replace(/ \| Verse Engine by Ctruh$/, ""), item: origin + withTrailingSlash(path) },
   ],
 });
 

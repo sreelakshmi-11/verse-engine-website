@@ -3,6 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import { withTrailingSlash } from "../src/pages/url.ts";
 
 // Not listed: app pages, and pages that repeat another page's content.
 export const notInSitemap = new Set([
@@ -155,7 +156,7 @@ export function sitemapXml({ project, origin, routes }: { project: string; origi
     .filter((r) => !r.noindex && !notInSitemap.has(r.path))
     .map((r) => {
       const lastmod = root ? lastModified(r.path) : kept.get(r.path);
-      return `<url><loc>${origin}${r.path}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ""}</url>`;
+      return `<url><loc>${origin}${withTrailingSlash(r.path)}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ""}</url>`;
     });
   return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.join("")}</urlset>`;
 }

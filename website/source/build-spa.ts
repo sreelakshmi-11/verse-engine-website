@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { sitemapXml } from "./sitemap.ts";
 import { frontmatter, docDescription } from "./doc-meta.ts";
 import { META } from "../src/pages/meta.ts";
+import { withTrailingSlash } from "../src/pages/url.ts";
 import type { RoutePayload } from "../src/app/routes.ts";
 
 /** A docs page's own data (the route payload's `docs`). */
@@ -264,6 +265,10 @@ for (const file of walk(stage).filter((f) => f.endsWith(".html"))) {
     DUPLICATE_DOCS[from] ? 'href="' + DUPLICATE_DOCS[from] : link,
   ); // links to a duplicate docs URL go to the page we keep
   const used = new Set(shellUsed);
+  html = html.replace(/href="(\/[^"]*)"/g, (_: string, href: string) => {
+    const match = href.match(/^([^?#]*)([?#].*)?$/)!;
+    return `href="${withTrailingSlash(match[1])}${match[2] || ""}"`;
+  });
   html = addIds(html, used);
   if (REACT_PAGES.has(route)) {
     const m = META[route];

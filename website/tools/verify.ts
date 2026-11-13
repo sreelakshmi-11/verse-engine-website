@@ -28,6 +28,13 @@ if (!exists(manifestFile)) err("content/manifest.json is missing");
 const manifest: { path: string; noindex?: boolean }[] = exists(manifestFile) ? JSON.parse(read(manifestFile)) : [];
 const routes = new Set(manifest.map((r) => r.path));
 const fileFor = (route: string) => (route === "/" ? "index" : route.slice(1).replaceAll("/", "__"));
+for (const { path: route } of manifest) {
+  const pageFile = route === "/" ? path.join(dist, "index.html") : path.join(dist, route.slice(1), "index.html");
+  if (!exists(pageFile)) continue;
+  const canonical = (read(pageFile).match(/<link id="link-canonical" rel="canonical" href="([^"]+)"/) || [])[1];
+  const expectedPath = route === "/" ? "/" : route + "/";
+  if (!canonical || new URL(canonical).pathname !== expectedPath) err(`${route}: canonical URL must end in ${expectedPath}`);
+}
 // React pages: src/pages/index.ts maps a route to a loader of its component file; check that file's ids and links.
 const pagesIndex = read(path.join(project, "src/pages/index.ts"));
 const reactPages = new Map(
@@ -162,6 +169,8 @@ if (origin) {
           const page = await fetch(new URL(route, origin)),
             body = await page.text();
           if (!page.ok || !body.includes('<body id="app-body">')) err(`HTTP ${page.status} (shell) ${route}`);
+          const expectedPath = route === "/" ? "/" : route + "/";
+          if (new URL(page.url).pathname !== expectedPath) err(`HTTP URL is not canonical: ${route}`);
           const data = await fetch(new URL("/content/" + fileFor(route) + ".json", origin));
           if (!data.ok) err(`HTTP ${data.status} payload ${route}`);
           else {

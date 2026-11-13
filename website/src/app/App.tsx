@@ -8,6 +8,7 @@ import Shell from "./Shell.tsx";
 import { META, OG_DEFAULT, docsJsonLd } from "../pages/meta.ts";
 import DocsPage from "../pages/docs/DocsPage.tsx";
 import NotFound from "../pages/NotFound.tsx";
+import { withTrailingSlash } from "../pages/url.ts";
 import { playIntro, transitionTo } from "../animations/transition.ts";
 import { hasPage, loadPage, loadedPage, routeOf, sectionOf, shellView, stylesFor } from "./routes.ts";
 import type { RoutePayload } from "./routes.ts";
@@ -178,8 +179,8 @@ function RouteEffects({ payload, pathname, ready }: { payload: RoutePayload | nu
     };
     const origin = document.querySelector<HTMLMetaElement>("#meta-site-origin")?.content.replace(/\/+$/, "") || location.origin;
     setMeta("meta-description", payload.description);
-    setMeta("link-canonical", origin + (pathname === "/" ? "/" : pathname));
-    setMeta("meta-og-url", origin + (pathname === "/" ? "/" : pathname));
+    setMeta("link-canonical", origin + withTrailingSlash(pathname));
+    setMeta("meta-og-url", origin + withTrailingSlash(pathname));
     setMeta("meta-og-title", payload.ogTitle || payload.title);
     setMeta("meta-og-description", payload.ogDescription || payload.description);
     setMeta("meta-og-image", origin + (payload.ogImage || OG_DEFAULT.ogImage));
@@ -242,6 +243,7 @@ function NavigationBridge() {
         return null;
       }
       if (url.origin !== window.location.origin || NON_PAGE.test(url.pathname)) return null;
+      url.pathname = withTrailingSlash(url.pathname);
       if (url.pathname === window.location.pathname && url.search === window.location.search) return null;
       return { anchor, url, samePage: routeOf(url.pathname) === routeOf(window.location.pathname) };
     };

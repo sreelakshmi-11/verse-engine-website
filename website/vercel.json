@@ -4,6 +4,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "cleanUrls": false,
+  "trailingSlash": true,
   "redirects": [
     {
       "source": "/plug-ins",
@@ -118,11 +119,6 @@
     {
       "source": "/(lyon|demo/lyon){/}?",
       "destination": "/demos/lyon",
-      "statusCode": 301
-    },
-    {
-      "source": "/(.+)/",
-      "destination": "/$1",
       "statusCode": 301
     }
   ],

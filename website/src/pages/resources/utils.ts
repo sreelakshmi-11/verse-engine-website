@@ -2,15 +2,16 @@
 // the helpers are function declarations (ready whichever module loads first).
 import { CLAIMS, SITE, ROUTES } from "./data.ts";
 import type { ClaimId, ClaimPart, LinkPart, Rich, Route, RouteKey } from "./types.ts";
+import { withTrailingSlash } from "../url.ts";
 
 /** The link for a route key (planned pages fall back to a section of the home page). */
 export function href(key: RouteKey): string {
   const r: Route = ROUTES[key];
   if (!r) throw new Error("Unknown route " + key);
-  return r.status === "planned" && r.fallback ? r.fallback : r.path;
+  return withTrailingSlash(r.status === "planned" && r.fallback ? r.fallback : r.path);
 }
 export function canonical(key: RouteKey): string {
-  return SITE + ROUTES[key].path;
+  return SITE + withTrailingSlash(ROUTES[key].path);
 }
 
 /** True when content tied to a claim may be shown (no claim, or a confirmed one). */

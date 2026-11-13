@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import pkg from "./package.json" with { type: "json" };
 import { META, OG_DEFAULT, docsJsonLd } from "./src/pages/meta.ts";
+import { withTrailingSlash } from "./src/pages/url.ts";
 import type { DocsArticle, PageMeta } from "./src/pages/meta.ts";
 
 /** A page's meta (src/pages/meta.ts) or its documentation payload (public/content/*.json). */
@@ -43,7 +44,7 @@ const pageSocialTags: Plugin = {
         for (const [attr, key, value] of [
           ["property", "og:title", page.ogTitle || page.title],
           ["property", "og:description", page.ogDescription || page.description],
-          ["property", "og:url", siteUrl + route],
+          ["property", "og:url", siteUrl + withTrailingSlash(route)],
           ["property", "og:site_name", "Verse Engine by Ctruh"],
           ["property", "og:image", siteUrl + (page.ogImage || OG_DEFAULT.ogImage)],
           ["property", "og:image:alt", page.ogImage ? "" : OG_DEFAULT.ogImageAlt], // the default description fits only the default image
@@ -65,7 +66,7 @@ const pageSocialTags: Plugin = {
           [TITLE, page.title],
           [DESCRIPTION, page.description],
           [ROBOTS, page.noindex ? "noindex,follow" : "index,follow,max-image-preview:large"],
-          [CANONICAL, siteUrl + route],
+          [CANONICAL, siteUrl + withTrailingSlash(route)],
         ]);
         fs.mkdirSync(path.join(out, route), { recursive: true });
         fs.writeFileSync(path.join(out, route, "index.html"), html);

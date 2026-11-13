@@ -21,6 +21,10 @@ const mime: Record<string, string> = {
 http
   .createServer((req, res) => {
     const url = new URL(req.url ?? "/", "http://localhost");
+    if (url.pathname !== "/" && !url.pathname.endsWith("/") && !path.extname(url.pathname)) {
+      res.writeHead(308, { Location: url.pathname + "/" + url.search });
+      return res.end();
+    }
     let p = path.resolve(root, "." + decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname));
     if (!p.startsWith(root + path.sep) && p !== root) {
       res.writeHead(403);
