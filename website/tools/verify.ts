@@ -7,7 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { META } from "../src/pages/meta.ts";
-import type { RoutePayload } from "../src/routes.ts";
+import type { RoutePayload } from "../src/app/routes.ts";
 /** A route's meta or payload as checked here (with `html` once its markup is gathered below). */
 type Payload = Partial<RoutePayload> & { path: string; html?: string };
 /** src/pages/docs/nav.json: groups of links, each with an id for the desktop and the mobile navigation. */
@@ -98,12 +98,12 @@ function resolveRef(raw: string, from: string) {
     if (!exists(t)) err(`${path.relative(dist, from)} -> ${ref}`);
     return;
   }
-  const route = (pathname.replace(/\/+$/, "") || "/").replace(/^\/studio\/.+/, "/studio").replace(/^\/(story|how-to-start|inside-the-engine|faqs)$/, "/"); // Playground and home section addresses (src/routes.ts)
+  const route = (pathname.replace(/\/+$/, "") || "/").replace(/^\/studio\/.+/, "/studio").replace(/^\/(story|how-to-start|inside-the-engine|faqs)$/, "/"); // Playground and home section addresses (src/app/routes.ts)
   if (routes.has(route) || (exists(path.join(dist, pathname)) && fs.statSync(path.join(dist, pathname)).isFile())) return;
   err(`${from.startsWith(dist) ? path.relative(dist, from) : from} -> ${ref}`);
 }
-// The shell markup is the React component src/Shell.tsx (index.html only holds <head> and an empty <body>).
-const shell = read(path.join(dist, "index.html")) + read(path.join(project, "src/Shell.tsx"));
+// The shell markup is the React component src/app/Shell.tsx (index.html only holds <head> and an empty <body>).
+const shell = read(path.join(dist, "index.html")) + read(path.join(project, "src/app/Shell.tsx"));
 const shellIds = [...shell.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
 const dup = (ids: string[]) => ids.filter((id, i) => ids.indexOf(id) !== i);
 for (const d of dup(shellIds)) err("duplicate id in shell: " + d);

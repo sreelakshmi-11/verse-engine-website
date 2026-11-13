@@ -18,6 +18,7 @@ import type {
   Section as SectionData,
   TableProps,
 } from "./types.ts";
+import { stepNumber } from "../../utils/format.ts";
 
 declare global {
   interface Window {
@@ -25,7 +26,6 @@ declare global {
   }
 } // GTM / GA4 (index.html)
 
-const nn = (i: number) => String(i + 1).padStart(2, "0");
 /** The claim an item carries, if it is an object with one (strings and lists carry none). */
 const claimOf = (item: unknown) => (typeof item === "object" && item !== null && "claim" in item ? (item as Claimed).claim : undefined);
 const shown = <T,>(items: T[]) => items.filter((item) => claimOk(claimOf(item)));
@@ -204,7 +204,7 @@ const BLOCKS: { [K in BlockType]: (b: BlockOf<K>) => ReactNode } = {
       {b.items.map((s, i) => (
         <li key={i} className="rs-step">
           <span className="rs-step-n " aria-hidden="true">
-            {nn(i)}
+            {stepNumber(i)}
           </span>
           <div>
             <h3>{s.title}</h3>

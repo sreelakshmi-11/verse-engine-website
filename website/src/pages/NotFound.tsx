@@ -1,4 +1,6 @@
 // Page not found (/404, and any unknown address).
+import SiteButton from "../components/ui/SiteButton.tsx";
+
 export default function NotFound() {
   return (
     <>
@@ -9,10 +11,9 @@ export default function NotFound() {
         has moved on.
       </h1>
       <p>There’s a whole world waiting at the beginning.</p>
-      <a className="site-button" href="/" id="lnk-return-to-verse-engine">
+      <SiteButton arrow href="/" id="lnk-return-to-verse-engine">
         Return to Verse Engine
-        <span aria-hidden="true">→</span>
-      </a>
+      </SiteButton>
     </>
   );
 }

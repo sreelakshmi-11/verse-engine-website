@@ -1,12 +1,10 @@
 // Terms of Service (/terms), text from https://verse.ctruh.com/terms.
+import { LegalHeader, LegalAddress } from "./LegalParts.tsx";
+
 export default function Terms() {
   return (
     <>
-      <p className="mono" style={{ marginTop: "28px" }}>
-        Legal
-      </p>
-      <h1>Terms of Service</h1>
-      <p className="meta">Effective 20 October 2026 · Ctruh Technologies Private Limited</p>
+      <LegalHeader title="Terms of Service" />
       <h2>1. Who we are and what these terms cover</h2>
       <p>
         {
@@ -109,10 +107,7 @@ export default function Terms() {
         protections where you live.
       </p>
       <h2>13. Contact</h2>
-      <p>
-        {"Ctruh Technologies Private Limited · 3rd Floor, Obeya Silk, Siddappa Layout, Madiwala Post, Bommanahalli, Bengaluru, Karnataka 560068, India · "}
-        <a href="mailto:hello@ctruh.com">hello@ctruh.com</a>
-      </p>
+      <LegalAddress />
     </>
   );
 }

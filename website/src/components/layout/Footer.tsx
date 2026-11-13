@@ -1,6 +1,7 @@
 // Site footer. FOOTER_LINKS adds the Resources pages and related links to the columns.
-import Logo from "./Logo.tsx";
-import { FOOTER_LINKS, PRODUCT } from "../pages/resources/data.ts";
+import Logo from "../ui/Logo.tsx";
+import { FOOTER_LINKS, PRODUCT } from "../../pages/resources/data.ts";
+import SiteButton from "../ui/SiteButton.tsx";
 
 const extra = (links: { href: string; label: string; id: string }[]) =>
   links.map((l) => (
@@ -19,10 +20,9 @@ export default function Footer({ hidden, intro }: { hidden: boolean; intro: bool
             <br />
             <strong>{"as a link."}</strong>
           </p>
-          <a className="site-button" href="/studio" id="lnk-explore-verse-engine">
+          <SiteButton href="/studio" id="lnk-explore-verse-engine">
             {"Explore Verse Engine"}
-            <span aria-hidden="true" />
-          </a>
+          </SiteButton>
           <span>{"Built in Bengaluru and San Francisco."}</span>
         </div>
       )}

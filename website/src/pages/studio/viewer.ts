@@ -86,8 +86,7 @@ export async function mountViewer(el: HTMLElement, kind: SceneKind, cleanups: ((
     pitch = -0.05,
     dist = 6,
     dirty = true;
-  const target = new THREE.Vector3(0, 1.4, 0),
-    keys = new Set<string>();
+  const keys = new Set<string>();
   let pos = new THREE.Vector3(0, 1.6, 6);
   const fwd = () => new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
   function render() {

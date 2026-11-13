@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { sitemapXml } from "./sitemap.ts";
 import { frontmatter, docDescription } from "./doc-meta.ts";
 import { META } from "../src/pages/meta.ts";
-import type { RoutePayload } from "../src/routes.ts";
+import type { RoutePayload } from "../src/app/routes.ts";
 
 /** A docs page's own data (the route payload's `docs`). */
 type DocsData = NonNullable<RoutePayload["docs"]>;
@@ -303,7 +303,7 @@ routes.sort((a, b) => a.path.localeCompare(b.path));
 // ---------- shell ----------
 let shell = read(path.join(here, "templates/shell.html"));
 shell = shell.replace("<!--@header-->", shellHeader).replace("<!--@menu-->", shellMenu).replace("<!--@footer-->", shellFooter).replaceAll("@ORIGIN@", ORIGIN);
-// Reference copy only: the shell is src/Shell.tsx (keep templates/shell.html in sync).
+// Reference copy only: the shell is src/app/Shell.tsx (keep templates/shell.html in sync).
 fs.writeFileSync(path.join(project, ".build-shell.html"), shell);
 
 // ---------- docs chapter nav (shared by every docs page) ----------

@@ -894,7 +894,7 @@ export function PlanSvg({ p }: { p: Plan }) {
   return (
     <svg className="plan-svg" id="plan" viewBox="12 -18 396 356" role="group" aria-label="Floor plan editor">
       <g transform={`translate(210 160) rotate(${p.rot}) scale(${p.fx} ${p.fy}) translate(-210 -160)`}>
-        {ROOMS.map(([n, x, y, w, h], i) => (
+        {ROOMS.map(([, x, y, w, h], i) => (
           <rect key={"r" + i} className={`roomfill r${i}`} x={x} y={y} width={w} height={h} />
         ))}
         {p.walls.map((s, i) => {

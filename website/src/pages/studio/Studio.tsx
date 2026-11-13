@@ -1,7 +1,8 @@
 // Playground (/studio): a workspace that runs entirely in this browser (localStorage); nothing is uploaded.
 // Its pages are addresses below /studio (scenes, scene/<id>, analytics, webhooks, plugins, new). A route change,
 // or a change that affects the page, rebuilds the view (keeping scroll and focus); a few parts update in place.
-import Logo from "../../components/Logo.tsx";
+import Logo from "../../components/ui/Logo.tsx";
+import { copyText } from "../../utils/clipboard.ts";
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { flushSync } from "react-dom";
@@ -84,10 +85,8 @@ export default function Studio() {
     toastTimer.current = setTimeout(() => setToast((t) => ({ ...t, on: false })), 2600);
   }
   async function copy(text: string, msg = "Copied") {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast(msg);
-    } catch {
+    if (await copyText(text)) toast(msg);
+    else {
       const t = document.createElement("textarea");
       t.value = text;
       document.body.append(t);

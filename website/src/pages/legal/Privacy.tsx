@@ -1,12 +1,10 @@
 // Privacy Policy (/privacy), text from https://verse.ctruh.com/privacy.
+import { LegalHeader } from "./LegalParts.tsx";
+
 export default function Privacy() {
   return (
     <>
-      <p className="mono" style={{ marginTop: "28px" }}>
-        Legal
-      </p>
-      <h1>Privacy Policy</h1>
-      <p className="meta">Effective 20 October 2026 · Ctruh Technologies Private Limited</p>
+      <LegalHeader title="Privacy Policy" />
       <h2>1. Who is responsible</h2>
       <p>
         {

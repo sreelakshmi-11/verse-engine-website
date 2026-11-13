@@ -5,10 +5,10 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation, useNavigate, useNavigationType } from "react-router-dom";
 import type { ComponentType, ReactNode } from "react";
 import Shell from "./Shell.tsx";
-import { META, OG_DEFAULT, docsJsonLd } from "./pages/meta.ts";
-import DocsPage from "./pages/docs/DocsPage.tsx";
-import NotFound from "./pages/NotFound.tsx";
-import { playIntro, transitionTo } from "./animations/transition.ts";
+import { META, OG_DEFAULT, docsJsonLd } from "../pages/meta.ts";
+import DocsPage from "../pages/docs/DocsPage.tsx";
+import NotFound from "../pages/NotFound.tsx";
+import { playIntro, transitionTo } from "../animations/transition.ts";
 import { hasPage, loadPage, loadedPage, routeOf, sectionOf, shellView, stylesFor } from "./routes.ts";
 import type { RoutePayload } from "./routes.ts";
 
@@ -18,7 +18,7 @@ const NOT_FOUND = META["/404"];
 const THEME_COLOR: Record<string, string> = { landing: "#f5f6f7" };
 // A route's behaviour modules (GSAP, Three.js), mounted on its markup once it shows: mount() -> dispose.
 const MODULES: Record<string, (() => Promise<{ mount: () => unknown }>)[]> = {
-  "/": [() => import("./animations/landing/index.ts"), () => import("./animations/landing/sections.ts")],
+  "/": [() => import("../animations/landing/index.ts"), () => import("../animations/landing/sections.ts")],
 };
 // A link click moves focus to the new page once it shows (navigation from code and Back/Forward do not).
 let focusNext = false;

@@ -2,11 +2,11 @@
 // (visibility, current nav link, page, announcement) come from `view`.
 import { useRef, useState } from "react";
 import type { ReactNode } from "react";
-import SkipLink from "./components/SkipLink.tsx";
-import Header from "./components/Header.tsx";
-import Footer from "./components/Footer.tsx";
-import MobileMenu, { openMenu } from "./components/MobileMenu.tsx";
-import Announcer from "./components/Announcer.tsx";
+import SkipLink from "../components/layout/SkipLink.tsx";
+import Header from "../components/layout/Header.tsx";
+import Footer from "../components/layout/Footer.tsx";
+import MobileMenu, { openMenu } from "../components/layout/MobileMenu.tsx";
+import Announcer from "../components/layout/Announcer.tsx";
 
 type ShellPage = ReactNode;
 export type ShellView = {

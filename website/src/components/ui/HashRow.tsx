@@ -1,15 +1,11 @@
 // A plug-in package's SHA-256 checksum with a Copy button.
 import { useState } from "react";
+import { copyText } from "../../utils/clipboard.ts";
 
 export default function HashRow({ hash, name, buttonId }: { hash: string; name: string; buttonId: string }) {
   const [status, setStatus] = useState("");
   async function copy() {
-    try {
-      await navigator.clipboard.writeText(hash);
-      setStatus("Checksum copied.");
-    } catch {
-      setStatus("Select and copy the checksum with your keyboard.");
-    }
+    setStatus((await copyText(hash)) ? "Checksum copied." : "Select and copy the checksum with your keyboard.");
   }
   return (
     <div className="hash-row">

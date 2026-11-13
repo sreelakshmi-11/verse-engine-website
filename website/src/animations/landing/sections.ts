@@ -3,6 +3,8 @@
 // mount() returns dispose, which stops the timers, observers and listeners.
 import qrcode from "qrcode-generator";
 import { lyonViews, createRoutes, techniques, benchMeasures } from "../../pages/landing/data.ts";
+import { copyText } from "../../utils/clipboard.ts";
+import { stepNumber, twoDigits } from "../../utils/format.ts";
 
 export function mount() {
   // Look-ups in the home page markup; a section that may be missing is checked where it is first looked up.
@@ -78,11 +80,7 @@ export function mount() {
           later(() => (fb.textContent = ""), 1800);
         }
       };
-      try {
-        navigator.clipboard.writeText("https://verse.ctruh.com/s/your-scene").then(done, done);
-      } catch {
-        done();
-      }
+      copyText("https://verse.ctruh.com/s/your-scene").then(done);
     });
 
   // Lyon views
@@ -171,7 +169,7 @@ export function mount() {
     let mode = 0;
     tabs($$("[data-t]", tech), (i: number) => {
       mode = i;
-      $("[data-tech-n]", tech).textContent = String(i + 1).padStart(2, "0");
+      $("[data-tech-n]", tech).textContent = stepNumber(i);
       $("[data-tech-title]", tech).textContent = techniques[i].title;
       $("[data-tech-copy]", tech).textContent = techniques[i].text;
     });
@@ -271,7 +269,7 @@ export function mount() {
   if (dev) {
     const panes = $$("[data-pane]", dev);
     let current = "embed";
-    tabs($$("[data-code]", dev), (i: number, b: HTMLElement) => {
+    tabs($$("[data-code]", dev), (_: number, b: HTMLElement) => {
       current = b.dataset.code!;
       panes.forEach((p) => (p.hidden = p.dataset.pane !== current));
     });
@@ -283,14 +281,7 @@ export function mount() {
           copy.textContent = ok ? "Copied" : "Select to copy";
           later(() => (copy.textContent = "Copy"), 1600);
         };
-        try {
-          navigator.clipboard.writeText(text).then(
-            () => done(true),
-            () => done(false),
-          );
-        } catch {
-          done(false);
-        }
+        copyText(text).then(done);
       });
   }
 
@@ -387,7 +378,7 @@ export function mount() {
       if (b.dataset.img) img.src = b.dataset.img;
       drawQR(href);
     };
-    tabs($$("[data-scene]", tryit), (i: number, b: HTMLElement) => show(b));
+    tabs($$("[data-scene]", tryit), (_: number, b: HTMLElement) => show(b));
     show(tryit.querySelector<HTMLElement>('[data-scene][aria-selected="true"]'));
   }
 
@@ -468,7 +459,7 @@ export function mount() {
       const days = Math.floor(d / 864e5),
         h = Math.floor(d / 36e5) % 24,
         m = Math.floor(d / 6e4) % 60;
-      pill.lastChild!.textContent = `Live 16 Nov · ${days}d ${h}h ${String(m).padStart(2, "0")}m`;
+      pill.lastChild!.textContent = `Live 16 Nov · ${days}d ${h}h ${twoDigits(m)}m`;
       later(tick, 30000);
     };
     tick();

@@ -2,14 +2,8 @@
 // (RESOURCES_MENU in resources/data.ts). The mobile menu lists the same links.
 import { useEffect, useRef, useState } from "react";
 import type { FocusEvent, MouseEvent, PointerEvent } from "react";
-import { RESOURCES_MENU } from "../pages/resources/data.ts";
-
-/** The down chevron of the navigation groups (also used by the mobile menu). */
-export const Chevron = ({ className }: { className: string }) => (
-  <svg className={className} viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
-    <path d="m5 9 7 7 7-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
+import Chevron from "../ui/Chevron.tsx";
+import { RESOURCES_MENU } from "../../pages/resources/data.ts";
 
 export default function ResourcesNav({ current }: { current?: string | null }) {
   const [open, setOpen] = useState(false);

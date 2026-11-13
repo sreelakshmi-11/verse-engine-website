@@ -2,7 +2,10 @@
 // verse.ctruh.com). Upload, link and WhatsApp are tabs; arrow keys switch them.
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import type { FormEvent, KeyboardEvent } from "react";
+import type { FormEvent } from "react";
+import { ARROWS, useTabs } from "../hooks/useTabs.ts";
+import SiteButton from "../components/ui/SiteButton.tsx";
+import PageHero from "../components/ui/PageHero.tsx";
 
 type Tab = "upload" | "link" | "wa";
 const TABS: Tab[] = ["upload", "link", "wa"];
@@ -16,29 +19,16 @@ export default function Challenge() {
   const [done, setDone] = useState(false);
   const form = useRef<HTMLFormElement>(null),
     file = useRef<HTMLInputElement>(null),
-    doneBox = useRef<HTMLDivElement>(null),
-    tabs = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
+    doneBox = useRef<HTMLDivElement>(null);
 
   function select(key: Tab, focus = false) {
     setActive(key);
     setTouched(true);
-    if (focus) tabs.current[key]!.focus();
+    if (focus) focusTab(key);
   }
-  function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    const d = ({ ArrowRight: 1, ArrowLeft: -1 } as Record<string, number>)[event.key];
-    if (!d) return;
-    event.preventDefault();
-    select(TABS[(index + d + TABS.length) % TABS.length], true);
-  }
-  const tabProps = (key: Tab) => ({
-    ref: (el: HTMLButtonElement | null) => {
-      tabs.current[key] = el;
-    },
-    "aria-selected": active === key,
-    tabIndex: !touched && key === "upload" ? undefined : active === key ? 0 : -1,
-    onClick: () => select(key),
-    onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => onKeyDown(e, TABS.indexOf(key)),
-  });
+  const { tabProps: baseTabProps, focus: focusTab } = useTabs(TABS, active, select, ARROWS);
+  // Until the first choice, the upload tab has no tabindex.
+  const tabProps = (key: Tab) => ({ ...baseTabProps(key), tabIndex: !touched && key === "upload" ? undefined : active === key ? 0 : -1 });
   function onFile() {
     const f = file.current!.files![0];
     setFileName(f ? f.name + " · " + (f.size / 1048576).toFixed(1) + " MB" : "Choose your 3D file");
@@ -78,18 +68,12 @@ export default function Challenge() {
   return (
     <>
       {"\n"}
-      <header className="page-hero content-width" id="hdr-page-hero">
-        <p className="eyebrow">THE VERSE CHALLENGE</p>
-        <h1>
-          Send us a 3D scene
-          <br />
-          <span>no browser engine can open.</span>
-        </h1>
+      <PageHero eyebrow="THE VERSE CHALLENGE" title="Send us a 3D scene" accent="no browser engine can open.">
         <p className="hero-description">
           We’ll turn it into a link anyone can open. We have already opened a 1.8-billion-triangle scene from a link in a desktop browser. Upload yours, send us
           a link to it, or WhatsApp it. It stays private unless you say otherwise.
         </p>
-      </header>
+      </PageHero>
       {"\n"}
       <section className="content-width section-space ch-enter" id="enter" aria-labelledby="ch-enter">
         <div>
@@ -165,10 +149,9 @@ export default function Challenge() {
               <strong>+91 74115 97778</strong>
               {" on WhatsApp, from any number. Submit this form too, so we can match your file to you."}
             </p>
-            <a className="site-button" href="https://wa.me/917411597778" target="_blank" rel="noopener" id="lnk-open-whatsapp">
+            <SiteButton href="https://wa.me/917411597778" target="_blank" rel="noopener" id="lnk-open-whatsapp">
               Open WhatsApp
-              <span aria-hidden="true" />
-            </a>
+            </SiteButton>
           </div>
           {"\n"}
           <div className="ch-grid">
@@ -216,10 +199,9 @@ export default function Challenge() {
           <div className="ch-done" id="ch-done" role="status" hidden={!done} ref={doneBox}>
             <h3>This is a preview.</h3>
             <p>Your entry was not sent. To take the challenge, continue on the live form.</p>
-            <a className="site-button" href="https://verse.ctruh.com/challenge" target="_blank" rel="noopener" id="lnk-open-the-live-form">
+            <SiteButton href="https://verse.ctruh.com/challenge" target="_blank" rel="noopener" id="lnk-open-the-live-form">
               Open the live form
-              <span aria-hidden="true" />
-            </a>
+            </SiteButton>
           </div>
           {"\n"}
         </form>

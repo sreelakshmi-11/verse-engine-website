@@ -4,25 +4,11 @@
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import type { FormEvent } from "react";
-
-type Currency = "USD" | "INR";
-type Period = "month" | "year";
-type PlanId = "free" | "starter" | "pro" | "scale";
-type SeatPlan = Exclude<PlanId, "free">;
-/** /pricing-data.json */
-interface PricingConfig {
-  inrPerUsd?: number;
-  annualMonths: number;
-  plans: Record<PlanId, { price: number; included: number; extra: number }>;
-}
-interface PlanView {
-  price: string;
-  period: string;
-  note: string;
-  seatNote: string;
-  seatLine: string;
-  href: string;
-}
+import PageHero from "../../components/ui/PageHero.tsx";
+import SiteButton from "../../components/ui/SiteButton.tsx";
+import { nth } from "../../utils/ids.ts";
+import { COMPARISON, PLANS } from "./data.ts";
+import type { Currency, Period, PlanId, PlanView, PricingConfig, SeatPlan } from "./data.ts";
 
 const SOURCE_NOTE_USD = "Prices in USD. Taxes calculated at checkout. Final seats and payment are confirmed on Verse.";
 const usd = (value: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
@@ -159,18 +145,12 @@ export default function Pricing() {
 
   return (
     <>
-      <header className="page-hero content-width" id="hdr-page-hero">
-        <p className="eyebrow">PRICING</p>
-        <h1>
-          Plans that grow
-          <br />
-          <span>with your projects.</span>
-        </h1>
+      <PageHero eyebrow="PRICING" title="Plans that grow" accent="with your projects.">
         <p className="hero-description">
           Start free: every new account gets a 14-day trial with Pro features. Upgrade during the trial for 25% off your first 3 months on monthly plans, or 20%
           off your first year on annual. Viewers never pay: every published scene opens for everyone.
         </p>
-      </header>
+      </PageHero>
       <section className="pricing-content page-band" id="sec-pricing-content">
         <div className="content-width">
           <div className="billing-controls">
@@ -196,168 +176,56 @@ export default function Pricing() {
             </a>
           </div>
           <div className="pricing-grid">
-            <article className="plan" data-plan-card="free" id="art-plan">
-              <h2>Free</h2>
-              <p className="plan-audience">Try Verse on your own models.</p>
-              <p className={priceClass("free")} data-plan-price="">
-                {show("free", "price", "$0")}
-              </p>
-              <span className="plan-period" data-plan-period="">
-                {show("free", "period", "Free forever")}
-              </span>
-              <p className="plan-billing-note" data-billing-note="">
-                {show("free", "note", "")}
-              </p>
-              <a data-plan-checkout="" className="site-button secondary" href="/studio" id="lnk-start-free">
-                Start free
-                <span aria-hidden="true" />
-              </a>
-              <ul className="check-list">
-                <li>1 GB storage, 2 GB bandwidth a month</li>
-                <li>5,000 API calls a month</li>
-                <li>1 Verse Home and 1 film a month</li>
-                <li>20 renders a month</li>
-                <li>Uploads up to 500 MB</li>
-                <li>“Made with Verse Engine by Ctruh” badge on your scenes</li>
-                <li>Community support</li>
-              </ul>
-            </article>
-            <article className="plan" data-plan-card="starter" id="art-plan-2">
-              <h2>Starter</h2>
-              <p className="plan-audience">For the agent or designer sharing a few spaces a month.</p>
-              <p className={priceClass("starter")} data-plan-price="">
-                {show("starter", "price", "$29")}
-              </p>
-              <span className="plan-period" data-plan-period="">
-                {show("starter", "period", "/ month")}
-              </span>
-              <p className="plan-billing-note" data-billing-note="">
-                {show("starter", "note", "Billed monthly")}
-              </p>
-              <label className="seat-picker">
-                {"Seats "}
-                <input
-                  type="number"
-                  min="1"
-                  max="500"
-                  step="1"
-                  defaultValue="1"
-                  data-plan-seats=""
-                  aria-label="Starter seats"
-                  id="inp-starter-seats"
-                  {...seatInput("starter")}
-                />
-                <span data-seat-note="">{show("starter", "seatNote", "1 included, then $15 / seat / month")}</span>
-              </label>
-              <a
-                data-plan-checkout=""
-                className="site-button secondary"
-                id="lnk-choose-starter"
-                {...checkout("starter", "https://verse.ctruh.com/pricing?plan=starter&period=month")}
-              >
-                Choose Starter
-                <span aria-hidden="true" />
-              </a>
-              <ul className="check-list">
-                <li>10 GB storage, 20 GB bandwidth a month</li>
-                <li>50,000 API calls a month</li>
-                <li>5 Verse Homes and 5 films a month</li>
-                <li>2 room captures, 200 renders a month</li>
-                <li>Uploads up to 2 GB</li>
-                <li>No Verse badge, private links, analytics</li>
-                <li>Email support</li>
-              </ul>
-            </article>
-            <article className="plan popular" data-plan-card="pro" id="art-plan-3">
-              <span className="popular-label">Most popular</span>
-              <h2>Pro</h2>
-              <p className="plan-audience">For the professional who shows spaces every week.</p>
-              <p className={priceClass("pro")} data-plan-price="">
-                {show("pro", "price", "$99")}
-              </p>
-              <span className="plan-period" data-plan-period="">
-                {show("pro", "period", "/ month")}
-              </span>
-              <p className="plan-billing-note" data-billing-note="">
-                {show("pro", "note", "Billed monthly")}
-              </p>
-              <label className="seat-picker">
-                {"Seats "}
-                <input
-                  type="number"
-                  min="3"
-                  max="500"
-                  step="1"
-                  defaultValue="3"
-                  data-plan-seats=""
-                  aria-label="Pro seats"
-                  id="inp-pro-seats"
-                  {...seatInput("pro")}
-                />
-                <span data-seat-note="">{show("pro", "seatNote", "3 included, then $15 / seat / month")}</span>
-              </label>
-              <a data-plan-checkout="" className="site-button" id="lnk-go-pro" {...checkout("pro", "https://verse.ctruh.com/pricing?plan=pro&period=month")}>
-                Go Pro
-                <span aria-hidden="true" />
-              </a>
-              <ul className="check-list">
-                <li>50 GB storage, 70 GB bandwidth a month</li>
-                <li>500,000 API calls a month</li>
-                <li>15 Verse Homes and 15 films a month</li>
-                <li>5 room captures, 300 renders a month</li>
-                <li>{show("pro", "seatLine", "3 seats, more at $15 / seat / month")}</li>
-                <li>Uploads up to 10 GB</li>
-                <li>Brand kit, lead capture, voice tours, 4K video</li>
-                <li>Priority support</li>
-              </ul>
-            </article>
-            <article className="plan" data-plan-card="scale" id="art-plan-4">
-              <h2>Scale</h2>
-              <p className="plan-audience">For teams and developers running Verse every day.</p>
-              <p className={priceClass("scale")} data-plan-price="">
-                {show("scale", "price", "$499")}
-              </p>
-              <span className="plan-period" data-plan-period="">
-                {show("scale", "period", "/ month")}
-              </span>
-              <p className="plan-billing-note" data-billing-note="">
-                {show("scale", "note", "Billed monthly")}
-              </p>
-              <label className="seat-picker">
-                {"Seats "}
-                <input
-                  type="number"
-                  min="10"
-                  max="500"
-                  step="1"
-                  defaultValue="10"
-                  data-plan-seats=""
-                  aria-label="Scale seats"
-                  id="inp-scale-seats"
-                  {...seatInput("scale")}
-                />
-                <span data-seat-note="">{show("scale", "seatNote", "10 included, then $15 / seat / month")}</span>
-              </label>
-              <a
-                data-plan-checkout=""
-                className="site-button secondary"
-                id="lnk-choose-scale"
-                {...checkout("scale", "https://verse.ctruh.com/pricing?plan=scale&period=month")}
-              >
-                Choose Scale
-                <span aria-hidden="true" />
-              </a>
-              <ul className="check-list">
-                <li>250 GB storage, 400 GB bandwidth a month</li>
-                <li>4,000,000 API calls a month</li>
-                <li>60 Verse Homes and 50 films a month</li>
-                <li>10 room captures, 500 renders a month</li>
-                <li>{show("scale", "seatLine", "10 seats, more at $15 / seat / month")}</li>
-                <li>Uploads up to 20 GB</li>
-                <li>Priority builds</li>
-                <li>Priority support and 99.5% uptime</li>
-              </ul>
-            </article>
+            {PLANS.map((plan, i) => {
+              const id = plan.id;
+              // The free plan links straight to the Playground; the others go to checkout (attributes in the page's order).
+              const cta =
+                id === "free"
+                  ? { href: "/studio", id: plan.ctaId }
+                  : { id: plan.ctaId, ...checkout(id, "https://verse.ctruh.com/pricing?plan=" + id + "&period=month") };
+              return (
+                <article className={plan.popular ? "plan popular" : "plan"} data-plan-card={id} id={nth("art-plan", i)} key={id}>
+                  {plan.popular && <span className="popular-label">Most popular</span>}
+                  <h2>{plan.name}</h2>
+                  <p className="plan-audience">{plan.audience}</p>
+                  <p className={priceClass(id)} data-plan-price="">
+                    {show(id, "price", plan.price)}
+                  </p>
+                  <span className="plan-period" data-plan-period="">
+                    {show(id, "period", plan.period)}
+                  </span>
+                  <p className="plan-billing-note" data-billing-note="">
+                    {show(id, "note", plan.note)}
+                  </p>
+                  {id !== "free" && (
+                    <label className="seat-picker">
+                      {"Seats "}
+                      <input
+                        type="number"
+                        min={String(plan.seats)}
+                        max="500"
+                        step="1"
+                        defaultValue={String(plan.seats)}
+                        data-plan-seats=""
+                        aria-label={plan.name + " seats"}
+                        id={"inp-" + id + "-seats"}
+                        {...seatInput(id)}
+                      />
+                      <span data-seat-note="">{show(id, "seatNote", plan.seats + " included, then $15 / seat / month")}</span>
+                    </label>
+                  )}
+                  <a data-plan-checkout="" className={plan.popular ? "site-button" : "site-button secondary"} {...cta}>
+                    {plan.cta}
+                    <span aria-hidden="true" />
+                  </a>
+                  <ul className="check-list">
+                    {plan.features.map((feature) => (
+                      <li key={feature ?? "seats"}>{feature ?? show(id, "seatLine", plan.seats + " seats, more at $15 / seat / month")}</li>
+                    ))}
+                  </ul>
+                </article>
+              );
+            })}
           </div>
           <p className="source-note">{sourceNote}</p>
           <article className="enterprise-plan" id="art-enterprise-plan">
@@ -381,10 +249,9 @@ export default function Pricing() {
                 <li>SLA</li>
               </ul>
             </div>
-            <a className="site-button" href="#enterprise" id="lnk-talk-to-us">
+            <SiteButton arrow href="#enterprise" id="lnk-talk-to-us">
               Talk to us
-              <span aria-hidden="true">→</span>
-            </a>
+            </SiteButton>
           </article>
         </div>
       </section>
@@ -410,142 +277,16 @@ export default function Pricing() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">Storage</th>
-                <td className="">1 GB</td>
-                <td className="">10 GB</td>
-                <td className="">50 GB</td>
-                <td className="">250 GB</td>
-                <td className="">Custom</td>
-              </tr>
-              <tr>
-                <th scope="row">Bandwidth / month</th>
-                <td className="">2 GB</td>
-                <td className="">20 GB</td>
-                <td className="">70 GB</td>
-                <td className="">400 GB</td>
-                <td className="">Custom</td>
-              </tr>
-              <tr>
-                <th scope="row">API calls / month</th>
-                <td className="">5,000</td>
-                <td className="">50,000</td>
-                <td className="">500,000</td>
-                <td className="">4,000,000</td>
-                <td className="">Custom</td>
-              </tr>
-              <tr>
-                <th scope="row">Verse Homes / month</th>
-                <td className="">1</td>
-                <td className="">5</td>
-                <td className="">15</td>
-                <td className="">60</td>
-                <td className="">Custom</td>
-              </tr>
-              <tr>
-                <th scope="row">Films / month</th>
-                <td className="">1</td>
-                <td className="">5</td>
-                <td className="">15</td>
-                <td className="">50</td>
-                <td className="">Custom</td>
-              </tr>
-              <tr>
-                <th scope="row">Room captures / month</th>
-                <td className="">0</td>
-                <td className="">2</td>
-                <td className="">5</td>
-                <td className="">10</td>
-                <td className="">Custom</td>
-              </tr>
-              <tr>
-                <th scope="row">Renders / month</th>
-                <td className="">20</td>
-                <td className="">200</td>
-                <td className="">300</td>
-                <td className="">500</td>
-                <td className="">Custom</td>
-              </tr>
-              <tr>
-                <th scope="row">Seats</th>
-                <td className="">1</td>
-                <td className="">1 + extra</td>
-                <td className="">3 + extra</td>
-                <td className="">10 + extra</td>
-                <td className="">Custom</td>
-              </tr>
-              <tr>
-                <th scope="row">Max upload</th>
-                <td className="">500 MB</td>
-                <td className="">2 GB</td>
-                <td className="">10 GB</td>
-                <td className="">20 GB</td>
-                <td className="">Custom</td>
-              </tr>
-              <tr>
-                <th scope="row">“Made with Verse” badge</th>
-                <td className="">On</td>
-                <td className="">Off (small corner mark)</td>
-                <td className="">Off (small corner mark)</td>
-                <td className="">Off (small corner mark)</td>
-                <td className="">White-label option</td>
-              </tr>
-              <tr>
-                <th scope="row">Private links</th>
-                <td className="no">—</td>
-                <td className="yes">✓</td>
-                <td className="yes">✓</td>
-                <td className="yes">✓</td>
-                <td className="yes">✓</td>
-              </tr>
-              <tr>
-                <th scope="row">Viewer analytics</th>
-                <td className="no">—</td>
-                <td className="yes">✓</td>
-                <td className="yes">✓</td>
-                <td className="yes">✓</td>
-                <td className="yes">✓</td>
-              </tr>
-              <tr>
-                <th scope="row">Brand kit + lead capture</th>
-                <td className="no">—</td>
-                <td className="no">—</td>
-                <td className="yes">✓</td>
-                <td className="yes">✓</td>
-                <td className="yes">✓</td>
-              </tr>
-              <tr>
-                <th scope="row">Video export</th>
-                <td className="">720p</td>
-                <td className="">1080p</td>
-                <td className="">4K</td>
-                <td className="">4K</td>
-                <td className="">4K</td>
-              </tr>
-              <tr>
-                <th scope="row">Pay as you go above the plan</th>
-                <td className="no">—</td>
-                <td className="">Coming soon</td>
-                <td className="">Coming soon</td>
-                <td className="">Coming soon</td>
-                <td className="">Coming soon</td>
-              </tr>
-              <tr>
-                <th scope="row">Support</th>
-                <td className="">Community support</td>
-                <td className="">Email support</td>
-                <td className="">Priority support</td>
-                <td className="">Priority support + 99.5% uptime</td>
-                <td className="">Named specialist + SLA</td>
-              </tr>
-              <tr>
-                <th scope="row">Over the limit</th>
-                <td className="">Stops, upgrade prompt</td>
-                <td className="">Upgrade prompt</td>
-                <td className="">Upgrade prompt</td>
-                <td className="">Upgrade prompt</td>
-                <td className="">Contract</td>
-              </tr>
+              {COMPARISON.map(([feature, cells]) => (
+                <tr key={feature}>
+                  <th scope="row">{feature}</th>
+                  {cells.map((cell, i) => (
+                    <td className={cell === "✓" ? "yes" : cell === "—" ? "no" : ""} key={i}>
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -614,10 +355,9 @@ export default function Pricing() {
               $12
               <small>{" once"}</small>
             </strong>
-            <a className="site-button secondary" href="https://verse.ctruh.com/pricing#packs" id="lnk-buy-pack">
+            <SiteButton secondary href="https://verse.ctruh.com/pricing#packs" id="lnk-buy-pack">
               Buy pack
-              <span aria-hidden="true" />
-            </a>
+            </SiteButton>
           </article>
           <article id="art-item-2">
             <h3>Broker pack 50</h3>
@@ -626,10 +366,9 @@ export default function Pricing() {
               $59
               <small>{" once"}</small>
             </strong>
-            <a className="site-button secondary" href="https://verse.ctruh.com/pricing#packs" id="lnk-buy-pack-2">
+            <SiteButton secondary href="https://verse.ctruh.com/pricing#packs" id="lnk-buy-pack-2">
               Buy pack
-              <span aria-hidden="true" />
-            </a>
+            </SiteButton>
           </article>
         </div>
       </section>
@@ -644,10 +383,9 @@ export default function Pricing() {
           <p>
             Custom allowances and seats: SSO, a custom domain, a white-label viewer and an SLA. Tell us a little about your team and a specialist will call you.
           </p>
-          <a className="site-button" href="https://verse.ctruh.com/pricing#enterprise" id="lnk-request-a-callback">
+          <SiteButton href="https://verse.ctruh.com/pricing#enterprise" id="lnk-request-a-callback">
             Request a callback
-            <span aria-hidden="true" />
-          </a>
+          </SiteButton>
           <p className="form-note">Continue on Verse to submit your callback request.</p>
         </div>
         <aside id="asd-item">

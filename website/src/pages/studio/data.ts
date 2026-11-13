@@ -1,4 +1,5 @@
 // Playground data: demo scenes and webhooks, saved state (localStorage) and number/date helpers.
+import { twoDigits } from "../../utils/format.ts";
 
 export type SceneKind = keyof typeof THUMBS;
 export type SceneOption = "comments" | "branding" | "expires";
@@ -193,7 +194,7 @@ export const status = (s: Scene) => (s.readyAt > now() ? "processing" : "ready")
 export const sceneUrl = (id: string) => `${location.origin}/studio/scene/${id}`;
 export const fmtDate = (d: string) =>
   new Date(d + "T00:00:00Z").toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" });
-export const hms = (sec: number) => `${Math.floor(sec / 3600)}h ${String(Math.floor((sec % 3600) / 60)).padStart(2, "0")}m`;
+export const hms = (sec: number) => `${Math.floor(sec / 3600)}h ${twoDigits(Math.floor((sec % 3600) / 60))}m`;
 export const bytes = (n: number) =>
   n > 1e9 ? (n / 1e9).toFixed(1) + " GB" : n > 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1e3)) + " KB";
 

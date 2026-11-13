@@ -8,6 +8,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Experience } from "./model.ts";
 import type { RealityMode } from "../../pages/landing/data.ts";
+import { twoDigits } from "../../utils/format.ts";
 /** Look-ups in the landing page's markup (present while it is mounted). */
 export const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s)!,
   $$ = <T extends Element = HTMLElement>(s: string) => [...document.querySelectorAll<T>(s)];
@@ -300,7 +301,7 @@ export async function mount() {
     const n = clamp(0, 5, Math.round(p));
     if (n !== chapter) {
       chapter = n;
-      $("#current-chapter").textContent = String(n).padStart(2, "0");
+      $("#current-chapter").textContent = twoDigits(n);
       $$(".chapter-nav button").forEach((b, j) => {
         b.classList.toggle("selected", j === n);
         if (j === n) b.setAttribute("aria-current", "step");

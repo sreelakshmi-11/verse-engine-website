@@ -1,7 +1,10 @@
 // About page (/about): "About Ctruh" and "About Verse Engine" tabs. The URL hash picks the tab (#verse-engine,
 // otherwise Ctruh) and is updated without a history entry; arrow keys, Home and End switch tabs.
-import { useEffect, useRef, useState } from "react";
-import type { CSSProperties, KeyboardEvent } from "react";
+import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
+import { useTabs } from "../hooks/useTabs.ts";
+import SiteButton from "../components/ui/SiteButton.tsx";
+import PageHero from "../components/ui/PageHero.tsx";
 
 type Tab = "ctruh" | "verse-engine";
 const TABS: Tab[] = ["ctruh", "verse-engine"];
@@ -9,7 +12,6 @@ const fromHash = (): Tab => (location.hash === "#verse-engine" ? "verse-engine" 
 
 export default function About() {
   const [tab, setTab] = useState(fromHash);
-  const buttons = useRef<(HTMLButtonElement | null)[]>([]);
 
   useEffect(() => {
     const onHash = () => setTab(fromHash());
@@ -21,47 +23,29 @@ export default function About() {
     setTab(key);
     history.replaceState(history.state, "", location.pathname + (key === "verse-engine" ? "#verse-engine" : "#ctruh"));
   }
-  function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
-    event.preventDefault();
-    const next = event.key === "Home" ? 0 : event.key === "End" ? 1 : 1 - index;
-    buttons.current[next]!.click();
-    buttons.current[next]!.focus();
-  }
-  const tabProps = (key: Tab, index: number) => ({
-    ref: (el: HTMLButtonElement | null) => {
-      buttons.current[index] = el;
-    },
-    "aria-selected": tab === key,
-    tabIndex: tab === key ? 0 : -1,
-    onClick: () => choose(key),
-    onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => onKeyDown(e, index),
+  const { tabProps, focus } = useTabs(TABS, tab, (key, fromKeyboard) => {
+    choose(key);
+    if (fromKeyboard) focus(key);
   });
 
   return (
     <>
       <div className="about-switch content-width" role="tablist" aria-label="About">
-        <button id="about-ctruh" role="tab" aria-controls="about-company" data-about-tab="ctruh" {...tabProps(TABS[0], 0)}>
+        <button id="about-ctruh" role="tab" aria-controls="about-company" data-about-tab="ctruh" {...tabProps("ctruh")}>
           About Ctruh
         </button>
-        <button id="about-verse" role="tab" aria-controls="about-engine" data-about-tab="verse-engine" {...tabProps(TABS[1], 1)}>
+        <button id="about-verse" role="tab" aria-controls="about-engine" data-about-tab="verse-engine" {...tabProps("verse-engine")}>
           About Verse Engine
         </button>
       </div>
       <div id="about-company" role="tabpanel" aria-labelledby="about-ctruh" tabIndex={0} hidden={tab !== "ctruh"}>
-        <header className="page-hero content-width" id="hdr-page-hero">
-          <p className="eyebrow">ABOUT CTRUH</p>
-          <h1>
-            About Ctruh and
-            <br />
-            <span>Verse Engine by Ctruh</span>
-          </h1>
+        <PageHero eyebrow="ABOUT CTRUH" title="About Ctruh and" accent="Verse Engine by Ctruh">
           <p className="hero-description tagline">Building the spatial internet.</p>
           <p className="hero-description">
             Ctruh is a deep-tech company building 3D, XR and AI infrastructure for the spatial internet, with teams in Bengaluru and San Francisco. Verse Engine
             by Ctruh is our browser-native 3D engine: it lets anyone share a 3D world as a link.
           </p>
-        </header>
+        </PageHero>
         <figure className="about-panorama" id="fig-about-panorama">
           <img src="/assets/coastal-world.webp" width="1536" height="1024" alt="Photoreal coastal architectural environment" loading="eager" />
           <figcaption>Spatial environment · Concept visualization</figcaption>
@@ -130,21 +114,14 @@ export default function About() {
         </section>
       </div>
       <div id="about-engine" role="tabpanel" aria-labelledby="about-verse" tabIndex={0} hidden={tab !== "verse-engine"}>
-        <header className="page-hero content-width" id="hdr-page-hero-2">
-          <p className="eyebrow">ABOUT VERSE ENGINE</p>
-          <h2 className="page-title">
-            Our own engine,
-            <br />
-            <span>built for the browser.</span>
-          </h2>
+        <PageHero id="hdr-page-hero-2" eyebrow="ABOUT VERSE ENGINE" title="Our own engine," accent="built for the browser." level={2}>
           <p className="hero-description">Verse Engine streams huge 3D scenes to any device, with no app store and no cloud GPU.</p>
           <div className="page-actions">
-            <a className="site-button" href="/studio" id="lnk-explore-verse-engine-2">
+            <SiteButton href="/studio" id="lnk-explore-verse-engine-2">
               Explore Verse Engine
-              <span aria-hidden="true" />
-            </a>
+            </SiteButton>
           </div>
-        </header>
+        </PageHero>
         <section className="engine-principles page-band" id="sec-engine-principles">
           <div className="content-width">
             <article id="art-item-4">

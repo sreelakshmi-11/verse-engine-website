@@ -1,12 +1,12 @@
-// Routes whose page is a React component, each loaded on demand (src/routes.ts). Docs pages use DocsPage.tsx.
+// Routes whose page is a React component, each loaded on demand (src/app/routes.ts). Docs pages use DocsPage.tsx.
 import type { ComponentType } from "react";
 
 export const PAGES: Record<string, () => Promise<{ default: ComponentType }>> = {
-  "/": () => import("./Landing.tsx"),
+  "/": () => import("./landing/Landing.tsx"),
   "/about": () => import("./About.tsx"),
   "/developers": () => import("./Developers.tsx"),
-  "/pricing": () => import("./Pricing.tsx"),
-  "/samples": () => import("./Samples.tsx"),
+  "/pricing": () => import("./pricing/Pricing.tsx"),
+  "/samples": () => import("./samples/Samples.tsx"),
   "/plugins": () => import("./plugins/Plugins.tsx"),
   "/plugins/blender": () => import("./plugins/PluginBlender.tsx"),
   "/plugins/unity": () => import("./plugins/PluginUnity.tsx"),

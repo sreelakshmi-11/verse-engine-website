@@ -1,8 +1,8 @@
 // Route data shared by the React Router app (App.tsx), its start-up (main.tsx) and the build-time prerender
 // (prerender.tsx). Nothing here touches browser globals when imported, so the prerender can load it in Node.
 import type { ComponentType, ReactNode } from "react";
-import { PAGES } from "./pages/index.ts";
-import type { PageMeta } from "./pages/meta.ts";
+import { PAGES } from "../pages/index.ts";
+import type { PageMeta } from "../pages/meta.ts";
 
 /** A route's data: its meta (src/pages/meta.ts) or its payload (/content/<route>.json, documentation pages). */
 export type RoutePayload = PageMeta & {

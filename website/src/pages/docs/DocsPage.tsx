@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import parse from "html-react-parser";
 import type { FormEvent, MouseEvent, RefCallback } from "react";
 import nav from "./nav.json";
+import { copyText } from "../../utils/clipboard.ts";
 
 const MOBILE = 0,
   DESKTOP = 1;
@@ -81,12 +82,8 @@ function DocsNav({ which, active, query }: { which: number; active: string | nul
 async function copyCode(event: MouseEvent<HTMLElement>) {
   const button = (event.target as Element).closest<HTMLElement>("[data-copy-local]");
   if (!button || !event.currentTarget.contains(button)) return;
-  try {
-    await navigator.clipboard.writeText(button.closest(".doc-code")?.querySelector("code")?.textContent || "");
-    button.textContent = "Copied ✓";
-  } catch {
-    button.textContent = "Select code to copy";
-  }
+  const copied = await copyText(button.closest(".doc-code")?.querySelector("code")?.textContent || "");
+  button.textContent = copied ? "Copied ✓" : "Select code to copy";
 }
 
 export default function DocsPage({ page }: { page: DocsData }) {

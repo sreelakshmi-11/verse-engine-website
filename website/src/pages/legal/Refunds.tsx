@@ -1,12 +1,10 @@
 // Refund Policy (/refunds), text from https://verse.ctruh.com/refunds.
+import { LegalHeader, LegalAddress } from "./LegalParts.tsx";
+
 export default function Refunds() {
   return (
     <>
-      <p className="mono" style={{ marginTop: "28px" }}>
-        Legal
-      </p>
-      <h1>Refund Policy</h1>
-      <p className="meta">Effective 20 October 2026 · Ctruh Technologies Private Limited</p>
+      <LegalHeader title="Refund Policy" />
       <h2>Summary</h2>
       <ul>
         <li>
@@ -64,10 +62,7 @@ export default function Refunds() {
         contact us before opening a chargeback; we can usually fix it faster.
       </p>
       <h2>Contact</h2>
-      <p>
-        {"Ctruh Technologies Private Limited · 3rd Floor, Obeya Silk, Siddappa Layout, Madiwala Post, Bommanahalli, Bengaluru, Karnataka 560068, India · "}
-        <a href="mailto:hello@ctruh.com">hello@ctruh.com</a>
-      </p>
+      <LegalAddress />
     </>
   );
 }

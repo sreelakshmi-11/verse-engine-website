@@ -1,11 +1,13 @@
 // Sign-in page (/signin). A prototype: any details continue to the Playground; the "session" is a flag in this
 // browser's storage. ?mode=signup opens "Create account"; ?next=/path is where to go after (default /studio).
-import Logo from "../components/Logo.tsx";
+import Logo from "../components/ui/Logo.tsx";
 import { useLayoutEffect, useRef, useState } from "react";
 import StudioGate from "./studio/StudioGate.tsx";
-import type { FormEvent, KeyboardEvent } from "react";
+import type { FormEvent } from "react";
+import { useTabs } from "../hooks/useTabs.ts";
 
 type Mode = "pw" | "tok";
+const MODES: Mode[] = ["pw", "tok"];
 
 const SESSION = "verse-playground-session";
 
@@ -17,8 +19,7 @@ export default function Signin() {
   const [msg, setMsg] = useState("");
   const email = useRef<HTMLInputElement>(null),
     name = useRef<HTMLInputElement>(null),
-    tokenName = useRef<HTMLInputElement>(null),
-    tabs = useRef<Partial<Record<Mode, HTMLButtonElement | null>>>({});
+    tokenName = useRef<HTMLInputElement>(null);
 
   useLayoutEffect(() => {
     email.current!.focus();
@@ -44,22 +45,16 @@ export default function Signin() {
       finish(who || (mail.split("@")[0] || "Guest").replace(/[._-]+/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()) || "Guest", mail);
     } else finish(tokenName.current!.value.trim() || "Guest", "");
   }
-  function onTabKey(event: KeyboardEvent<HTMLButtonElement>) {
-    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
-    event.preventDefault();
-    const other: Mode = mode === "pw" ? "tok" : "pw";
-    setMode(other);
-    tabs.current[other]!.focus();
-  }
-  const tabProps = (key: Mode) => ({
-    ref: (el: HTMLButtonElement | null) => {
-      tabs.current[key] = el;
+  // Any arrow, Home or End key switches to the other mode.
+  const { tabProps, focus } = useTabs(
+    MODES,
+    mode,
+    (key, fromKeyboard) => {
+      setMode(key);
+      if (fromKeyboard) focus(key);
     },
-    "aria-selected": mode === key,
-    tabIndex: mode === key ? 0 : -1,
-    onClick: () => setMode(key),
-    onKeyDown: onTabKey,
-  });
+    (key) => (["ArrowLeft", "ArrowRight", "Home", "End"].includes(key) ? (mode === "pw" ? 1 : 0) : null),
+  );
 
   return (
     <>

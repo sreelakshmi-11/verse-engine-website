@@ -1,8 +1,8 @@
 // Site header: brand, main navigation (current route marked), actions and the menu button.
-import Logo from "./Logo.tsx";
+import Logo from "../ui/Logo.tsx";
 import ResourcesNav from "./ResourcesNav.tsx";
 import type { RefObject } from "react";
-import type { ShellView } from "../Shell.tsx";
+import type { ShellView } from "../../app/Shell.tsx";
 
 type HeaderProps = { view: ShellView; menuOpen: boolean; menuButtonRef: RefObject<HTMLButtonElement | null>; onOpenMenu: () => void };
 

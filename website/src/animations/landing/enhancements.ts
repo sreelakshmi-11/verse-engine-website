@@ -1,4 +1,6 @@
 import type { LandingTools } from "./index.ts";
+import { copyText } from "../../utils/clipboard.ts";
+import { stepNumber } from "../../utils/format.ts";
 export function createEnhancements({ gsap, ST, reduced, scrollToTarget }: LandingTools) {
   const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector<T>(s)!,
     cards = [...document.querySelectorAll<HTMLElement>(".possibility-card")];
@@ -12,7 +14,7 @@ export function createEnhancements({ gsap, ST, reduced, scrollToTarget }: Landin
   const total = cards.length;
   function setIndex(next: number) {
     index = Math.max(0, Math.min(total - 1, next));
-    $("#gallery-current").textContent = String(index + 1).padStart(2, "0");
+    $("#gallery-current").textContent = stepNumber(index);
     $<HTMLButtonElement>("[data-gallery-prev]").disabled = index === 0;
     $<HTMLButtonElement>("[data-gallery-next]").disabled = index === total - 1;
     $(".gallery-progress i").style.transform = `scaleX(${(index + 1) / total})`;
@@ -27,8 +29,7 @@ export function createEnhancements({ gsap, ST, reduced, scrollToTarget }: Landin
       distance = Infinity;
     const trackLeft = track.getBoundingClientRect().left;
     cards.forEach((card, i) => {
-      const offset = (trackLeft + card.offsetLeft + card.offsetWidth / 2 - center) / viewport.clientWidth,
-        amount = Math.max(-1.6, Math.min(1.6, offset));
+      const offset = (trackLeft + card.offsetLeft + card.offsetWidth / 2 - center) / viewport.clientWidth;
       const d = Math.abs(offset);
       if (d < distance) {
         distance = d;
@@ -68,12 +69,8 @@ export function createEnhancements({ gsap, ST, reduced, scrollToTarget }: Landin
   copy.addEventListener(
     "click",
     async () => {
-      try {
-        await navigator.clipboard.writeText("https://verse.ctruh.com/s/your-scene");
-        $(".share-feedback").textContent = "Copy link ✓";
-      } catch {
-        $(".share-feedback").textContent = "verse.ctruh.com/s/your-scene";
-      }
+      const copied = await copyText("https://verse.ctruh.com/s/your-scene");
+      $(".share-feedback").textContent = copied ? "Copy link ✓" : "verse.ctruh.com/s/your-scene";
     },
     options,
   );

@@ -1,7 +1,7 @@
 // Mobile navigation dialog: opened by the header button; closed by the close button, Escape or a link click.
 // Emits `verse:menu` ({open}) for page modules and returns focus to the menu button.
-import { RESOURCES_MENU } from "../pages/resources/data.ts";
-import { Chevron } from "./ResourcesNav.tsx";
+import { RESOURCES_MENU } from "../../pages/resources/data.ts";
+import Chevron from "../ui/Chevron.tsx";
 import type { Dispatch, MouseEvent, RefObject, SetStateAction } from "react";
 
 type DialogRef = RefObject<HTMLDialogElement | null>;
@@ -48,9 +48,7 @@ export default function MobileMenu({
         <details className="m-group" id="dtl-m-group">
           <summary id="sum-developers">
             {"Developers"}
-            <svg className="m-chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
-              <path d="m5 9 7 7 7-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <Chevron className="m-chev" />
           </summary>
           <div>
             <a href="/developers" id="lnk-developer-hub">
@@ -73,9 +71,7 @@ export default function MobileMenu({
         <details className="m-group" id="dtl-m-group-2">
           <summary id="sum-plug-ins">
             {"Plug-ins"}
-            <svg className="m-chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
-              <path d="m5 9 7 7 7-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <Chevron className="m-chev" />
           </summary>
           <div>
             <a href="/plugins" id="lnk-all-plug-ins">

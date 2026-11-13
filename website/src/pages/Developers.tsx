@@ -2,7 +2,9 @@
 // them; "Copy ⧉" copies the sample shown.
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import type { KeyboardEvent } from "react";
+import { useTabs } from "../hooks/useTabs.ts";
+import { copyText } from "../utils/clipboard.ts";
+import SiteButton from "../components/ui/SiteButton.tsx";
 
 type Tab = "embed" | "curl" | "javascript";
 const TABS: Tab[] = ["embed", "curl", "javascript"];
@@ -13,8 +15,7 @@ export default function Developers() {
   const [code, setCode] = useState(FIRST_SAMPLE);
   const [status, setStatus] = useState("");
   const samples = useRef<Promise<Record<Tab, string>> | null>(null),
-    serial = useRef(0),
-    buttons = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
+    serial = useRef(0);
 
   useEffect(() => {
     samples.current = fetch("/code-samples.json").then((r) => {
@@ -32,39 +33,16 @@ export default function Developers() {
         setTab(key);
         setCode(data[key]);
       });
-      if (focus) buttons.current[key]!.focus();
+      if (focus) focusTab(key);
       setStatus("");
     } catch {
       setStatus("The other examples could not be loaded. Please try again.");
     }
   }
-  function onKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    let next: number;
-    if (event.key === "Home") next = 0;
-    else if (event.key === "End") next = TABS.length - 1;
-    else if (event.key === "ArrowRight") next = (index + 1) % TABS.length;
-    else if (event.key === "ArrowLeft") next = (index + TABS.length - 1) % TABS.length;
-    else return;
-    event.preventDefault();
-    select(TABS[next], true);
-  }
   async function copy() {
-    try {
-      await navigator.clipboard.writeText(code);
-      setStatus("Code copied.");
-    } catch {
-      setStatus("Select the code and copy it with your keyboard.");
-    }
+    setStatus((await copyText(code)) ? "Code copied." : "Select the code and copy it with your keyboard.");
   }
-  const tabProps = (key: Tab) => ({
-    ref: (el: HTMLButtonElement | null) => {
-      buttons.current[key] = el;
-    },
-    "aria-selected": tab === key,
-    tabIndex: tab === key ? 0 : -1,
-    onClick: () => select(key),
-    onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => onKeyDown(e, TABS.indexOf(key)),
-  });
+  const { tabProps, focus: focusTab } = useTabs(TABS, tab, select);
 
   return (
     <>
@@ -74,10 +52,9 @@ export default function Developers() {
           <h1>Build with Verse Engine</h1>
           <p>Upload, publish, embed and track 3D scenes with a REST API — or skip the backend and drop in one script tag.</p>
           <div className="page-actions">
-            <a className="site-button" href="/studio/plugins" id="lnk-get-an-api-key-2">
+            <SiteButton href="/studio/plugins" id="lnk-get-an-api-key-2">
               Get an API key
-              <span aria-hidden="true" />
-            </a>
+            </SiteButton>
             <a className="text-link" href="/docs/scenes-api" id="lnk-api-reference">
               {"API reference "}
             </a>
@@ -151,10 +128,9 @@ export default function Developers() {
               <li>Track views, sessions and watch time</li>
               <li>Webhooks when a scene is ready</li>
             </ul>
-            <a className="site-button secondary" href="/docs/scenes-api" id="lnk-api-docs">
+            <SiteButton secondary arrow href="/docs/scenes-api" id="lnk-api-docs">
               API docs
-              <span aria-hidden="true">→</span>
-            </a>
+            </SiteButton>
           </article>
           <article id="art-item-2">
             <p className="eyebrow">SDK</p>
@@ -167,10 +143,9 @@ export default function Developers() {
               <li>Works on phones, laptops and headsets</li>
               <li>Run your own server</li>
             </ul>
-            <a className="site-button secondary" href="/docs/embed-sdk" id="lnk-sdk-install-guide">
+            <SiteButton secondary arrow href="/docs/embed-sdk" id="lnk-sdk-install-guide">
               SDK install guide
-              <span aria-hidden="true">→</span>
-            </a>
+            </SiteButton>
           </article>
         </div>
       </section>
