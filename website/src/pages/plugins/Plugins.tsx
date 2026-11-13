@@ -12,14 +12,17 @@ export default function Plugins() {
           <span>straight from your tool.</span>
         </h1>
         <p className="hero-description">
-          Press one button in your editor and get a link anyone can open in a browser. A Blender project goes live in about 45 seconds, Unreal in 70, Unity in 101.
+          Press one button in your editor and get a link anyone can open in a browser. A Blender project goes live in about 45 seconds, Unreal in 70, Unity in
+          101.
         </p>
         <div className="page-actions">
           <a className="site-button" href="/studio" id="lnk-explore-verse-engine-2">
             Explore Verse Engine
             <span aria-hidden="true" />
           </a>
-          <a className="text-link" href="#aec" id="lnk-architecture-design-tools">{"Architecture & design tools "}</a>
+          <a className="text-link" href="#aec" id="lnk-architecture-design-tools">
+            {"Architecture & design tools "}
+          </a>
         </div>
       </header>
       <div className="plugin-benefits content-width">
@@ -113,7 +116,9 @@ export default function Plugins() {
                     Download
                     <span aria-hidden="true" />
                   </a>
-                  <a className="text-link" href="/plugins/blender" id="lnk-install-guide">{"Install guide "}</a>
+                  <a className="text-link" href="/plugins/blender" id="lnk-install-guide">
+                    {"Install guide "}
+                  </a>
                 </div>
                 <p className="plugin-file">v3.0.0-beta.1 · 3.0 MB · verse_publish-blender-3.0.0-beta.1.zip</p>
                 <HashRow hash="2ff2dd7074cf3073b0e68e78af5ee2dcb6047b701824a84e8823930f0ba4f545" name="Blender" buttonId="btn-copy-sha-256-for-blender" />
@@ -233,16 +238,16 @@ export default function Plugins() {
                   <span>Scene → link · 101s</span>
                 </div>
                 <p className="release-tag">Shipped · v3.0.0-beta.1</p>
-                <p className="plugin-requirement">
-                  Unity 2021.3 or newer (URP, HDRP, Built-in). UPM tarball; glTFast is pulled in for you.
-                </p>
+                <p className="plugin-requirement">Unity 2021.3 or newer (URP, HDRP, Built-in). UPM tarball; glTFast is pulled in for you.</p>
                 <p>Ship Unity scenes to the web without a WebGL build.</p>
                 <div className="page-actions">
                   <a className="site-button" href="https://verse.ctruh.com/downloads/com.ctruh.verse-publish-3.0.0-beta.1.tgz" id="lnk-download-2">
                     Download
                     <span aria-hidden="true" />
                   </a>
-                  <a className="text-link" href="/plugins/unity" id="lnk-install-guide-2">{"Install guide "}</a>
+                  <a className="text-link" href="/plugins/unity" id="lnk-install-guide-2">
+                    {"Install guide "}
+                  </a>
                 </div>
                 <p className="plugin-file">v3.0.0-beta.1 · 3.0 MB · com.ctruh.verse-publish-3.0.0-beta.1.tgz</p>
                 <HashRow hash="24741c9d4736784af4ed7ac9240d928d90d6cefd8c773a92dfc48df55a4d8505" name="Unity" buttonId="btn-copy-sha-256-for-unity" />
@@ -322,10 +327,16 @@ export default function Plugins() {
                     Download
                     <span aria-hidden="true" />
                   </a>
-                  <a className="text-link" href="/plugins/unreal" id="lnk-install-guide-3">{"Install guide "}</a>
+                  <a className="text-link" href="/plugins/unreal" id="lnk-install-guide-3">
+                    {"Install guide "}
+                  </a>
                 </div>
                 <p className="plugin-file">v3.0.0-beta.1 · 3.0 MB · VersePublish-UE5.8-3.0.0-beta.1.zip</p>
-                <HashRow hash="32385ecc8f96b71d04034f940b497a10432e5e680926727881e33c36a5a49ea3" name="Unreal Engine" buttonId="btn-copy-sha-256-for-unreal-engine" />
+                <HashRow
+                  hash="32385ecc8f96b71d04034f940b497a10432e5e680926727881e33c36a5a49ea3"
+                  name="Unreal Engine"
+                  buttonId="btn-copy-sha-256-for-unreal-engine"
+                />
               </div>
             </article>
           </div>
@@ -340,7 +351,9 @@ export default function Plugins() {
             {"& CAD tools."}
           </h2>
           <p>
-            {"Tested against a real Verse server through each plug-in's own upload code; not yet run inside every host app — each guide says what has and has not been checked."}
+            {
+              "Tested against a real Verse server through each plug-in's own upload code; not yet run inside every host app — each guide says what has and has not been checked."
+            }
           </p>
         </header>
         <div className="beta-grid">
@@ -351,10 +364,13 @@ export default function Plugins() {
             </header>
             <p>
               {"SketchUp 2021 or newer (GLB export on 2025+; OBJ / FBX on older needs Pro). Extension "}
-              <code>.rbz</code>
-              .
+              <code>.rbz</code>.
             </p>
-            <a className="site-button secondary" href="https://verse.ctruh.com/downloads/verse_publish-sketchup-4.0.0-beta.1.rbz" id="lnk-download-for-sketchup">
+            <a
+              className="site-button secondary"
+              href="https://verse.ctruh.com/downloads/verse_publish-sketchup-4.0.0-beta.1.rbz"
+              id="lnk-download-for-sketchup"
+            >
               Download for SketchUp
               <span aria-hidden="true" />
             </a>
@@ -382,7 +398,9 @@ export default function Plugins() {
               </ol>
               {"\n        "}
               <p className="req">
-                <a href="/docs/guides/publish-from-sketchup" id="lnk-full-guide-publish-from-sketchup">Full guide: Publish from SketchUp</a>
+                <a href="/docs/guides/publish-from-sketchup" id="lnk-full-guide-publish-from-sketchup">
+                  Full guide: Publish from SketchUp
+                </a>
               </p>
               {"\n      "}
             </details>
@@ -415,8 +433,7 @@ export default function Plugins() {
                   {" (2021–2024) or "}
                   <code>build/net8.0-windows</code>
                   {" (2025+) to "}
-                  <code>{"%APPDATA%\\Autodesk\\Revit\\Addins\\<year>\\"}</code>
-                  .
+                  <code>{"%APPDATA%\\Autodesk\\Revit\\Addins\\<year>\\"}</code>.
                 </li>
                 {"\n          "}
                 <li>
@@ -430,7 +447,9 @@ export default function Plugins() {
               </ol>
               {"\n        "}
               <p className="req">
-                <a href="/docs/guides/publish-from-revit" id="lnk-full-guide-publish-from-revit">Full guide: Publish from Revit</a>
+                <a href="/docs/guides/publish-from-revit" id="lnk-full-guide-publish-from-revit">
+                  Full guide: Publish from Revit
+                </a>
               </p>
               {"\n      "}
             </details>
@@ -465,14 +484,15 @@ export default function Plugins() {
                 {"\n          "}
                 <li>
                   {"Run "}
-                  <b>VersePublish</b>
-                  ; the first run asks for the server and an optional key / token.
+                  <b>VersePublish</b>; the first run asks for the server and an optional key / token.
                 </li>
                 {"\n        "}
               </ol>
               {"\n        "}
               <p className="req">
-                <a href="/docs/guides/publish-from-rhino" id="lnk-full-guide-publish-from-rhino">Full guide: Publish from Rhino</a>
+                <a href="/docs/guides/publish-from-rhino" id="lnk-full-guide-publish-from-rhino">
+                  Full guide: Publish from Rhino
+                </a>
               </p>
               {"\n      "}
             </details>
@@ -499,8 +519,7 @@ export default function Plugins() {
                   {"Unzip to a folder you keep. "}
                   <b>Scripting › Run Script</b>
                   {" and pick "}
-                  <code>VersePublish.ms</code>
-                  .
+                  <code>VersePublish.ms</code>.
                 </li>
                 {"\n          "}
                 <li>
@@ -515,7 +534,9 @@ export default function Plugins() {
               </ol>
               {"\n        "}
               <p className="req">
-                <a href="/docs/guides/publish-from-3dsmax" id="lnk-full-guide-publish-from-3ds-max">Full guide: Publish from 3ds Max</a>
+                <a href="/docs/guides/publish-from-3dsmax" id="lnk-full-guide-publish-from-3ds-max">
+                  Full guide: Publish from 3ds Max
+                </a>
               </p>
               {"\n      "}
             </details>
@@ -540,21 +561,21 @@ export default function Plugins() {
                 {"\n          "}
                 <li>
                   {"Unzip. Once: "}
-                  <code>python3 verse_publish_archicad.py --save-settings --server https://verse.ctruh.com</code>
-                  .
+                  <code>python3 verse_publish_archicad.py --save-settings --server https://verse.ctruh.com</code>.
                 </li>
                 {"\n          "}
                 <li>
                   <b>File › Save As › IFC</b>
                   {", then "}
-                  <code>python3 verse_publish_archicad.py model.ifc</code>
-                  ; it prints the link.
+                  <code>python3 verse_publish_archicad.py model.ifc</code>; it prints the link.
                 </li>
                 {"\n        "}
               </ol>
               {"\n        "}
               <p className="req">
-                <a href="/docs/guides/publish-from-archicad" id="lnk-full-guide-publish-from-archicad">Full guide: Publish from Archicad</a>
+                <a href="/docs/guides/publish-from-archicad" id="lnk-full-guide-publish-from-archicad">
+                  Full guide: Publish from Archicad
+                </a>
               </p>
               {"\n      "}
             </details>
@@ -586,14 +607,15 @@ export default function Plugins() {
                 </li>
                 {"\n          "}
                 <li>
-                  <b>Verse › Publish to Verse</b>
-                  .
+                  <b>Verse › Publish to Verse</b>.
                 </li>
                 {"\n        "}
               </ol>
               {"\n        "}
               <p className="req">
-                <a href="/docs/guides/publish-from-maya" id="lnk-full-guide-publish-from-maya">Full guide: Publish from Maya</a>
+                <a href="/docs/guides/publish-from-maya" id="lnk-full-guide-publish-from-maya">
+                  Full guide: Publish from Maya
+                </a>
               </p>
               {"\n      "}
             </details>
@@ -604,7 +626,11 @@ export default function Plugins() {
               <span className="release-tag">Beta</span>
             </header>
             <p>Cinema 4D 2023 or newer. Python plug-in folder.</p>
-            <a className="site-button secondary" href="https://verse.ctruh.com/downloads/VersePublish-Cinema4D-4.0.0-beta.1.zip" id="lnk-download-for-cinema-4d">
+            <a
+              className="site-button secondary"
+              href="https://verse.ctruh.com/downloads/VersePublish-Cinema4D-4.0.0-beta.1.zip"
+              id="lnk-download-for-cinema-4d"
+            >
               Download for Cinema 4D
               <span aria-hidden="true" />
             </a>
@@ -627,8 +653,7 @@ export default function Plugins() {
                 </li>
                 {"\n          "}
                 <li>
-                  <b>Extensions › Verse Publish › Publish to Verse</b>
-                  .
+                  <b>Extensions › Verse Publish › Publish to Verse</b>.
                 </li>
                 {"\n        "}
               </ol>
@@ -663,8 +688,7 @@ export default function Plugins() {
                   {"Unzip. In "}
                   <b>Windows › Python Shell</b>
                   {": "}
-                  <code>{"exec(open(r\"<folder>/install_houdini.py\").read())"}</code>
-                  , then restart Houdini.
+                  <code>{'exec(open(r"<folder>/install_houdini.py").read())'}</code>, then restart Houdini.
                 </li>
                 {"\n          "}
                 <li>
@@ -673,14 +697,15 @@ export default function Plugins() {
                   {" shelf (shelf "}
                   <b>+</b>
                   {" menu) and press "}
-                  <b>Publish to Verse</b>
-                  .
+                  <b>Publish to Verse</b>.
                 </li>
                 {"\n        "}
               </ol>
               {"\n        "}
               <p className="req">
-                <a href="/docs/guides/publish-from-houdini" id="lnk-full-guide-publish-from-houdini">Full guide: Publish from Houdini</a>
+                <a href="/docs/guides/publish-from-houdini" id="lnk-full-guide-publish-from-houdini">
+                  Full guide: Publish from Houdini
+                </a>
               </p>
               {"\n      "}
             </details>
@@ -691,7 +716,11 @@ export default function Plugins() {
               <span className="release-tag">Beta</span>
             </header>
             <p>SolidWorks 2019 or newer (Windows). Add-in source: build it against your SolidWorks install.</p>
-            <a className="site-button secondary" href="https://verse.ctruh.com/downloads/VersePublish-SolidWorks-4.0.0-beta.1.zip" id="lnk-download-for-solidworks">
+            <a
+              className="site-button secondary"
+              href="https://verse.ctruh.com/downloads/VersePublish-SolidWorks-4.0.0-beta.1.zip"
+              id="lnk-download-for-solidworks"
+            >
               Download for SolidWorks
               <span aria-hidden="true" />
             </a>
@@ -716,8 +745,7 @@ export default function Plugins() {
                   {", tick "}
                   <b>Verse Publish</b>
                   {", then "}
-                  <b>Verse › Publish to Verse</b>
-                  .
+                  <b>Verse › Publish to Verse</b>.
                 </li>
                 {"\n        "}
               </ol>
@@ -736,12 +764,20 @@ export default function Plugins() {
               <span className="release-tag">Beta</span>
             </header>
             <p>Figma desktop app. Development plug-in; publishes a GLB such as a Spline export.</p>
-            <a className="site-button secondary" href="https://verse.ctruh.com/downloads/VersePublish-Figma-4.0.0-beta.1.zip" id="lnk-download-for-figma-spline">
+            <a
+              className="site-button secondary"
+              href="https://verse.ctruh.com/downloads/VersePublish-Figma-4.0.0-beta.1.zip"
+              id="lnk-download-for-figma-spline"
+            >
               Download for Figma (+ Spline)
               <span aria-hidden="true" />
             </a>
             <p className="plugin-file">v4.0.0-beta.1 · 11 KB · VersePublish-Figma-4.0.0-beta.1.zip</p>
-            <HashRow hash="a9acd18f385a46ccbe4a24d1931b2067d212be293d43703c8d54ff2c198d59d2" name="Figma (+ Spline)" buttonId="btn-copy-sha-256-for-figma-spline" />
+            <HashRow
+              hash="a9acd18f385a46ccbe4a24d1931b2067d212be293d43703c8d54ff2c198d59d2"
+              name="Figma (+ Spline)"
+              buttonId="btn-copy-sha-256-for-figma-spline"
+            />
             <details id="dtl-item-10">
               {"\n        "}
               <summary id="sum-install-10">Install</summary>
@@ -752,8 +788,7 @@ export default function Plugins() {
                   {"Unzip. In Figma desktop: "}
                   <b>Plugins › Development › Import plugin from manifest…</b>
                   {" and pick "}
-                  <code>manifest.json</code>
-                  .
+                  <code>manifest.json</code>.
                 </li>
                 {"\n          "}
                 <li>
@@ -782,13 +817,19 @@ export default function Plugins() {
             <h2>Check a download.</h2>
             <p>
               {"Every file's SHA-256 is shown with it and listed in "}
-              <a className="text-link" href="https://verse.ctruh.com/downloads/SHA256SUMS" id="lnk-sha256sums">{"SHA256SUMS "}</a>
+              <a className="text-link" href="https://verse.ctruh.com/downloads/SHA256SUMS" id="lnk-sha256sums">
+                {"SHA256SUMS "}
+              </a>
               .
             </p>
             <p>
-              {"Each package bundles verse-prepare (the optimiser) for macOS (Apple silicon and Intel), Windows and Linux. To publish to your own server instead, change the server URL in the plug-in's settings."}
+              {
+                "Each package bundles verse-prepare (the optimiser) for macOS (Apple silicon and Intel), Windows and Linux. To publish to your own server instead, change the server URL in the plug-in's settings."
+              }
             </p>
-            <a className="text-link" href="/docs/guides/run-your-own-server" id="lnk-run-your-own-server">{"Run your own server "}</a>
+            <a className="text-link" href="/docs/guides/run-your-own-server" id="lnk-run-your-own-server">
+              {"Run your own server "}
+            </a>
           </div>
           <pre tabIndex={0}>
             <code>{"shasum -a 256 <file>\n# macOS / Linux\n\nGet-FileHash <file> -Algorithm SHA256\n# Windows PowerShell"}</code>

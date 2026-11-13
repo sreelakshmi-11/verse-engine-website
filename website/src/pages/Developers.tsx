@@ -1,7 +1,5 @@
-// Developers page (/developers).
-// Code sample tabs (Embed SDK, cURL, JavaScript): the samples come from /code-samples.json;
-// arrow keys, Home and End move between the tabs. "Copy ⧉" copies the sample shown.
-// (Was the code-tabs part of public/js/pages.js.)
+// Developers page (/developers). Code sample tabs (from /code-samples.json): arrow keys, Home and End switch
+// them; "Copy ⧉" copies the sample shown.
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import type { KeyboardEvent } from "react";
@@ -14,10 +12,15 @@ export default function Developers() {
   const [tab, setTab] = useState<Tab>("embed");
   const [code, setCode] = useState(FIRST_SAMPLE);
   const [status, setStatus] = useState("");
-  const samples = useRef<Promise<Record<Tab, string>> | null>(null), serial = useRef(0), buttons = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
+  const samples = useRef<Promise<Record<Tab, string>> | null>(null),
+    serial = useRef(0),
+    buttons = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
 
   useEffect(() => {
-    samples.current = fetch("/code-samples.json").then((r) => { if (!r.ok) throw Error(); return r.json() as Promise<Record<Tab, string>>; });
+    samples.current = fetch("/code-samples.json").then((r) => {
+      if (!r.ok) throw Error();
+      return r.json() as Promise<Record<Tab, string>>;
+    });
   }, []);
 
   async function select(key: Tab, focus = false) {
@@ -25,7 +28,10 @@ export default function Developers() {
     try {
       const data = (await samples.current)!;
       if (request !== serial.current) return;
-      flushSync(() => { setTab(key); setCode(data[key]); });
+      flushSync(() => {
+        setTab(key);
+        setCode(data[key]);
+      });
       if (focus) buttons.current[key]!.focus();
       setStatus("");
     } catch {
@@ -51,7 +57,9 @@ export default function Developers() {
     }
   }
   const tabProps = (key: Tab) => ({
-    ref: (el: HTMLButtonElement | null) => { buttons.current[key] = el; },
+    ref: (el: HTMLButtonElement | null) => {
+      buttons.current[key] = el;
+    },
     "aria-selected": tab === key,
     tabIndex: tab === key ? 0 : -1,
     onClick: () => select(key),
@@ -70,7 +78,9 @@ export default function Developers() {
               Get an API key
               <span aria-hidden="true" />
             </a>
-            <a className="text-link" href="/docs/scenes-api" id="lnk-api-reference">{"API reference "}</a>
+            <a className="text-link" href="/docs/scenes-api" id="lnk-api-reference">
+              {"API reference "}
+            </a>
           </div>
         </header>
         <div className="code-window">
@@ -86,7 +96,9 @@ export default function Developers() {
                 JavaScript
               </button>
             </div>
-            <button className="copy-code" data-copy-code="" aria-label="Copy code sample" id="btn-copy-code-sample" onClick={copy}>Copy ⧉</button>
+            <button className="copy-code" data-copy-code="" aria-label="Copy code sample" id="btn-copy-code-sample" onClick={copy}>
+              Copy ⧉
+            </button>
           </div>
           <div role="tabpanel" id="code-panel" aria-labelledby={"code-" + tab} tabIndex={0}>
             <pre>
@@ -94,7 +106,9 @@ export default function Developers() {
             </pre>
           </div>
           <p className="code-note">Replace your-scene with the published scene ID.</p>
-          <span className="copy-status" aria-live="polite">{status}</span>
+          <span className="copy-status" aria-live="polite">
+            {status}
+          </span>
         </div>
       </section>
       <section className="round-trip page-band" id="sec-round-trip">
@@ -174,19 +188,25 @@ export default function Developers() {
             <span className="step-number">01</span>
             <h3>Create an API key</h3>
             <p>{"Sign in to Studio and create a key under Plug-ins & API."}</p>
-            <a className="text-link" href="/studio" id="lnk-open-studio">{"Open Studio "}</a>
+            <a className="text-link" href="/studio" id="lnk-open-studio">
+              {"Open Studio "}
+            </a>
           </li>
           <li>
             <span className="step-number">02</span>
             <h3>Upload your first scene</h3>
             <p>POST a file, then wait for the job to finish.</p>
-            <a className="text-link" href="/docs/scenes-api" id="lnk-set-up-webhooks">{"Set up webhooks "}</a>
+            <a className="text-link" href="/docs/scenes-api" id="lnk-set-up-webhooks">
+              {"Set up webhooks "}
+            </a>
           </li>
           <li>
             <span className="step-number">03</span>
             <h3>Embed it</h3>
             <p>Add the SDK script and drop in the scene ID.</p>
-            <a className="text-link" href="/docs/embed-sdk" id="lnk-sdk-guide">{"SDK guide "}</a>
+            <a className="text-link" href="/docs/embed-sdk" id="lnk-sdk-guide">
+              {"SDK guide "}
+            </a>
           </li>
         </ol>
       </section>

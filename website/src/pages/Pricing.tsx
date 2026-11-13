@@ -1,8 +1,6 @@
-// Pricing page (/pricing).
-// The plan cards are a calculator: billing period (monthly / annual), currency (USD, or INR shown
-// as an approximate conversion, remembered on this device) and seats per plan. Prices come from
-// /pricing-data.json; until it has loaded the cards show the prices written below. Checkout and
-// "Have a code?" links go to verse.ctruh.com as before. (Was the pricing part of public/js/pages.js.)
+// Pricing page (/pricing). The plan cards are a calculator: billing period, currency (USD, or approximate INR,
+// remembered on this device) and seats. Prices come from /pricing-data.json; until it loads, the cards show the
+// prices below.
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import type { FormEvent } from "react";
@@ -17,20 +15,36 @@ interface PricingConfig {
   annualMonths: number;
   plans: Record<PlanId, { price: number; included: number; extra: number }>;
 }
-interface PlanView { price: string; period: string; note: string; seatNote: string; seatLine: string; href: string }
+interface PlanView {
+  price: string;
+  period: string;
+  note: string;
+  seatNote: string;
+  seatLine: string;
+  href: string;
+}
 
 const SOURCE_NOTE_USD = "Prices in USD. Taxes calculated at checkout. Final seats and payment are confirmed on Verse.";
 const usd = (value: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
-const savedCurrency = (): Currency => { try { if (localStorage.getItem("verse-currency") === "INR") return "INR"; } catch (e) {} return "USD"; };
+const savedCurrency = (): Currency => {
+  try {
+    if (localStorage.getItem("verse-currency") === "INR") return "INR";
+  } catch (e) {}
+  return "USD";
+};
 
 /** What each plan card shows, or null until /pricing-data.json has loaded. */
 function planViews(config: PricingConfig | null, period: Period, currency: Currency, seats: Record<SeatPlan, string>) {
   if (!config) return null;
   const rate = config.inrPerUsd || 90;
-  const money = (value: number) => (currency === "INR" ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Math.round(value * rate)) : usd(value));
+  const money = (value: number) =>
+    currency === "INR"
+      ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Math.round(value * rate))
+      : usd(value);
   const views = {} as Record<PlanId, PlanView>;
   for (const id of ["free", "starter", "pro", "scale"] as const) {
-    const p = config.plans[id], hasSeats = id !== "free";
+    const p = config.plans[id],
+      hasSeats = id !== "free";
     const count = hasSeats ? Math.min(500, Math.max(p.included, Math.floor(Number(seats[id as SeatPlan]) || p.included))) : p.included;
     const factor = period === "year" ? config.annualMonths : 1;
     const total = (p.price + Math.max(0, count - p.included) * p.extra) * factor;
@@ -38,7 +52,14 @@ function planViews(config: PricingConfig | null, period: Period, currency: Curre
     views[id] = {
       price: money(total),
       period: id === "free" ? "Free forever" : period === "year" ? "/ year" : "/ month",
-      note: id === "free" ? "" : period === "year" ? "≈ " + money(Math.round(total / 12)) + " a month, 2 months free" + (currency === "INR" ? " · billed " + usd(total) + " in USD" : "") : currency === "INR" ? "Billed monthly in USD (" + usd(total) + ")" : "Billed monthly",
+      note:
+        id === "free"
+          ? ""
+          : period === "year"
+            ? "≈ " + money(Math.round(total / 12)) + " a month, 2 months free" + (currency === "INR" ? " · billed " + usd(total) + " in USD" : "")
+            : currency === "INR"
+              ? "Billed monthly in USD (" + usd(total) + ")"
+              : "Billed monthly",
       seatNote: p.included + " included, then " + money(p.extra * factor) + " / seat / " + per,
       seatLine: p.included + " seats, more at " + money(p.extra * factor) + " / seat / " + per,
       href: "https://verse.ctruh.com/pricing?plan=" + id + "&period=" + period,
@@ -54,50 +75,84 @@ export default function Pricing() {
   const [config, setConfig] = useState<PricingConfig | null>(null);
   const [seats, setSeats] = useState<Record<SeatPlan, string>>({ starter: "1", pro: "3", scale: "10" });
   const [checkoutOverride, setCheckoutOverride] = useState<Partial<Record<PlanId, string>>>({}); // checkout link while extra seats are chosen (set on click)
-  const inputs = useRef<Partial<Record<SeatPlan, HTMLInputElement | null>>>({}), loaded = useRef(false);
+  const inputs = useRef<Partial<Record<SeatPlan, HTMLInputElement | null>>>({}),
+    loaded = useRef(false);
   // Recalculating the cards (only once prices have loaded) also resets the checkout links.
-  const recalc = () => { if (loaded.current) setCheckoutOverride({}); };
+  const recalc = () => {
+    if (loaded.current) setCheckoutOverride({});
+  };
 
   useEffect(() => {
-    fetch("/pricing-data.json").then((r) => { if (!r.ok) throw Error(); return r.json() as Promise<PricingConfig>; })
-      .then((data) => { loaded.current = true; setConfig(data); setCurrencyShown(true); setCheckoutOverride({}); }).catch(() => {});
+    fetch("/pricing-data.json")
+      .then((r) => {
+        if (!r.ok) throw Error();
+        return r.json() as Promise<PricingConfig>;
+      })
+      .then((data) => {
+        loaded.current = true;
+        setConfig(data);
+        setCurrencyShown(true);
+        setCheckoutOverride({});
+      })
+      .catch(() => {});
   }, []);
 
   // Seat inputs: typing recalculates; leaving the field (change) also tidies the number.
   useEffect(() => {
-    const cleanups = (Object.entries(inputs.current) as [SeatPlan, HTMLInputElement | null][]).filter((entry): entry is [SeatPlan, HTMLInputElement] => !!entry[1]).map(([id, input]) => {
-      const onChange = () => {
-        input.value = String(Math.min(500, Math.max(Number(input.min), Math.floor(Number(input.value) || Number(input.min)))));
-        const value = input.value; setSeats((s) => ({ ...s, [id]: value })); recalc();
-      };
-      input.addEventListener("change", onChange);
-      return () => input.removeEventListener("change", onChange);
-    });
+    const cleanups = (Object.entries(inputs.current) as [SeatPlan, HTMLInputElement | null][])
+      .filter((entry): entry is [SeatPlan, HTMLInputElement] => !!entry[1])
+      .map(([id, input]) => {
+        const onChange = () => {
+          input.value = String(Math.min(500, Math.max(Number(input.min), Math.floor(Number(input.value) || Number(input.min)))));
+          const value = input.value;
+          setSeats((s) => ({ ...s, [id]: value }));
+          recalc();
+        };
+        input.addEventListener("change", onChange);
+        return () => input.removeEventListener("change", onChange);
+      });
     return () => cleanups.forEach((c) => c());
   }, []);
 
   const views = planViews(config, period, currency, seats);
   const show = (id: PlanId, key: keyof PlanView, fallback: string) => (views ? views[id][key] : fallback);
   const pressed = (value: Currency) => (currencyShown ? currency === value : value === "USD");
-  const sourceNote = currencyShown && currency === "INR"
-    ? "Prices in rupees are an approximate conversion at ₹" + ((config && config.inrPerUsd) || 90) + " per US$1 and are for reference. You are billed in USD; taxes are calculated at checkout and final seats and payment are confirmed on Verse."
-    : SOURCE_NOTE_USD;
+  const sourceNote =
+    currencyShown && currency === "INR"
+      ? "Prices in rupees are an approximate conversion at ₹" +
+        ((config && config.inrPerUsd) || 90) +
+        " per US$1 and are for reference. You are billed in USD; taxes are calculated at checkout and final seats and payment are confirmed on Verse."
+      : SOURCE_NOTE_USD;
 
   function chooseCurrency(value: Currency) {
-    try { localStorage.setItem("verse-currency", value); } catch (e) {}
-    setCurrency(value); setCurrencyShown(true); recalc();
+    try {
+      localStorage.setItem("verse-currency", value);
+    } catch (e) {}
+    setCurrency(value);
+    setCurrencyShown(true);
+    recalc();
   }
-  function choosePeriod(value: Period) { setPeriod(value); recalc(); }
+  function choosePeriod(value: Period) {
+    setPeriod(value);
+    recalc();
+  }
   const seatInput = (id: SeatPlan) => ({
-    ref: (el: HTMLInputElement | null) => { inputs.current[id] = el; },
-    onInput: (e: FormEvent<HTMLInputElement>) => { const value = e.currentTarget.value; setSeats((s) => ({ ...s, [id]: value })); recalc(); },
+    ref: (el: HTMLInputElement | null) => {
+      inputs.current[id] = el;
+    },
+    onInput: (e: FormEvent<HTMLInputElement>) => {
+      const value = e.currentTarget.value;
+      setSeats((s) => ({ ...s, [id]: value }));
+      recalc();
+    },
   });
-  // With more seats than included, checkout goes to the Verse pricing page (as before).
+  // With extra seats, checkout goes to the Verse pricing page.
   const checkout = (id: PlanId, fallback: string) => ({
     href: checkoutOverride[id] ?? show(id, "href", fallback),
     onClick: () => {
       const input = id === "free" ? undefined : inputs.current[id];
-      if (input && Number(input.value) > Number(input.min)) flushSync(() => setCheckoutOverride((o) => ({ ...o, [id]: "https://verse.ctruh.com/pricing?period=" + period + "#plans" })));
+      if (input && Number(input.value) > Number(input.min))
+        flushSync(() => setCheckoutOverride((o) => ({ ...o, [id]: "https://verse.ctruh.com/pricing?period=" + period + "#plans" })));
     },
   });
   const priceClass = (id: PlanId) => "plan-price" + (views && views[id].price.length > 6 ? " wide-price" : "");
@@ -112,30 +167,47 @@ export default function Pricing() {
           <span>with your projects.</span>
         </h1>
         <p className="hero-description">
-          Start free: every new account gets a 14-day trial with Pro features. Upgrade during the trial for 25% off your first 3 months on monthly plans, or 20% off your first year on annual. Viewers never pay: every published scene opens for everyone.
+          Start free: every new account gets a 14-day trial with Pro features. Upgrade during the trial for 25% off your first 3 months on monthly plans, or 20%
+          off your first year on annual. Viewers never pay: every published scene opens for everyone.
         </p>
       </header>
       <section className="pricing-content page-band" id="sec-pricing-content">
         <div className="content-width">
           <div className="billing-controls">
             <div className="billing-switch" role="group" aria-label="Billing period">
-              <button data-billing="month" aria-pressed={period === "month"} id="btn-monthly" onClick={() => choosePeriod("month")}>Monthly</button>
-              <button data-billing="year" aria-pressed={period === "year"} id="btn-annual" onClick={() => choosePeriod("year")}>Annual</button>
+              <button data-billing="month" aria-pressed={period === "month"} id="btn-monthly" onClick={() => choosePeriod("month")}>
+                Monthly
+              </button>
+              <button data-billing="year" aria-pressed={period === "year"} id="btn-annual" onClick={() => choosePeriod("year")}>
+                Annual
+              </button>
             </div>
             <div className="billing-switch currency-switch" role="group" aria-label="Currency">
-              <button data-currency="USD" aria-pressed={pressed("USD")} id="btn-usd" onClick={() => chooseCurrency("USD")}>USD $</button>
-              <button data-currency="INR" aria-pressed={pressed("INR")} id="btn-inr" onClick={() => chooseCurrency("INR")}>INR ₹</button>
+              <button data-currency="USD" aria-pressed={pressed("USD")} id="btn-usd" onClick={() => chooseCurrency("USD")}>
+                USD $
+              </button>
+              <button data-currency="INR" aria-pressed={pressed("INR")} id="btn-inr" onClick={() => chooseCurrency("INR")}>
+                INR ₹
+              </button>
             </div>
             <span>Annual billing: 2 months free</span>
-            <a className="text-link" href="https://verse.ctruh.com/pricing#code-form" id="lnk-have-a-code">{"Have a code? "}</a>
+            <a className="text-link" href="https://verse.ctruh.com/pricing#code-form" id="lnk-have-a-code">
+              {"Have a code? "}
+            </a>
           </div>
           <div className="pricing-grid">
             <article className="plan" data-plan-card="free" id="art-plan">
               <h2>Free</h2>
               <p className="plan-audience">Try Verse on your own models.</p>
-              <p className={priceClass("free")} data-plan-price="">{show("free", "price", "$0")}</p>
-              <span className="plan-period" data-plan-period="">{show("free", "period", "Free forever")}</span>
-              <p className="plan-billing-note" data-billing-note="">{show("free", "note", "")}</p>
+              <p className={priceClass("free")} data-plan-price="">
+                {show("free", "price", "$0")}
+              </p>
+              <span className="plan-period" data-plan-period="">
+                {show("free", "period", "Free forever")}
+              </span>
+              <p className="plan-billing-note" data-billing-note="">
+                {show("free", "note", "")}
+              </p>
               <a data-plan-checkout="" className="site-button secondary" href="/studio" id="lnk-start-free">
                 Start free
                 <span aria-hidden="true" />
@@ -153,15 +225,36 @@ export default function Pricing() {
             <article className="plan" data-plan-card="starter" id="art-plan-2">
               <h2>Starter</h2>
               <p className="plan-audience">For the agent or designer sharing a few spaces a month.</p>
-              <p className={priceClass("starter")} data-plan-price="">{show("starter", "price", "$29")}</p>
-              <span className="plan-period" data-plan-period="">{show("starter", "period", "/ month")}</span>
-              <p className="plan-billing-note" data-billing-note="">{show("starter", "note", "Billed monthly")}</p>
+              <p className={priceClass("starter")} data-plan-price="">
+                {show("starter", "price", "$29")}
+              </p>
+              <span className="plan-period" data-plan-period="">
+                {show("starter", "period", "/ month")}
+              </span>
+              <p className="plan-billing-note" data-billing-note="">
+                {show("starter", "note", "Billed monthly")}
+              </p>
               <label className="seat-picker">
                 {"Seats "}
-                <input type="number" min="1" max="500" step="1" defaultValue="1" data-plan-seats="" aria-label="Starter seats" id="inp-starter-seats" {...seatInput("starter")} />
+                <input
+                  type="number"
+                  min="1"
+                  max="500"
+                  step="1"
+                  defaultValue="1"
+                  data-plan-seats=""
+                  aria-label="Starter seats"
+                  id="inp-starter-seats"
+                  {...seatInput("starter")}
+                />
                 <span data-seat-note="">{show("starter", "seatNote", "1 included, then $15 / seat / month")}</span>
               </label>
-              <a data-plan-checkout="" className="site-button secondary" id="lnk-choose-starter" {...checkout("starter", "https://verse.ctruh.com/pricing?plan=starter&period=month")}>
+              <a
+                data-plan-checkout=""
+                className="site-button secondary"
+                id="lnk-choose-starter"
+                {...checkout("starter", "https://verse.ctruh.com/pricing?plan=starter&period=month")}
+              >
                 Choose Starter
                 <span aria-hidden="true" />
               </a>
@@ -179,12 +272,28 @@ export default function Pricing() {
               <span className="popular-label">Most popular</span>
               <h2>Pro</h2>
               <p className="plan-audience">For the professional who shows spaces every week.</p>
-              <p className={priceClass("pro")} data-plan-price="">{show("pro", "price", "$99")}</p>
-              <span className="plan-period" data-plan-period="">{show("pro", "period", "/ month")}</span>
-              <p className="plan-billing-note" data-billing-note="">{show("pro", "note", "Billed monthly")}</p>
+              <p className={priceClass("pro")} data-plan-price="">
+                {show("pro", "price", "$99")}
+              </p>
+              <span className="plan-period" data-plan-period="">
+                {show("pro", "period", "/ month")}
+              </span>
+              <p className="plan-billing-note" data-billing-note="">
+                {show("pro", "note", "Billed monthly")}
+              </p>
               <label className="seat-picker">
                 {"Seats "}
-                <input type="number" min="3" max="500" step="1" defaultValue="3" data-plan-seats="" aria-label="Pro seats" id="inp-pro-seats" {...seatInput("pro")} />
+                <input
+                  type="number"
+                  min="3"
+                  max="500"
+                  step="1"
+                  defaultValue="3"
+                  data-plan-seats=""
+                  aria-label="Pro seats"
+                  id="inp-pro-seats"
+                  {...seatInput("pro")}
+                />
                 <span data-seat-note="">{show("pro", "seatNote", "3 included, then $15 / seat / month")}</span>
               </label>
               <a data-plan-checkout="" className="site-button" id="lnk-go-pro" {...checkout("pro", "https://verse.ctruh.com/pricing?plan=pro&period=month")}>
@@ -205,15 +314,36 @@ export default function Pricing() {
             <article className="plan" data-plan-card="scale" id="art-plan-4">
               <h2>Scale</h2>
               <p className="plan-audience">For teams and developers running Verse every day.</p>
-              <p className={priceClass("scale")} data-plan-price="">{show("scale", "price", "$499")}</p>
-              <span className="plan-period" data-plan-period="">{show("scale", "period", "/ month")}</span>
-              <p className="plan-billing-note" data-billing-note="">{show("scale", "note", "Billed monthly")}</p>
+              <p className={priceClass("scale")} data-plan-price="">
+                {show("scale", "price", "$499")}
+              </p>
+              <span className="plan-period" data-plan-period="">
+                {show("scale", "period", "/ month")}
+              </span>
+              <p className="plan-billing-note" data-billing-note="">
+                {show("scale", "note", "Billed monthly")}
+              </p>
               <label className="seat-picker">
                 {"Seats "}
-                <input type="number" min="10" max="500" step="1" defaultValue="10" data-plan-seats="" aria-label="Scale seats" id="inp-scale-seats" {...seatInput("scale")} />
+                <input
+                  type="number"
+                  min="10"
+                  max="500"
+                  step="1"
+                  defaultValue="10"
+                  data-plan-seats=""
+                  aria-label="Scale seats"
+                  id="inp-scale-seats"
+                  {...seatInput("scale")}
+                />
                 <span data-seat-note="">{show("scale", "seatNote", "10 included, then $15 / seat / month")}</span>
               </label>
-              <a data-plan-checkout="" className="site-button secondary" id="lnk-choose-scale" {...checkout("scale", "https://verse.ctruh.com/pricing?plan=scale&period=month")}>
+              <a
+                data-plan-checkout=""
+                className="site-button secondary"
+                id="lnk-choose-scale"
+                {...checkout("scale", "https://verse.ctruh.com/pricing?plan=scale&period=month")}
+              >
                 Choose Scale
                 <span aria-hidden="true" />
               </a>
@@ -430,7 +560,8 @@ export default function Pricing() {
               pay only for the extra.
             </h2>
             <p>
-              On Starter, Pro and Scale you will be able to go past an allowance and pay only for what you use. Coming soon. Until then, reaching an allowance asks you to upgrade; nothing is charged for usage.
+              On Starter, Pro and Scale you will be able to go past an allowance and pay only for what you use. Coming soon. Until then, reaching an allowance
+              asks you to upgrade; nothing is charged for usage.
             </p>
           </header>
           <dl className="usage-rates">
@@ -525,9 +656,7 @@ export default function Pricing() {
             <br />
             Within 30 minutes.
           </h3>
-          <p>
-            During business hours (IST 10:00–19:00, PT 9:00–18:00, Mon–Fri) a specialist calls you within 30 minutes; otherwise by 10:00 next business day.
-          </p>
+          <p>During business hours (IST 10:00–19:00, PT 9:00–18:00, Mon–Fri) a specialist calls you within 30 minutes; otherwise by 10:00 next business day.</p>
           <dl>
             <div>
               <dt>Bengaluru</dt>
@@ -557,7 +686,8 @@ export default function Pricing() {
               <span aria-hidden="true">+</span>
             </summary>
             <p>
-              Yes. Every new account gets a 14-day trial with Pro features (5 GB storage, 3 Verse Homes, 3 films and more), then moves to Free. Free has no time limit: 1 GB storage, 1 Verse Home and 1 film a month.
+              Yes. Every new account gets a 14-day trial with Pro features (5 GB storage, 3 Verse Homes, 3 films and more), then moves to Free. Free has no time
+              limit: 1 GB storage, 1 Verse Home and 1 film a month.
             </p>
           </details>
           <details id="dtl-item-2">
@@ -566,7 +696,8 @@ export default function Pricing() {
               <span aria-hidden="true">+</span>
             </summary>
             <p>
-              You move to Free. Nothing is deleted and your scenes keep opening; creating more needs a plan. Upgrade during the trial for 25% off your first 3 months on monthly plans or 20% off your first year on annual plans.
+              You move to Free. Nothing is deleted and your scenes keep opening; creating more needs a plan. Upgrade during the trial for 25% off your first 3
+              months on monthly plans or 20% off your first year on annual plans.
             </p>
           </details>
           <details id="dtl-item-3">
@@ -575,7 +706,8 @@ export default function Pricing() {
               <span aria-hidden="true">+</span>
             </summary>
             <p>
-              We tell you at 80% and again at 100%. At 100% that action stops until you upgrade or your month resets. Published scenes never break: if bandwidth runs out on Free, viewers get a lighter version and you see a notice.
+              We tell you at 80% and again at 100%. At 100% that action stops until you upgrade or your month resets. Published scenes never break: if bandwidth
+              runs out on Free, viewers get a lighter version and you see a notice.
             </p>
           </details>
           <details id="dtl-item-4">
@@ -584,7 +716,8 @@ export default function Pricing() {
               <span aria-hidden="true">+</span>
             </summary>
             <p>
-              On paid plans you will be able to go past an allowance and pay only for the extra. It is coming soon; until then, reaching an allowance asks you to upgrade and nothing extra is charged.
+              On paid plans you will be able to go past an allowance and pay only for the extra. It is coming soon; until then, reaching an allowance asks you
+              to upgrade and nothing extra is charged.
             </p>
           </details>
           <details id="dtl-item-5">
@@ -593,7 +726,8 @@ export default function Pricing() {
               <span aria-hidden="true">+</span>
             </summary>
             <p>
-              One-time prepaid packs of Verse Homes and films, made for WhatsApp: 10 homes and 10 films for $12, or 50 of each for $59. They are used after your plan’s monthly allowance and do not expire.
+              One-time prepaid packs of Verse Homes and films, made for WhatsApp: 10 homes and 10 films for $12, or 50 of each for $59. They are used after your
+              plan’s monthly allowance and do not expire.
             </p>
           </details>
           <details id="dtl-item-6">
@@ -644,7 +778,8 @@ export default function Pricing() {
               <span aria-hidden="true">+</span>
             </summary>
             <p>
-              Customers in India pay in rupees (cards, UPI, net banking); everyone else pays in US dollars. Checkout is run by our payment partner Dodo Payments, the merchant of record, which adds the right sales tax, VAT or GST for your country and issues the invoice.
+              Customers in India pay in rupees (cards, UPI, net banking); everyone else pays in US dollars. Checkout is run by our payment partner Dodo
+              Payments, the merchant of record, which adds the right sales tax, VAT or GST for your country and issues the invoice.
             </p>
           </details>
           <details id="dtl-item-13">
@@ -652,9 +787,7 @@ export default function Pricing() {
               Can I use a discount code?
               <span aria-hidden="true">+</span>
             </summary>
-            <p>
-              Yes. Enter it at checkout, or open a link with the code in it. One code per purchase unless the code says it can be combined.
-            </p>
+            <p>Yes. Enter it at checkout, or open a link with the code in it. One code per purchase unless the code says it can be combined.</p>
           </details>
           <details id="dtl-item-14">
             <summary id="sum-can-i-get-a-refund">
@@ -666,12 +799,20 @@ export default function Pricing() {
         </div>
       </section>
       <p className="checkout-legal content-width">
-        {"Prices exclude taxes, which are added at checkout where they apply. Payments are processed by Dodo Payments, our merchant of record. Subscribing means you agree to the "}
-        <a href="https://verse.ctruh.com/terms" id="lnk-terms-2">Terms</a>
+        {
+          "Prices exclude taxes, which are added at checkout where they apply. Payments are processed by Dodo Payments, our merchant of record. Subscribing means you agree to the "
+        }
+        <a href="https://verse.ctruh.com/terms" id="lnk-terms-2">
+          Terms
+        </a>
         {", the "}
-        <a href="https://verse.ctruh.com/privacy" id="lnk-privacy-policy">Privacy policy</a>
+        <a href="https://verse.ctruh.com/privacy" id="lnk-privacy-policy">
+          Privacy policy
+        </a>
         {" and the "}
-        <a href="https://verse.ctruh.com/refunds" id="lnk-refund-policy">Refund policy</a>
+        <a href="https://verse.ctruh.com/refunds" id="lnk-refund-policy">
+          Refund policy
+        </a>
         .
       </p>
     </>

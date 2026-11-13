@@ -1,12 +1,13 @@
-// Builds /challenge from the shared page shell (header, menu, footer taken from /about).
-// Run after build-production-pages.ts. The entry form itself is hosted by the live Verse service.
-import fs from 'node:fs';
-import path from 'node:path';
-import {fileURLToPath} from 'node:url';
-const dist=process.env.VERSE_DIST||path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../dist');
-const LIVE='https://verse.ctruh.com/challenge', PRIVACY='https://verse.ctruh.com/privacy', WA='https://wa.me/917411597778';
-const ext='target="_blank" rel="noopener"';
-const main=`<main id="main" class="challenge-page">
+// Builds /challenge with the shared header, menu and footer (from /about). Runs after build-production-pages.ts.
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+const dist = process.env.VERSE_DIST || path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../dist");
+const LIVE = "https://verse.ctruh.com/challenge",
+  PRIVACY = "https://verse.ctruh.com/privacy",
+  WA = "https://wa.me/917411597778";
+const ext = 'target="_blank" rel="noopener"';
+const main = `<main id="main" class="challenge-page">
 <header class="page-hero content-width"><p class="eyebrow">THE VERSE CHALLENGE</p><h1>Send us a 3D scene<br><span>no browser engine can open.</span></h1><p class="hero-description">We’ll turn it into a link anyone can open. We have already opened a 1.8-billion-triangle scene from a link in a desktop browser. Upload yours, send us a link to it, or WhatsApp it. It stays private unless you say otherwise.</p></header>
 <section class="content-width section-space ch-enter" id="enter" aria-labelledby="ch-enter"><div><p class="eyebrow">ENTER THE CHALLENGE</p><h2 id="ch-enter">Name, email and company,<br>then the file.</h2><p class="ch-lede">We reply with a link you can open in a browser.</p></div>
 <form class="ch-form" id="ch-form" novalidate>
@@ -29,17 +30,25 @@ const main=`<main id="main" class="challenge-page">
 <article><h3>What we do with your file</h3><ul><li>Your file is private by default. Only you and Ctruh staff handling the challenge can see it.</li><li>We publish a scene to the hall of fame only if you ticked permission on the form and a person at Ctruh approved it. You can ask us to remove it any time at <a href="mailto:hello@ctruh.com">hello@ctruh.com</a>.</li><li>We use your name, email and company to reply and to follow up about Verse. We do not sell them.</li><li>Unpublished files are deleted on request.</li></ul></article>
 <article><h3>Limits and fair play</h3><ul><li>Upload limit: 1 GB in the browser. Bigger files: send a link (up to 20 GB) or WhatsApp.</li><li>Only send files you have the right to share.</li><li>We make no promise that every scene opens. If one does not, we tell you why.</li><li>The challenge is open to everyone and may change or end without notice.</li></ul></article></div></section>
 </main>`;
-let h=fs.readFileSync(path.join(dist,'about/index.html'),'utf8');
-h=h.replace(/<main[\s\S]*?<\/main>/,()=>main);
-const title='The Verse Challenge | Verse Engine by Ctruh';
-h=h.replace(/<title>[^<]*<\/title>/,`<title>${title}</title>`);
-h=h.replace(/<meta name="description" content="[^"]*">/,'<meta name="description" content="Send us a 3D scene no browser engine can open. We’ll turn it into a link anyone can open. Upload a file, send a link or WhatsApp it.">');
-h=h.replace(/<link rel="canonical" href="[^"]*">/,'<link rel="canonical" href="https://verse-engine-ctruh-design.rajat83.chatgpt.site/challenge">');
-h=h.replace(/<meta property="og:(title|description|url)"[^>]*>/g,'');
-h=h.replace(/<!--seo-->[\s\S]*?<!--\/seo-->/,'');
-h=h.replace(/(<a class="nav-link"[^>]*) aria-current="page"/g,'$1');
-fs.mkdirSync(path.join(dist,'challenge'),{recursive:true});
-fs.writeFileSync(path.join(dist,'challenge/index.html'),h);
-const sm=path.join(dist,'sitemap.xml');let s=fs.readFileSync(sm,'utf8');
-if(!s.includes('/challenge</loc>')){const o=(s.match(/<loc>(https?:\/\/[^/<]+)/)||[,''])[1];s=s.replace('</urlset>',`<url><loc>${o}/challenge</loc></url></urlset>`);fs.writeFileSync(sm,s)}
-console.log('challenge page built');
+let h = fs.readFileSync(path.join(dist, "about/index.html"), "utf8");
+h = h.replace(/<main[\s\S]*?<\/main>/, () => main);
+const title = "The Verse Challenge | Verse Engine by Ctruh";
+h = h.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`);
+h = h.replace(
+  /<meta name="description" content="[^"]*">/,
+  '<meta name="description" content="Send us a 3D scene no browser engine can open. We’ll turn it into a link anyone can open. Upload a file, send a link or WhatsApp it.">',
+);
+h = h.replace(/<link rel="canonical" href="[^"]*">/, '<link rel="canonical" href="https://verse-engine-ctruh-design.rajat83.chatgpt.site/challenge">');
+h = h.replace(/<meta property="og:(title|description|url)"[^>]*>/g, "");
+h = h.replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, "");
+h = h.replace(/(<a class="nav-link"[^>]*) aria-current="page"/g, "$1");
+fs.mkdirSync(path.join(dist, "challenge"), { recursive: true });
+fs.writeFileSync(path.join(dist, "challenge/index.html"), h);
+const sm = path.join(dist, "sitemap.xml");
+let s = fs.readFileSync(sm, "utf8");
+if (!s.includes("/challenge</loc>")) {
+  const o = (s.match(/<loc>(https?:\/\/[^/<]+)/) || [, ""])[1];
+  s = s.replace("</urlset>", `<url><loc>${o}/challenge</loc></url></urlset>`);
+  fs.writeFileSync(sm, s);
+}
+console.log("challenge page built");

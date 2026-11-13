@@ -1,17 +1,13 @@
-// Documentation pages (/docs/...). Same markup as the generated docs pages; the build
-// (source/build-spa.ts, docsMarkup) checks every page against this layout.
-// `page` comes from the route payload: { active, article, source, toc }. The chapter nav is ./nav.json.
-// Behaviour ported from public/js/pages.js:
-//   - typing in either search box filters the chapters and keeps both boxes in sync;
-//     typing in the mobile box opens "Browse documentation"
-//   - Ctrl/Cmd+K focuses the search box that is visible
-//   - the "Copy ⧉" buttons on code blocks in the article
+// Documentation pages (/docs/...). The build (source/build-spa.ts) checks every docs page against this layout.
+// The search boxes filter the chapters (kept in sync; typing on mobile opens "Browse documentation"), Ctrl/Cmd+K
+// focuses the visible one, and "Copy ⧉" copies a code block.
 import { useEffect, useRef, useState } from "react";
 import parse from "html-react-parser";
 import type { FormEvent, MouseEvent, RefCallback } from "react";
 import nav from "./nav.json";
 
-const MOBILE = 0, DESKTOP = 1;
+const MOBILE = 0,
+  DESKTOP = 1;
 type DocsData = {
   active: string | null;
   article: string;
@@ -19,11 +15,27 @@ type DocsData = {
   toc: { id: string; href: string; text: string }[];
 };
 
-function DocsSearch({ place, inputRef, onSearch }: { place: string; inputRef: RefCallback<HTMLInputElement>; onSearch: (event: FormEvent<HTMLInputElement>) => void }) {
+function DocsSearch({
+  place,
+  inputRef,
+  onSearch,
+}: {
+  place: string;
+  inputRef: RefCallback<HTMLInputElement>;
+  onSearch: (event: FormEvent<HTMLInputElement>) => void;
+}) {
   return (
     <label className="docs-search" htmlFor={"doc-search-" + place}>
       <span className="sr-only">Search documentation</span>
-      <input id={"doc-search-" + place} ref={inputRef} type="search" placeholder="Search documentation" data-doc-search="" autoComplete="off" onInput={onSearch} />
+      <input
+        id={"doc-search-" + place}
+        ref={inputRef}
+        type="search"
+        placeholder="Search documentation"
+        data-doc-search=""
+        autoComplete="off"
+        onInput={onSearch}
+      />
       <kbd aria-hidden="true">⌘ K</kbd>
     </label>
   );
@@ -36,7 +48,15 @@ function DocsNav({ which, active, query }: { which: number; active: string | nul
       const hidden = !item.docTitle.includes(query);
       if (!hidden) count++;
       return (
-        <a key={item.ids[which]} data-doc-item="" data-doc-title={item.docTitle} href={item.href} aria-current={item.href === active ? "page" : undefined} id={item.ids[which]} hidden={hidden}>
+        <a
+          key={item.ids[which]}
+          data-doc-item=""
+          data-doc-title={item.docTitle}
+          href={item.href}
+          aria-current={item.href === active ? "page" : undefined}
+          id={item.ids[which]}
+          hidden={hidden}
+        >
           {item.title}
         </a>
       );
@@ -51,7 +71,9 @@ function DocsNav({ which, active, query }: { which: number; active: string | nul
   return (
     <div className="docs-nav-content">
       {groups}
-      <p className="docs-no-results" hidden={count > 0}>No matching guides.</p>
+      <p className="docs-no-results" hidden={count > 0}>
+        No matching guides.
+      </p>
     </div>
   );
 }
@@ -74,7 +96,9 @@ export default function DocsPage({ page }: { page: DocsData }) {
 
   function onSearch(event: FormEvent<HTMLInputElement>) {
     const input = event.currentTarget;
-    inputs.current.forEach((other) => { if (other && other !== input) other.value = input.value; });
+    inputs.current.forEach((other) => {
+      if (other && other !== input) other.value = input.value;
+    });
     const value = input.value.trim().toLowerCase();
     setQuery(value);
     if (value && input.closest(".docs-mobile") && browse.current) browse.current.open = true;
@@ -94,28 +118,53 @@ export default function DocsPage({ page }: { page: DocsData }) {
   return (
     <section className="documentation" id="sec-documentation">
       <div className="docs-mobile">
-        <DocsSearch place="mobile" inputRef={(el) => { inputs.current[MOBILE] = el; }} onSearch={onSearch} />
+        <DocsSearch
+          place="mobile"
+          inputRef={(el) => {
+            inputs.current[MOBILE] = el;
+          }}
+          onSearch={onSearch}
+        />
         <details id="dtl-item" ref={browse}>
-          <summary id="sum-browse-documentation">Browse documentation <span aria-hidden="true">+</span></summary>
+          <summary id="sum-browse-documentation">
+            Browse documentation <span aria-hidden="true">+</span>
+          </summary>
           <nav aria-label="Documentation chapters" id="nav-documentation-chapters">
             <DocsNav which={MOBILE} active={page.active} query={query} />
           </nav>
         </details>
       </div>
       <aside className="docs-sidebar" id="asd-docs-sidebar">
-        <DocsSearch place="desktop" inputRef={(el) => { inputs.current[DESKTOP] = el; }} onSearch={onSearch} />
+        <DocsSearch
+          place="desktop"
+          inputRef={(el) => {
+            inputs.current[DESKTOP] = el;
+          }}
+          onSearch={onSearch}
+        />
         <nav aria-label="Documentation chapters" id="nav-documentation-chapters-2">
           <DocsNav which={DESKTOP} active={page.active} query={query} />
         </nav>
       </aside>
       <div className="doc-body">
-        <article className="doc-article" id="art-doc-article" onClick={copyCode}>{parse(page.article)}</article>
-        <div className="doc-source">Published documentation from <a href={page.source} id="lnk-verse-by-ctruh">Verse by Ctruh</a></div>
+        <article className="doc-article" id="art-doc-article" onClick={copyCode}>
+          {parse(page.article)}
+        </article>
+        <div className="doc-source">
+          Published documentation from{" "}
+          <a href={page.source} id="lnk-verse-by-ctruh">
+            Verse by Ctruh
+          </a>
+        </div>
       </div>
       {page.toc.length > 0 && (
         <aside className="docs-toc" id="asd-docs-toc">
           <p>ON THIS PAGE</p>
-          {page.toc.map((t) => <a key={t.id} href={t.href} id={t.id}>{t.text}</a>)}
+          {page.toc.map((t) => (
+            <a key={t.id} href={t.href} id={t.id}>
+              {t.text}
+            </a>
+          ))}
         </aside>
       )}
     </section>

@@ -1,29 +1,26 @@
-// Each page's meta: what the router sets on <head> and <body> for the route, and how the
-// shell looks around it. Edit a page's title or description here.
-//   kind:       landing | page | legal | app | notfound | resources (decides the page's stylesheets)
-//   chrome:     full (header and footer) | header (header only) | none
+// Each page's meta: what the router sets on <head> and <body>, and the shell around the page.
+//   kind:          landing | page | legal | app | notfound | resources (picks the stylesheets)
+//   chrome:        full (header and footer) | header | none
 //   bodyClass, mainClass: classes for <body> and <main>
-//   navCurrent: header link shown as the current section ("" for none)
-//   noindex:    keep the page out of search results
-//   ogDescription: og:description when it should differ from description
-//   ogTitle, ogImage: the page's social card (link previews); without them the title and
-//               OG_DEFAULT are used. A page with its own image gets an empty og:image:alt
-//               (OG_DEFAULT's describes the default image only)
-//   prerender:  also build the page's content, stylesheets and structured data into its HTML, for
-//               crawlers and readers without JavaScript (vite.config.js, src/prerender.jsx; Part E)
-//   jsonld:     structured data for search engines (home page, Resources pages)
+//   navCurrent:    header link marked current ("" for none)
+//   noindex:       keep out of search results
+//   ogTitle, ogDescription, ogImage: social card overrides (defaults: title, description, OG_DEFAULT)
+//   prerender:     build the page's content into its HTML (vite.config.ts, src/prerender.tsx)
+//   jsonld:        structured data
 // Documentation pages get theirs from source/ (npm run content).
 import { resourcesJsonLd } from "./resources/schema.ts";
 import { RESOURCE_PAGES, ROUTES } from "./resources/data.ts";
 
 /** The site's default social card image and its description (as in index.html). */
-export const OG_DEFAULT = { ogImage: "/assets/og/verse-engine-by-ctruh-1200x630.jpg", ogImageAlt: "Verse Engine by Ctruh: a 3D scene opened from one link in a browser" };
+export const OG_DEFAULT = {
+  ogImage: "/assets/og/verse-engine-by-ctruh-1200x630.jpg",
+  ogImageAlt: "Verse Engine by Ctruh: a 3D scene opened from one link in a browser",
+};
 
 // Shared by the Resources pages (their structured data is added below META).
 const RESOURCE_PAGE = { bodyClass: "site-page", mainClass: "", noindex: false, prerender: true };
 
-// Breadcrumb structured data for a documentation page (/docs/...): Docs > this page.
-// Used by the router (in the browser) and by vite.config.ts (in each page's server HTML).
+// Breadcrumb structured data for a docs page (used by the router and vite.config.ts).
 export const docsBreadcrumb = (path: string, title: string, origin: string) => ({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -49,8 +46,7 @@ export type PageMeta = {
   jsonld?: Record<string, unknown>;
 };
 
-// Structured data for a documentation page: the breadcrumb, plus a TechArticle for blog posts
-// (page.article: headline, datePublished and author from the post's frontmatter).
+// Structured data for a docs page: the breadcrumb, plus a TechArticle for blog posts.
 /** A blog post's frontmatter (documentation payloads of blog posts carry it). */
 export interface DocsArticle {
   headline: string;
@@ -78,7 +74,8 @@ export const META: Record<string, PageMeta> = {
     kind: "landing",
     chrome: "full",
     title: "Verse Engine by Ctruh | Browser-Native 3D and XR Engine",
-    description: "Create, stream and deploy interactive 3D and XR experiences through the browser. Explore Verse Engine by Ctruh, built for browser-native 3D infrastructure.",
+    description:
+      "Create, stream and deploy interactive 3D and XR experiences through the browser. Explore Verse Engine by Ctruh, built for browser-native 3D infrastructure.",
     ogTitle: "Verse Engine by Ctruh: any 3D, one link",
     ogDescription: "From a product to a whole city: turn any 3D file, scan, floor plan or editor project into one link that opens in the browser. No app.",
     ogImage: "/assets/og/og-landing.jpg",
@@ -92,54 +89,52 @@ export const META: Record<string, PageMeta> = {
         {
           "@type": "Organization",
           "@id": "https://www.ctruh.com/#organization",
-          "name": "Ctruh",
-          "legalName": "CTRUH Technologies Private Limited",
-          "url": "https://www.ctruh.com/",
-          "logo": "https://verse.ctruh.com/assets/brand/ctruh-logo-512.png",
-          "email": "hello@ctruh.com",
-          "sameAs": [
-            "https://www.linkedin.com/company/ctruh/",
-            "https://www.youtube.com/@Ctruh",
-            "https://www.instagram.com/ctruh.official/"
-          ]
+          name: "Ctruh",
+          legalName: "CTRUH Technologies Private Limited",
+          url: "https://www.ctruh.com/",
+          logo: "https://verse.ctruh.com/assets/brand/ctruh-logo-512.png",
+          email: "hello@ctruh.com",
+          sameAs: ["https://www.linkedin.com/company/ctruh/", "https://www.youtube.com/@Ctruh", "https://www.instagram.com/ctruh.official/"],
         },
         {
           "@type": "WebSite",
           "@id": "https://verse.ctruh.com/#website",
-          "name": "Verse Engine by Ctruh",
-          "url": "https://verse.ctruh.com/",
-          "publisher": {
-            "@id": "https://www.ctruh.com/#organization"
-          }
+          name: "Verse Engine by Ctruh",
+          url: "https://verse.ctruh.com/",
+          publisher: {
+            "@id": "https://www.ctruh.com/#organization",
+          },
         },
         {
           "@type": "SoftwareApplication",
           "@id": "https://verse.ctruh.com/#verse-engine",
-          "name": "Verse Engine by Ctruh",
-          "applicationCategory": "DeveloperApplication",
-          "applicationSubCategory": "Browser-native 3D engine",
-          "operatingSystem": "Web browser (WebGPU or WebGL2)",
-          "url": "https://verse.ctruh.com/",
-          "description": "Verse Engine by Ctruh turns 3D files, scans, floor plans and Blender, Unity or Unreal projects into one link that opens in a modern web browser.",
-          "publisher": {
-            "@id": "https://www.ctruh.com/#organization"
+          name: "Verse Engine by Ctruh",
+          applicationCategory: "DeveloperApplication",
+          applicationSubCategory: "Browser-native 3D engine",
+          operatingSystem: "Web browser (WebGPU or WebGL2)",
+          url: "https://verse.ctruh.com/",
+          description:
+            "Verse Engine by Ctruh turns 3D files, scans, floor plans and Blender, Unity or Unreal projects into one link that opens in a modern web browser.",
+          publisher: {
+            "@id": "https://www.ctruh.com/#organization",
           },
-          "offers": {
+          offers: {
             "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD",
-            "description": "Free plan",
-            "url": "https://verse.ctruh.com/pricing"
-          }
-        }
-      ]
+            price: "0",
+            priceCurrency: "USD",
+            description: "Free plan",
+            url: "https://verse.ctruh.com/pricing",
+          },
+        },
+      ],
     },
   },
   "/about": {
     kind: "page",
     chrome: "full",
     title: "About | Verse Engine by Ctruh",
-    description: "Ctruh builds 3D, XR and AI infrastructure. Learn how Verse Engine by Ctruh, our browser-native 3D engine, fits with VersaAI and Ctruh Studio.",
+    description:
+      "Ctruh builds 3D, XR and AI infrastructure. Learn how Verse Engine by Ctruh, our browser-native 3D engine, fits with VersaAI and Ctruh Studio.",
     bodyClass: "site-page",
     mainClass: "",
     navCurrent: "/about",
@@ -149,7 +144,8 @@ export const META: Record<string, PageMeta> = {
     kind: "page",
     chrome: "full",
     title: "Verse Engine Developers | 3D API, SDK, Embeds and MCP",
-    description: "Upload, publish and embed streamable 3D with the Verse Engine REST API and SDK, React and Vue wrappers, signed webhooks, a one-tag embed and an MCP server.",
+    description:
+      "Upload, publish and embed streamable 3D with the Verse Engine REST API and SDK, React and Vue wrappers, signed webhooks, a one-tag embed and an MCP server.",
     ogTitle: "Verse Engine for developers: one upload in, a link or an embed out",
     ogDescription: "REST API, SDK, React and Vue wrappers, signed webhooks, a one-tag embed and an MCP server for AI assistants.",
     ogImage: "/assets/og/og-developers.jpg",
@@ -182,7 +178,8 @@ export const META: Record<string, PageMeta> = {
     kind: "page",
     chrome: "full",
     title: "Blender, Unity & Unreal Plug-ins | Verse Engine by Ctruh",
-    description: "Publish scenes to a shareable 3D link straight from Blender, Unity or Unreal Engine. Beta plug-ins cover SketchUp, Revit, Rhino, 3ds Max and more.",
+    description:
+      "Publish scenes to a shareable 3D link straight from Blender, Unity or Unreal Engine. Beta plug-ins cover SketchUp, Revit, Rhino, 3ds Max and more.",
     bodyClass: "site-page",
     mainClass: "",
     navCurrent: "/plugins",
@@ -212,7 +209,8 @@ export const META: Record<string, PageMeta> = {
     kind: "page",
     chrome: "full",
     title: "Unreal Engine install guide | Verse Engine by Ctruh",
-    description: "Unreal Engine 5.8 with a C++ toolchain (Xcode on macOS, Visual Studio 2022 on Windows). Source plug-in; the editor compiles it on first open.",
+    description:
+      "Unreal Engine 5.8 with a C++ toolchain (Xcode on macOS, Visual Studio 2022 on Windows). Source plug-in; the editor compiles it on first open.",
     bodyClass: "site-page",
     mainClass: "",
     navCurrent: "/plugins",
@@ -222,7 +220,8 @@ export const META: Record<string, PageMeta> = {
     kind: "page",
     chrome: "full",
     title: "The Verse Challenge | Verse Engine by Ctruh",
-    description: "We’ll turn it into a link anyone can open. We have already opened a 1.8-billion-triangle scene from a link in a desktop browser. Upload yours, send us a link…",
+    description:
+      "We’ll turn it into a link anyone can open. We have already opened a 1.8-billion-triangle scene from a link in a desktop browser. Upload yours, send us a link…",
     bodyClass: "site-page",
     mainClass: "challenge-page",
     navCurrent: "",
@@ -287,12 +286,13 @@ export const META: Record<string, PageMeta> = {
     mainClass: "legal-page",
     navCurrent: "",
     noindex: false,
-  },  // Resources pages (src/pages/resources/), listed under Resources in the header.
+  }, // Resources pages (src/pages/resources/), listed under Resources in the header.
   "/use-cases/3d-commerce": {
     kind: "resources",
     chrome: "full",
     title: "Browser-Based 3D Product Visualization for E-commerce | Ctruh",
-    description: "Publish interactive 3D products that shoppers can orbit, zoom and view in AR from one link. Embed Verse Engine by Ctruh on Shopify, WordPress and more.",
+    description:
+      "Publish interactive 3D products that shoppers can orbit, zoom and view in AR from one link. Embed Verse Engine by Ctruh on Shopify, WordPress and more.",
     ogDescription: "Let shoppers orbit, zoom and place a product in their room, in the browser. Embed it on your product page with one tag.",
     ogTitle: "Interactive 3D product views, from one link",
     ogImage: "/assets/og/og-3d-commerce.jpg",
@@ -303,7 +303,8 @@ export const META: Record<string, PageMeta> = {
     kind: "resources",
     chrome: "full",
     title: "Browser-Based 3D for Architecture and Real Estate | Ctruh",
-    description: "Share walkable 3D apartments, BIM models, scans and floor-plan-to-3D homes from one browser link. No app for clients or buyers. Built on Verse Engine by Ctruh.",
+    description:
+      "Share walkable 3D apartments, BIM models, scans and floor-plan-to-3D homes from one browser link. No app for clients or buyers. Built on Verse Engine by Ctruh.",
     ogDescription: "Floor plans, BIM models, scans and whole townships as walkable 3D, opened in the browser.",
     ogTitle: "Walk the apartment before it is built, from one link",
     ogImage: "/assets/og/og-architecture-real-estate.jpg",
@@ -314,7 +315,8 @@ export const META: Record<string, PageMeta> = {
     kind: "resources",
     chrome: "full",
     title: "AI and 3D Infrastructure: From Creation to Deployment | Ctruh",
-    description: "How Ctruh connects AI-powered 3D creation (VersaAI) with browser-native 3D delivery (Verse Engine), from images, floor plans and scans to a streamable link.",
+    description:
+      "How Ctruh connects AI-powered 3D creation (VersaAI) with browser-native 3D delivery (Verse Engine), from images, floor plans and scans to a streamable link.",
     ogDescription: "VersaAI creates. Verse Engine prepares, streams and deploys. How Ctruh connects the two.",
     ogTitle: "From AI-created 3D to a link anyone can open",
     ogImage: "/assets/og/og-ai-3d-infrastructure.jpg",
@@ -325,7 +327,8 @@ export const META: Record<string, PageMeta> = {
     kind: "resources",
     chrome: "full",
     title: "Explore the Lyon 3D City Demo | Verse Engine by Ctruh",
-    description: "Open a 10.3-billion-triangle photomesh of Lyon from one link in your browser. See how Verse Engine streams a 556 GB city file and how it was measured.",
+    description:
+      "Open a 10.3-billion-triangle photomesh of Lyon from one link in your browser. See how Verse Engine streams a 556 GB city file and how it was measured.",
     ogDescription: "A real city in one 556 GB file, streamed into Chrome on a laptop. Open it, and see how it was measured.",
     ogTitle: "Lyon: 10.3 billion triangles, opened from a link",
     ogImage: "/assets/og/og-lyon.jpg",

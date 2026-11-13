@@ -5,13 +5,21 @@ export default function PluginUnreal() {
   return (
     <>
       <div className="content-width guide-breadcrumb">
-        <a href="/plugins" id="lnk-plug-ins-2">Plug-ins</a>
+        <a href="/plugins" id="lnk-plug-ins-2">
+          Plug-ins
+        </a>
         <span>/</span>
         <span>Unreal Engine</span>
         <nav aria-label="Editor install guides" id="nav-editor-install-guides">
-          <a href="/plugins/blender" id="lnk-blender-3">Blender</a>
-          <a href="/plugins/unity" id="lnk-unity-3">Unity</a>
-          <a href="/plugins/unreal" aria-current="page" id="lnk-unreal-engine-2">Unreal Engine</a>
+          <a href="/plugins/blender" id="lnk-blender-3">
+            Blender
+          </a>
+          <a href="/plugins/unity" id="lnk-unity-3">
+            Unity
+          </a>
+          <a href="/plugins/unreal" aria-current="page" id="lnk-unreal-engine-2">
+            Unreal Engine
+          </a>
         </nav>
       </div>
       <header className="guide-hero content-width" id="hdr-guide-hero">
@@ -23,9 +31,7 @@ export default function PluginUnreal() {
             {"for "}
             <span>Unreal Engine.</span>
           </h1>
-          <p>
-            Unreal Engine 5.8 with a C++ toolchain (Xcode on macOS, Visual Studio 2022 on Windows). Source plug-in; the editor compiles it on first open.
-          </p>
+          <p>Unreal Engine 5.8 with a C++ toolchain (Xcode on macOS, Visual Studio 2022 on Windows). Source plug-in; the editor compiles it on first open.</p>
           <div className="page-actions">
             <a className="site-button" href="https://verse.ctruh.com/downloads/VersePublish-UE5.8-3.0.0-beta.1.zip" id="lnk-download-for-unreal-engine">
               Download for Unreal Engine
@@ -102,9 +108,7 @@ export default function PluginUnreal() {
               <span className="step-number">01</span>
               <div>
                 {"Close the editor and unzip into your project, so you have "}
-                <code>{"<Project>/Plugins/VersePublish/VersePublish.uplugin"}</code>
-                .
-                <span>The Plugins folder sits next to your .uproject.</span>
+                <code>{"<Project>/Plugins/VersePublish/VersePublish.uplugin"}</code>.<span>The Plugins folder sits next to your .uproject.</span>
               </div>
             </li>
             <li>
@@ -118,11 +122,11 @@ export default function PluginUnreal() {
               <span className="step-number">03</span>
               <div>
                 {"Optional: paste an account token from "}
-                <a href="/studio" id="lnk-studio">Studio</a>
+                <a href="/studio" id="lnk-studio">
+                  Studio
+                </a>
                 {" in "}
-                <b>Project Settings › Plugins › Verse Publish</b>
-                .
-                <span>Your scenes become permanent and are listed in your library.</span>
+                <b>Project Settings › Plugins › Verse Publish</b>.<span>Your scenes become permanent and are listed in your library.</span>
               </div>
             </li>
             <li>
@@ -131,9 +135,7 @@ export default function PluginUnreal() {
                 {"Open "}
                 <b>Tools › Verse › Publish to Verse</b>
                 {" and press "}
-                <b>Publish to Verse</b>
-                .
-                <span>Upload %, then the build stages, then the link — copied for you.</span>
+                <b>Publish to Verse</b>.<span>Upload %, then the build stages, then the link — copied for you.</span>
               </div>
             </li>
           </ol>
@@ -162,7 +164,9 @@ export default function PluginUnreal() {
           <div className="guide-key">
             <h3>Big projects.</h3>
             <p>Up to 20 GB, sent in resumable parts. Browser uploads stop at 500 MB.</p>
-            <a className="text-link" href="/studio" id="lnk-open-studio">{"Open Studio "}</a>
+            <a className="text-link" href="/studio" id="lnk-open-studio">
+              {"Open Studio "}
+            </a>
           </div>
         </aside>
       </section>

@@ -1,6 +1,5 @@
-// Helpers shared by the Resources pages, their data (data.js) and their structured data (schema.js).
-// data.js and this file import each other, so every helper here is a function declaration: those are
-// ready before either module runs, whichever is loaded first.
+// Helpers for the Resources pages, their data and structured data. data.ts and this file import each other, so
+// the helpers are function declarations (ready whichever module loads first).
 import { CLAIMS, SITE, ROUTES } from "./data.ts";
 import type { ClaimId, ClaimPart, LinkPart, Rich, Route, RouteKey } from "./types.ts";
 
@@ -21,11 +20,23 @@ export function claimOk(id?: ClaimId): boolean {
   return CLAIMS[id].confirmed === true;
 }
 
-// Rich text in data.js: a string, or a list of strings and these parts (rendered by <Rich> in ResourcePage.jsx).
-export function link(label: string, to: string, attrs?: Record<string, string>): LinkPart { return { link: label, href: to, ...attrs }; }
-export function strong(text: string) { return { strong: text }; }
-export function code(text: string) { return { code: text }; }
-export function muted(text: string) { return { muted: text }; }
-export function pill(text: string, tone?: string) { return { pill: text, tone }; }
+// Rich text parts (rendered by <Rich> in ResourcePage.tsx).
+export function link(label: string, to: string, attrs?: Record<string, string>): LinkPart {
+  return { link: label, href: to, ...attrs };
+}
+export function strong(text: string) {
+  return { strong: text };
+}
+export function code(text: string) {
+  return { code: text };
+}
+export function muted(text: string) {
+  return { muted: text };
+}
+export function pill(text: string, tone?: string) {
+  return { pill: text, tone };
+}
 /** Text shown only once claim `id` is confirmed; until then `fallback` (if any). */
-export function claim(id: ClaimId, parts: Rich, fallback?: Rich): ClaimPart { return { claim: id, parts, fallback }; }
+export function claim(id: ClaimId, parts: Rich, fallback?: Rich): ClaimPart {
+  return { claim: id, parts, fallback };
+}

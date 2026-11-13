@@ -1,7 +1,5 @@
-// Mobile navigation dialog (was public/js/menu.js). Opened with showModal() from the
-// header button; closes with the close button, Escape, or when a link inside is
-// clicked. Emits `verse:menu` ({open}) so page modules (e.g. smooth scroll) can react,
-// and returns focus to the menu button when it closes, exactly as before.
+// Mobile navigation dialog: opened by the header button; closed by the close button, Escape or a link click.
+// Emits `verse:menu` ({open}) for page modules and returns focus to the menu button.
 import { RESOURCES_MENU } from "../pages/resources/data.ts";
 import { Chevron } from "./ResourcesNav.tsx";
 import type { Dispatch, MouseEvent, RefObject, SetStateAction } from "react";
@@ -9,8 +7,7 @@ import type { Dispatch, MouseEvent, RefObject, SetStateAction } from "react";
 type DialogRef = RefObject<HTMLDialogElement | null>;
 type SetOpen = Dispatch<SetStateAction<boolean>>;
 
-const emit = (open: boolean) =>
-  document.dispatchEvent(new CustomEvent("verse:menu", { detail: { open } }));
+const emit = (open: boolean) => document.dispatchEvent(new CustomEvent("verse:menu", { detail: { open } }));
 
 export function openMenu(dialogRef: DialogRef, setMenuOpen: SetOpen) {
   dialogRef.current!.showModal();
@@ -18,7 +15,15 @@ export function openMenu(dialogRef: DialogRef, setMenuOpen: SetOpen) {
   emit(true);
 }
 
-export default function MobileMenu({ dialogRef, menuButtonRef, setMenuOpen }: { dialogRef: DialogRef; menuButtonRef: RefObject<HTMLButtonElement | null>; setMenuOpen: SetOpen }) {
+export default function MobileMenu({
+  dialogRef,
+  menuButtonRef,
+  setMenuOpen,
+}: {
+  dialogRef: DialogRef;
+  menuButtonRef: RefObject<HTMLButtonElement | null>;
+  setMenuOpen: SetOpen;
+}) {
   const onCloseButton = () => dialogRef.current!.close();
   const onClose = () => {
     setMenuOpen(false);
@@ -29,21 +34,10 @@ export default function MobileMenu({ dialogRef, menuButtonRef, setMenuOpen }: { 
     if ((event.target as Element).closest("a")) dialogRef.current!.close();
   };
   return (
-    <dialog
-      className="menu-dialog growth-menu"
-      id="menu-dialog"
-      ref={dialogRef}
-      onClose={onClose}
-      onClick={onClick}
-    >
+    <dialog className="menu-dialog growth-menu" id="menu-dialog" ref={dialogRef} onClose={onClose} onClick={onClick}>
       <div className="menu-top">
         <span>{"Verse Engine / Ctruh"}</span>
-        <button
-          id="btn-menu-close"
-          className="menu-close"
-          aria-label="Close navigation"
-          onClick={onCloseButton}
-        >
+        <button id="btn-menu-close" className="menu-close" aria-label="Close navigation" onClick={onCloseButton}>
           {"Close ×"}
         </button>
       </div>
@@ -54,22 +48,8 @@ export default function MobileMenu({ dialogRef, menuButtonRef, setMenuOpen }: { 
         <details className="m-group" id="dtl-m-group">
           <summary id="sum-developers">
             {"Developers"}
-            <svg
-              className="m-chev"
-              viewBox="0 0 24 24"
-              width="22"
-              height="22"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                d="m5 9 7 7 7-7"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            <svg className="m-chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+              <path d="m5 9 7 7 7-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </summary>
           <div>
@@ -93,22 +73,8 @@ export default function MobileMenu({ dialogRef, menuButtonRef, setMenuOpen }: { 
         <details className="m-group" id="dtl-m-group-2">
           <summary id="sum-plug-ins">
             {"Plug-ins"}
-            <svg
-              className="m-chev"
-              viewBox="0 0 24 24"
-              width="22"
-              height="22"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                d="m5 9 7 7 7-7"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            <svg className="m-chev" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+              <path d="m5 9 7 7 7-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </summary>
           <div>

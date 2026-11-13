@@ -1,10 +1,23 @@
-// Renders a Resources page (3D commerce, architecture and real estate, AI and 3D infrastructure,
-// Lyon demo) from its data in ./data.js. Styled by /css/resources.css in the site's light theme;
-// the site's header and footer come from the shell.
+// Renders a Resources page from ./data.ts, styled by /css/resources.css; the header and footer come from the shell.
 import { Fragment, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { claimOk } from "./utils.ts";
-import type { Action as ActionData, Block, ClaimPart, BlockType, Claimed, Faq, FigureProps, Hero as HeroData, LiveDemoProps, ResourcePageData, Rich as RichValue, RichPart, Section as SectionData, TableProps } from "./types.ts";
+import type {
+  Action as ActionData,
+  Block,
+  ClaimPart,
+  BlockType,
+  Claimed,
+  Faq,
+  FigureProps,
+  Hero as HeroData,
+  LiveDemoProps,
+  ResourcePageData,
+  Rich as RichValue,
+  RichPart,
+  Section as SectionData,
+  TableProps,
+} from "./types.ts";
 
 declare global {
   interface Window {
@@ -16,17 +29,15 @@ const nn = (i: number) => String(i + 1).padStart(2, "0");
 /** The claim an item carries, if it is an object with one (strings and lists carry none). */
 const claimOf = (item: unknown) => (typeof item === "object" && item !== null && "claim" in item ? (item as Claimed).claim : undefined);
 const shown = <T,>(items: T[]) => items.filter((item) => claimOk(claimOf(item)));
-const each = <T,>(items: T[], render: (item: T, i: number) => ReactNode) =>
-  shown(items).map((item, i) => <Fragment key={i}>{render(item, i)}</Fragment>);
+const each = <T,>(items: T[], render: (item: T, i: number) => ReactNode) => shown(items).map((item, i) => <Fragment key={i}>{render(item, i)}</Fragment>);
 
-/* ───────────── Rich text (see the part helpers in utils.js) ───────────── */
+/* ───────────── Rich text (see the part helpers in utils.ts) ───────────── */
 
 const isClaimPart = (p: RichPart): p is ClaimPart => typeof p === "object" && "claim" in p && "parts" in p;
 
 function Part({ p }: { p: RichPart }) {
   if (typeof p === "string") return p;
-  if (isClaimPart(p))
-    return <Rich value={claimOk(p.claim) ? p.parts : p.fallback} />;
+  if (isClaimPart(p)) return <Rich value={claimOk(p.claim) ? p.parts : p.fallback} />;
   if ("link" in p) {
     const { link, href, ...attrs } = p;
     return (
@@ -38,56 +49,27 @@ function Part({ p }: { p: RichPart }) {
   if ("strong" in p) return <strong>{p.strong}</strong>;
   if ("code" in p) return <code>{p.code}</code>;
   if ("muted" in p) return <span className="rs-muted">{p.muted}</span>;
-  if ("pill" in p)
-    return (
-      <span className={"rs-pill" + (p.tone ? " rs-pill-" + p.tone : "")}>
-        {p.pill}
-      </span>
-    );
+  if ("pill" in p) return <span className={"rs-pill" + (p.tone ? " rs-pill-" + p.tone : "")}>{p.pill}</span>;
   throw new Error("Unknown rich text part " + JSON.stringify(p));
 }
 function Rich({ value }: { value?: RichValue }) {
   if (value == null) return null;
-  return Array.isArray(value) ? (
-    value.map((p, i) => <Part key={i} p={p} />)
-  ) : (
-    <Part p={value} />
-  );
+  return Array.isArray(value) ? value.map((p, i) => <Part key={i} p={p} />) : <Part p={value} />;
 }
 
 /* ───────────── Pieces ───────────── */
 
 /** A call-to-action link styled as the site's button (outlined when `outline`). */
 const Action = ({ a }: { a: ActionData }) => (
-  <a
-    className={"site-button" + (a.outline ? " rs-outline" : "")}
-    href={a.href}
-    data-event="cta_click"
-    data-cta={a.event}
-  >
+  <a className={"site-button" + (a.outline ? " rs-outline" : "")} href={a.href} data-event="cta_click" data-cta={a.event}>
     {a.label}
   </a>
 );
 
-function Figure({
-  src,
-  alt,
-  caption,
-  width = 1600,
-  height = 900,
-  eager = false,
-}: FigureProps) {
+function Figure({ src, alt, caption, width = 1600, height = 900, eager = false }: FigureProps) {
   return (
     <figure className="rs-figure">
-      <img
-        src={src}
-        alt={alt}
-        width={width}
-        height={height}
-        loading={eager ? "eager" : "lazy"}
-        decoding="async"
-        fetchPriority={eager ? "high" : undefined}
-      />
+      <img src={src} alt={alt} width={width} height={height} loading={eager ? "eager" : "lazy"} decoding="async" fetchPriority={eager ? "high" : undefined} />
       {caption && <figcaption>{caption}</figcaption>}
     </figure>
   );
@@ -95,16 +77,7 @@ function Figure({
 
 /** Click-to-load live 3D scene. Until embedding is confirmed (`embedClaim`), the poster is a link
     that opens the live scene in a new tab. */
-function LiveDemo({
-  src,
-  title,
-  poster,
-  posterAlt,
-  openLabel,
-  embedClaim = "demo-iframe",
-  note,
-  buttonId,
-}: LiveDemoProps) {
+function LiveDemo({ src, title, poster, posterAlt, openLabel, embedClaim = "demo-iframe", note, buttonId }: LiveDemoProps) {
   const [on, setOn] = useState(false);
   const newTab = {
     href: src,
@@ -115,14 +88,7 @@ function LiveDemo({
   };
   const posterWith = (label: string) => (
     <>
-      <img
-        src={poster}
-        alt={posterAlt}
-        width="1600"
-        height="900"
-        loading="lazy"
-        decoding="async"
-      />
+      <img src={poster} alt={posterAlt} width="1600" height="900" loading="lazy" decoding="async" />
       <span className="rs-demo-play">
         <span aria-hidden="true">▶</span> {label}
       </span>
@@ -135,22 +101,9 @@ function LiveDemo({
           {posterWith("Open the live 3D scene")}
         </a>
       ) : on ? (
-        <iframe
-          src={src}
-          title={title}
-          allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope"
-          allowFullScreen
-          loading="lazy"
-        />
+        <iframe src={src} title={title} allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope" allowFullScreen loading="lazy" />
       ) : (
-        <button
-          type="button"
-          className="rs-demo-poster"
-          id={buttonId}
-          onClick={() => setOn(true)}
-          data-event="demo_load"
-          data-demo={title}
-        >
+        <button type="button" className="rs-demo-poster" id={buttonId} onClick={() => setOn(true)} data-event="demo_load" data-demo={title}>
           {posterWith("Load the live 3D scene here")}
         </button>
       )}
@@ -166,12 +119,7 @@ function LiveDemo({
 
 function Table({ head, rows, caption }: TableProps) {
   return (
-    <div
-      className={"rs-table" + (head.length >= 4 ? " rs-t-wide" : "")}
-      role="region"
-      aria-label={caption}
-      tabIndex={0}
-    >
+    <div className={"rs-table" + (head.length >= 4 ? " rs-t-wide" : "")} role="region" aria-label={caption} tabIndex={0}>
       <table>
         {caption && <caption>{caption}</caption>}
         <thead>
@@ -295,16 +243,7 @@ const BLOCKS: { [K in BlockType]: (b: BlockOf<K>) => ReactNode } = {
   demo: (b) => <LiveDemo {...b} />,
   video: (b) => (
     <figure className="rs-demo">
-      <video
-        controls
-        muted
-        playsInline
-        preload="none"
-        poster={b.poster}
-        width="1920"
-        height="1080"
-        aria-label={b.label}
-      >
+      <video controls muted playsInline preload="none" poster={b.poster} width="1920" height="1080" aria-label={b.label}>
         <source src={b.smallSrc} type="video/mp4" media="(max-width: 800px)" />
         <source src={b.src} type="video/mp4" />
       </video>
@@ -313,10 +252,7 @@ const BLOCKS: { [K in BlockType]: (b: BlockOf<K>) => ReactNode } = {
   flow: (b) => (
     <ol className="rs-flow" aria-label={b.label}>
       {b.stages.map((s) => (
-        <li
-          key={s.n}
-          className={"rs-flow-stage" + (s.verse ? " is-verse" : "")}
-        >
+        <li key={s.n} className={"rs-flow-stage" + (s.verse ? " is-verse" : "")}>
           <span className="rs-flow-n">{s.n}</span>
           <h3>{s.name}</h3>
           <p className="rs-flow-owner">{s.owner}</p>
@@ -361,11 +297,7 @@ function Blocks({ blocks }: { blocks: Block[] }) {
 
 function Hero({ h }: { h: HeroData }) {
   const actions = (
-    <div
-      className={
-        "rs-hero-actions" + (h.variant === "center" ? " rs-center" : "")
-      }
-    >
+    <div className={"rs-hero-actions" + (h.variant === "center" ? " rs-center" : "")}>
       {h.actions.map((a) => (
         <Action key={a.event} a={a} />
       ))}
@@ -391,14 +323,7 @@ function Hero({ h }: { h: HeroData }) {
   if (h.variant === "image")
     return (
       <section className="rs-hero rs-hero-image" aria-labelledby="hero-h">
-        <img
-          className="rs-hero-bg"
-          src={h.image.src}
-          alt=""
-          width={h.image.width}
-          height={h.image.height}
-          fetchPriority="high"
-        />
+        <img className="rs-hero-bg" src={h.image.src} alt="" width={h.image.width} height={h.image.height} fetchPriority="high" />
         <div className="content-width rs-hero-copy">{copy}</div>
       </section>
     );
@@ -418,11 +343,7 @@ function Hero({ h }: { h: HeroData }) {
 
 function Section({ s }: { s: SectionData }) {
   return (
-    <section
-      id={s.id}
-      className={"rs-section" + (s.tone ? " rs-tone-" + s.tone : "")}
-      aria-labelledby={s.id + "-h"}
-    >
+    <section id={s.id} className={"rs-section" + (s.tone ? " rs-tone-" + s.tone : "")} aria-labelledby={s.id + "-h"}>
       <div className={"content-width" + (s.narrow ? " rs-narrow" : "")}>
         {s.eyebrow && <p className="eyebrow">{s.eyebrow}</p>}
         <h2 id={s.id + "-h"}>{s.title}</h2>
@@ -441,12 +362,7 @@ function FAQ({ items }: { items: Faq[] }) {
         <h2 id="faq-h">Frequently asked questions</h2>
         <div className="rs-faq">
           {shown(items).map((f, i) => (
-            <details
-              key={i}
-              data-event="faq_open"
-              data-faq={f.q}
-              open={i === 0}
-            >
+            <details key={i} data-event="faq_open" data-faq={f.q} open={i === 0}>
               <summary>
                 <h3>{f.q}</h3>
               </summary>
@@ -479,21 +395,18 @@ function CTA({ c }: { c: ResourcePageData["cta"] }) {
   );
 }
 
-/* ───────────── Analytics (SEO blueprint, Part E) ─────────────
-   While a Resources page is shown: a click on an element with data-event, an opened FAQ, and scrolling past 25, 50,
-   75 and 90% of the page push to window.dataLayer (GTM / GA4 ready). */
+/* ───────────── Analytics ─────────────
+   On a Resources page: clicks on [data-event], opened FAQs and scroll depth (25, 50, 75, 90%) go to window.dataLayer. */
 function useAnalytics() {
   useEffect(() => {
     const dataLayer = (window.dataLayer = window.dataLayer || []);
-    const push = (event: string | undefined, extra: Record<string, unknown>) =>
-      dataLayer.push({ event, page_path: location.pathname, ...extra });
+    const push = (event: string | undefined, extra: Record<string, unknown>) => dataLayer.push({ event, page_path: location.pathname, ...extra });
     const onClick = (e: MouseEvent) => {
       const el = (e.target as Element).closest?.<HTMLElement>("[data-event]");
       if (!el) return;
       // An FAQ (<details>): only when the reader opens it (click or keyboard on its question), not the one open on load.
       if (el.tagName === "DETAILS") {
-        if ((e.target as Element).closest("summary") && !(el as HTMLDetailsElement).open)
-          push(el.dataset.event, { faq_question: el.dataset.faq });
+        if ((e.target as Element).closest("summary") && !(el as HTMLDetailsElement).open) push(el.dataset.event, { faq_question: el.dataset.faq });
         return;
       }
       const { event, ...rest } = el.dataset;
@@ -505,8 +418,7 @@ function useAnalytics() {
     };
     const seen = new Set<number>();
     const onScroll = () => {
-      const percent =
-        (100 * (scrollY + innerHeight)) / document.documentElement.scrollHeight;
+      const percent = (100 * (scrollY + innerHeight)) / document.documentElement.scrollHeight;
       for (const mark of [25, 50, 75, 90])
         if (percent >= mark && !seen.has(mark)) {
           seen.add(mark);
@@ -529,13 +441,7 @@ export default function ResourcePage({ page }: { page: ResourcePageData }) {
       <nav aria-label="Breadcrumb" className="rs-crumbs content-width">
         <ol>
           {page.crumbs.map((c, i) => (
-            <li key={i}>
-              {i < page.crumbs.length - 1 ? (
-                <a href={c.href}>{c.name}</a>
-              ) : (
-                <span aria-current="page">{c.name}</span>
-              )}
-            </li>
+            <li key={i}>{i < page.crumbs.length - 1 ? <a href={c.href}>{c.name}</a> : <span aria-current="page">{c.name}</span>}</li>
           ))}
         </ol>
       </nav>

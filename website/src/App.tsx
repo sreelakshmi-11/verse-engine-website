@@ -1,8 +1,6 @@
-// The app: React Router renders every route into the shell (Shell.tsx). For each route it loads the route's data
-// (meta from src/pages/meta.ts, or the documentation payload), its stylesheets and its page code (src/routes.ts),
-// then shows the page, sets <head> (title, description, canonical, social card, robots, JSON-LD), mounts the
-// route's behaviour modules and handles scroll, focus and the page transition. A prerendered page (vite.config.ts)
-// is already on screen on first load: React takes its markup over (main.tsx) and shows the same view at once.
+// The app: React Router renders each route into the shell (Shell.tsx). For each route it loads the data, styles
+// and page code (routes.ts), sets <head>, mounts the behaviour modules and handles scroll, focus and the page
+// transition. A prerendered page is taken over as it is (main.tsx).
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation, useNavigate, useNavigationType } from "react-router-dom";
 import type { ComponentType, ReactNode } from "react";
@@ -34,28 +32,33 @@ function useRoutePayload(pathname: string): RoutePayload | null {
     if (meta) return undefined;
     let active = true;
     const payloadUrl = `/content/${pathname === "/" ? "index" : pathname.slice(1).replaceAll("/", "__")}.json`;
-    fetch(payloadUrl).then((response) => {
-      if (response.status === 404) return null;
-      if (!response.ok) throw new Error(`Route content request failed (${response.status}): ${pathname}`);
-      return response.json() as Promise<RoutePayload>;
-    }).then((data) => {
-      if (active) setLoaded({ pathname, payload: data || { path: pathname, ...NOT_FOUND } });
-    }).catch((error: unknown) => {
-      if (!active) return;
-      console.error(`Unable to load route content for ${pathname}.`, error);
-      setLoaded({ pathname, payload: { path: pathname, ...NOT_FOUND } });
-    });
-    return () => { active = false; };
+    fetch(payloadUrl)
+      .then((response) => {
+        if (response.status === 404) return null;
+        if (!response.ok) throw new Error(`Route content request failed (${response.status}): ${pathname}`);
+        return response.json() as Promise<RoutePayload>;
+      })
+      .then((data) => {
+        if (active) setLoaded({ pathname, payload: data || { path: pathname, ...NOT_FOUND } });
+      })
+      .catch((error: unknown) => {
+        if (!active) return;
+        console.error(`Unable to load route content for ${pathname}.`, error);
+        setLoaded({ pathname, payload: { path: pathname, ...NOT_FOUND } });
+      });
+    return () => {
+      active = false;
+    };
   }, [pathname, meta]);
   return metaPayload || (loaded?.pathname === pathname ? loaded.payload : null);
 }
 
-/** True once the route's stylesheets are in place (at once when they already are, e.g. in a prerendered page). */
+/** True once the route's stylesheets are in place. */
 function useRouteStyles(pathname: string, kind?: string): boolean {
   const key = `${pathname}:${kind || "page"}`;
-  const [loadedKey, setLoadedKey] = useState(() => (
-    typeof document !== "undefined" && stylesFor(pathname, kind).every((href) => document.querySelector(`link[data-route-style][href="${href}"]`)) ? key : ""
-  ));
+  const [loadedKey, setLoadedKey] = useState(() =>
+    typeof document !== "undefined" && stylesFor(pathname, kind).every((href) => document.querySelector(`link[data-route-style][href="${href}"]`)) ? key : "",
+  );
   useEffect(() => {
     let active = true;
     const styles = stylesFor(pathname, kind);
@@ -70,16 +73,19 @@ function useRouteStyles(pathname: string, kind?: string): boolean {
         link.href = href;
         link.dataset.routeStyle = "";
         link.id = `css-${href.split("/").pop()?.replace(".css", "")}`;
-        pending.push(new Promise((resolve) => {
-          link!.onload = () => resolve();
-          link!.onerror = () => {
-            console.error(`Unable to load route stylesheet: ${href}`);
-            resolve();
-          };
-        }));
+        pending.push(
+          new Promise((resolve) => {
+            link!.onload = () => resolve();
+            link!.onerror = () => {
+              console.error(`Unable to load route stylesheet: ${href}`);
+              resolve();
+            };
+          }),
+        );
         existing.set(absolute, link);
       }
-      const next = styles.slice(index + 1)
+      const next = styles
+        .slice(index + 1)
         .map((path) => existing.get(new URL(path, window.location.origin).href))
         .find((candidate) => candidate?.isConnected);
       if (!link.isConnected) {
@@ -94,12 +100,14 @@ function useRouteStyles(pathname: string, kind?: string): boolean {
       }
       setLoadedKey(key);
     });
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [key, pathname, kind]);
   return loadedKey === key;
 }
 
-/** The route's React page: its code is loaded on demand (at once when already loaded). */
+/** The route's React page, loaded on demand. */
 function useRoutePage(payload: RoutePayload | null): { ready: boolean; Component?: ComponentType } {
   const path = payload && !payload.docs && hasPage(payload.path) ? payload.path : null;
   const [, setLoadedPath] = useState<string | null>(null);
@@ -107,8 +115,14 @@ function useRoutePage(payload: RoutePayload | null): { ready: boolean; Component
   useEffect(() => {
     if (!path || loadedPage(path)) return undefined;
     let active = true;
-    loadPage(path).then(() => { if (active) setLoadedPath(path); }).catch((error: unknown) => console.error(`Unable to load the page ${path}.`, error));
-    return () => { active = false; };
+    loadPage(path)
+      .then(() => {
+        if (active) setLoadedPath(path);
+      })
+      .catch((error: unknown) => console.error(`Unable to load the page ${path}.`, error));
+    return () => {
+      active = false;
+    };
   }, [path]);
   return { ready: !!payload && (!path || !!Component), Component };
 }
@@ -119,18 +133,22 @@ function RouteContent({ payload, Component }: { payload: RoutePayload | null; Co
   return Component ? <Component /> : <NotFound />;
 }
 
-/** Mounts the route's behaviour modules on its page once it shows. They stop in a layout-effect cleanup, which runs
-    before React removes the page's markup, so they can still reach their elements while stopping. (Stopping them after
-    the markup was gone threw, and the error unmounted the whole app: a blank page until a manual refresh.) */
+/** Mounts the route's behaviour modules once its page shows. They stop in a layout-effect cleanup, before React
+    removes the markup they use (stopping them later threw and blanked the app). */
 function RouteModules({ pathname, ready, children }: { pathname: string; ready: boolean; children: ReactNode }) {
   useLayoutEffect(() => {
     const loaders = MODULES[pathname];
     if (!ready || !loaders) return undefined;
     let active = true;
     let disposers: (() => void)[] = [];
-    const stop = (list: (() => void)[]) => list.reverse().forEach((dispose) => {
-      try { dispose(); } catch (error) { console.error(`Unable to stop the behaviour of ${pathname}.`, error); }
-    });
+    const stop = (list: (() => void)[]) =>
+      list.reverse().forEach((dispose) => {
+        try {
+          dispose();
+        } catch (error) {
+          console.error(`Unable to stop the behaviour of ${pathname}.`, error);
+        }
+      });
     // Each module mounts as soon as its code arrives; one that fails does not stop the others.
     Promise.allSettled(loaders.map((load) => load().then((module) => module.mount()))).then((results) => {
       const mounted = results.flatMap((result) => {
@@ -169,9 +187,7 @@ function RouteEffects({ payload, pathname, ready }: { payload: RoutePayload | nu
     setMeta("meta-robots", payload.noindex || payload.kind === "notfound" ? "noindex,follow" : "index,follow,max-image-preview:large");
     setMeta("meta-theme-color", THEME_COLOR[payload.kind] || "#ffffff");
     document.getElementById("script-jsonld")?.remove();
-    const jsonld = payload.jsonld || (pathname.startsWith("/docs/") && payload.docs
-      ? docsJsonLd(pathname, payload, origin)
-      : null);
+    const jsonld = payload.jsonld || (pathname.startsWith("/docs/") && payload.docs ? docsJsonLd(pathname, payload, origin) : null);
     if (jsonld) {
       const script = document.createElement("script");
       script.id = "script-jsonld";
@@ -183,8 +199,8 @@ function RouteEffects({ payload, pathname, ready }: { payload: RoutePayload | nu
   return null;
 }
 
-/** Scrolls to a section, and again each time the page's height changes while it settles (the home page's pinned
-    story and the sections below it grow after the page shows), until the visitor scrolls or presses a key (3 s at most). */
+/** Scrolls to a section, again whenever the page height changes while it settles, until the visitor scrolls or
+    presses a key (3 s at most). */
 function scrollToSection(id: string) {
   const inputs = ["wheel", "touchstart", "keydown", "pointerdown"];
   const settle = new ResizeObserver(() => document.getElementById(id)?.scrollIntoView()); // also runs once at the start
@@ -206,18 +222,25 @@ function NavigationBridge() {
   useEffect(() => {
     const saveScrollPosition = () => {
       const historyState = window.history.state;
-      window.history.replaceState({
-        ...historyState,
-        usr: { ...historyState?.usr, scrollY: window.scrollY },
-      }, "");
+      window.history.replaceState(
+        {
+          ...historyState,
+          usr: { ...historyState?.usr, scrollY: window.scrollY },
+        },
+        "",
+      );
     };
-    /** The link a plain left click opens in this app (not another site, tab, file or the same address), or null. */
+    /** The in-app link a plain left click opens, or null. */
     const linkOf = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return null;
       const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>("a[href]");
       if (!anchor || (anchor.target && anchor.target !== "_self") || anchor.hasAttribute("download")) return null;
       let url: URL;
-      try { url = new URL(anchor.href, window.location.href); } catch { return null; }
+      try {
+        url = new URL(anchor.href, window.location.href);
+      } catch {
+        return null;
+      }
       if (url.origin !== window.location.origin || NON_PAGE.test(url.pathname)) return null;
       if (url.pathname === window.location.pathname && url.search === window.location.search) return null;
       return { anchor, url, samePage: routeOf(url.pathname) === routeOf(window.location.pathname) };
@@ -232,8 +255,8 @@ function NavigationBridge() {
       if (link.anchor.closest(DOCS_NAV)) go();
       else transitionTo(go);
     };
-    // Another address of the same page (the Playground's /studio/… pages): followed after the page's own click
-    // handlers (they can still cancel it), without the page transition; the page shows the new address itself.
+    // Another address of the same page (Playground /studio/… pages): followed after the page's own click
+    // handlers, without the page transition.
     const onSamePageClick = (event: MouseEvent) => {
       const link = linkOf(event);
       if (!link?.samePage) return;
@@ -296,7 +319,7 @@ function AppRoutes() {
     setAnnounced(pathname);
   }, [pathname, ready, location.pathname, location.hash, location.state, navigationType]);
 
-  // First load: the page is ready, then the intro plays (once; skipped for prerendered pages, transition.ts).
+  // First load: the page is ready, then the intro plays (skipped for prerendered pages).
   useEffect(() => {
     if (!ready || started.current) return;
     started.current = true;

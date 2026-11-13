@@ -1,7 +1,5 @@
-// Build time only (vite.config.ts): the HTML of a page whose meta has `prerender: true`, i.e. the shell (header,
-// footer, menu) with the page inside, exactly as the app first shows it (src/routes.ts shellView). It goes into the
-// page's dist/<route>/index.html, so the page shows at once and crawlers that don't run JavaScript get the
-// content. In the browser React takes this markup over (main.tsx).
+// Build time only (vite.config.ts): the HTML of a page with `prerender: true`, the shell with the page inside as
+// the app first shows it. React takes this markup over in the browser (main.tsx).
 import { renderToString } from "react-dom/server";
 import Shell from "./Shell.tsx";
 import { META } from "./pages/meta.ts";

@@ -5,13 +5,21 @@ export default function PluginBlender() {
   return (
     <>
       <div className="content-width guide-breadcrumb">
-        <a href="/plugins" id="lnk-plug-ins-2">Plug-ins</a>
+        <a href="/plugins" id="lnk-plug-ins-2">
+          Plug-ins
+        </a>
         <span>/</span>
         <span>Blender</span>
         <nav aria-label="Editor install guides" id="nav-editor-install-guides">
-          <a href="/plugins/blender" aria-current="page" id="lnk-blender-3">Blender</a>
-          <a href="/plugins/unity" id="lnk-unity-3">Unity</a>
-          <a href="/plugins/unreal" id="lnk-unreal-engine-2">Unreal Engine</a>
+          <a href="/plugins/blender" aria-current="page" id="lnk-blender-3">
+            Blender
+          </a>
+          <a href="/plugins/unity" id="lnk-unity-3">
+            Unity
+          </a>
+          <a href="/plugins/unreal" id="lnk-unreal-engine-2">
+            Unreal Engine
+          </a>
         </nav>
       </div>
       <header className="guide-hero content-width" id="hdr-guide-hero">
@@ -119,18 +127,18 @@ export default function PluginBlender() {
                 {" menu, choose "}
                 <b>Install from Disk…</b>
                 {" and pick the zip (or drag it onto Blender)."}
-                <span>{"\"Verse Publish\" is listed and enabled — no restart."}</span>
+                <span>{'"Verse Publish" is listed and enabled — no restart.'}</span>
               </div>
             </li>
             <li>
               <span className="step-number">03</span>
               <div>
                 {"Optional: paste an account token from "}
-                <a href="/studio" id="lnk-studio">Studio</a>
+                <a href="/studio" id="lnk-studio">
+                  Studio
+                </a>
                 {" in "}
-                <b>Preferences › Add-ons › Verse Publish</b>
-                .
-                <span>Your scenes become permanent and are listed in your library.</span>
+                <b>Preferences › Add-ons › Verse Publish</b>.<span>Your scenes become permanent and are listed in your library.</span>
               </div>
             </li>
             <li>
@@ -141,9 +149,7 @@ export default function PluginBlender() {
                 {" in the 3D viewport, open the "}
                 <b>Verse</b>
                 {" tab and click "}
-                <b>Publish scene</b>
-                .
-                <span>Export, optimise, upload, build — then the link is on your clipboard.</span>
+                <b>Publish scene</b>.<span>Export, optimise, upload, build — then the link is on your clipboard.</span>
               </div>
             </li>
           </ol>
@@ -172,7 +178,9 @@ export default function PluginBlender() {
           <div className="guide-key">
             <h3>Big projects.</h3>
             <p>Up to 20 GB, sent in resumable parts. Browser uploads stop at 500 MB.</p>
-            <a className="text-link" href="/studio" id="lnk-open-studio">{"Open Studio "}</a>
+            <a className="text-link" href="/studio" id="lnk-open-studio">
+              {"Open Studio "}
+            </a>
           </div>
         </aside>
       </section>

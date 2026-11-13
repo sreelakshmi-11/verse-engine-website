@@ -1,5 +1,4 @@
-// The product's dependency-free Markdown renderer (no I/O, no dynamic evaluation), as published: render() turns a
-// docs article into HTML and lists its headings; build-production-pages.ts builds the documentation pages with it.
+// Dependency-free Markdown renderer for the docs articles: render() returns the HTML and the headings.
 
 export interface Heading {
   level: number;
@@ -14,7 +13,7 @@ export interface RenderOptions {
   /** Rewrites each link's href (e.g. a docs link to the page's URL). */
   resolveLink?: (href: string) => string;
 }
-/** One render: the headings found so far, their slugs (kept unique) and the link rewriter. */
+/** One render's headings, used slugs and link rewriter. */
 interface State {
   headings: Heading[];
   slugs: Set<string>;
@@ -25,39 +24,38 @@ interface ListItem {
   contentIndent: number;
 }
 
-const ENTITIES: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const ENTITIES: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 /** Escapes HTML, leaving entities that are already there. */
-export const escapeHtml = (text: unknown) =>
-  String(text).replace(/&(?!(?:[a-zA-Z][a-zA-Z0-9]*|#\d+|#x[0-9a-fA-F]+);)|[<>"']/g, (c) => ENTITIES[c]);
+export const escapeHtml = (text: unknown) => String(text).replace(/&(?!(?:[a-zA-Z][a-zA-Z0-9]*|#\d+|#x[0-9a-fA-F]+);)|[<>"']/g, (c) => ENTITIES[c]);
 
 // Web and mail links as they are; any other scheme (javascript:, data:) becomes "#".
 function safeUrl(url: string) {
   const u = String(url).trim();
-  return /^(https?:|mailto:)/i.test(u) ? u : /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(u) ? '#' : u;
+  return /^(https?:|mailto:)/i.test(u) ? u : /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(u) ? "#" : u;
 }
 
 export function slugify(text: string) {
   return (
     text
       .toLowerCase()
-      .replace(/[`*_~]/g, '')
-      .replace(/&[a-z]+;|&#x?[0-9a-f]+;/g, ' ')
-      .replace(/[^\p{L}\p{N}]+/gu, '-')
-      .replace(/^-+|-+$/g, '') || 'section'
+      .replace(/[`*_~]/g, "")
+      .replace(/&[a-z]+;|&#x?[0-9a-f]+;/g, " ")
+      .replace(/[^\p{L}\p{N}]+/gu, "-")
+      .replace(/^-+|-+$/g, "") || "section"
   );
 }
 
 // A heading's text without its Markdown.
 function plainText(text: string) {
   return text
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    .replace(/(\*\*|__)(.+?)\1/g, '$2')
-    .replace(/(^|\s)[*_](.+?)[*_](?=\s|$)/g, '$1$2')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/(\*\*|__)(.+?)\1/g, "$2")
+    .replace(/(^|\s)[*_](.+?)[*_](?=\s|$)/g, "$1$2")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
     .trim();
 }
 
@@ -65,30 +63,30 @@ function plainText(text: string) {
 function inline(text: string, state: State) {
   const codes: string[] = [];
   let html = text.replace(/(`+)([\s\S]*?[^`])\1(?!`)/g, (_match: string, _ticks: string, code: string) => {
-    codes.push(`<code>${escapeHtml(code.replace(/^ (.*) $/, '$1'))}</code>`);
+    codes.push(`<code>${escapeHtml(code.replace(/^ (.*) $/, "$1"))}</code>`);
     return `\0${codes.length - 1}\0`;
   });
   html = escapeHtml(html);
   html = html.replace(
     /!\[([^\]]*)\]\(([^)\s]+)(?:\s+&quot;([^&]*)&quot;)?\)/g,
     (_match: string, alt: string, src: string, title: string | undefined) =>
-      `<img src="${escapeHtml(safeUrl(src))}" alt="${alt}" loading="lazy"${title ? ` title="${title}"` : ''}>`,
+      `<img src="${escapeHtml(safeUrl(src))}" alt="${alt}" loading="lazy"${title ? ` title="${title}"` : ""}>`,
   );
+  html = html.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+&quot;([^&]*)&quot;)?\)/g, (_match: string, label: string, href: string, title: string | undefined) => {
+    const url = safeUrl(state.resolveLink ? state.resolveLink(href) : href);
+    const external = /^https?:/i.test(url) ? ' target="_blank" rel="noopener noreferrer"' : "";
+    return `<a href="${escapeHtml(url)}"${external}${title ? ` title="${title}"` : ""}>${label}</a>`;
+  });
   html = html.replace(
-    /\[([^\]]+)\]\(([^)\s]+)(?:\s+&quot;([^&]*)&quot;)?\)/g,
-    (_match: string, label: string, href: string, title: string | undefined) => {
-      const url = safeUrl(state.resolveLink ? state.resolveLink(href) : href);
-      const external = /^https?:/i.test(url) ? ' target="_blank" rel="noopener noreferrer"' : '';
-      return `<a href="${escapeHtml(url)}"${external}${title ? ` title="${title}"` : ''}>${label}</a>`;
-    },
+    /&lt;(https?:\/\/[^\s&]+)&gt;/g,
+    (_match: string, url: string) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`,
   );
-  html = html.replace(/&lt;(https?:\/\/[^\s&]+)&gt;/g, (_match: string, url: string) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`);
-  html = html.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/__([^_\n]+?)__/g, '<strong>$1</strong>');
-  html = html.replace(/(^|[^\w*\\])\*([^*]+?)\*(?![\w*])/g, '$1<em>$2</em>');
-  html = html.replace(/(^|\s)_([^_\n]+?)_(?=[\s.,;:!?)]|$)/g, '$1<em>$2</em>');
-  html = html.replace(/~~([^~\n]+?)~~/g, '<del>$1</del>');
-  html = html.replace(/( {2,}|\\)\n/g, '<br>\n');
+  html = html.replace(/\*\*([^*\n]+?)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/__([^_\n]+?)__/g, "<strong>$1</strong>");
+  html = html.replace(/(^|[^\w*\\])\*([^*]+?)\*(?![\w*])/g, "$1<em>$2</em>");
+  html = html.replace(/(^|\s)_([^_\n]+?)_(?=[\s.,;:!?)]|$)/g, "$1<em>$2</em>");
+  html = html.replace(/~~([^~\n]+?)~~/g, "<del>$1</del>");
+  html = html.replace(/( {2,}|\\)\n/g, "<br>\n");
   return html.replace(/\u0000(\d+)\u0000/g, (_match: string, n: string) => codes[Number(n)]);
 }
 
@@ -101,7 +99,7 @@ function safeSvg(source: string) {
     /\son[a-z]+\s*=/i.test(svg) ||
     /(href|src|xlink:href)\s*=\s*["']?\s*(?!#)/i.test(svg) ||
     /javascript:|data:|expression\(|url\((?!\s*["']?#)/i.test(svg)
-    ? ''
+    ? ""
     : svg;
 }
 
@@ -132,7 +130,7 @@ function blocks(lines: string[], state: State): string {
   let t = 0;
   while (t < lines.length) {
     const line = lines[t];
-    if (line.trim() === '') {
+    if (line.trim() === "") {
       t++;
       continue;
     }
@@ -142,21 +140,21 @@ function blocks(lines: string[], state: State): string {
         lang = match[2],
         code: string[] = [];
       t++;
-      const close = new RegExp(`^ {0,3}${fence[0] === '`' ? '`' : '~'}{${fence.length},}\\s*$`);
+      const close = new RegExp(`^ {0,3}${fence[0] === "`" ? "`" : "~"}{${fence.length},}\\s*$`);
       while (t < lines.length && !close.test(lines[t])) {
         code.push(lines[t]);
         t++;
       }
       t++;
-      if (lang === 'svg') {
-        const svg = safeSvg(code.join('\n'));
+      if (lang === "svg") {
+        const svg = safeSvg(code.join("\n"));
         if (svg) {
           out.push(`<figure class="diagram">${svg}</figure>`);
           continue;
         }
       }
       out.push(
-        `<div class="code"${lang ? ` data-lang="${escapeHtml(lang)}"` : ''}><button type="button" class="copy" aria-label="Copy code">Copy</button><pre><code${lang ? ` class="lang-${escapeHtml(lang)}"` : ''}>${escapeHtml(code.join('\n'))}</code></pre></div>`,
+        `<div class="code"${lang ? ` data-lang="${escapeHtml(lang)}"` : ""}><button type="button" class="copy" aria-label="Copy code">Copy</button><pre><code${lang ? ` class="lang-${escapeHtml(lang)}"` : ""}>${escapeHtml(code.join("\n"))}</code></pre></div>`,
       );
       continue;
     }
@@ -170,13 +168,13 @@ function blocks(lines: string[], state: State): string {
       continue;
     }
     if (RULE.test(line)) {
-      out.push('<hr>');
+      out.push("<hr>");
       t++;
       continue;
     }
     if (QUOTE.test(line)) {
       const quoted: string[] = [];
-      while (t < lines.length && (QUOTE.test(lines[t]) || (lines[t].trim() !== '' && quoted.length > 0 && !startsBlock(lines[t])))) {
+      while (t < lines.length && (QUOTE.test(lines[t]) || (lines[t].trim() !== "" && quoted.length > 0 && !startsBlock(lines[t])))) {
         const q = QUOTE.exec(lines[t]);
         quoted.push(q ? q[1] : lines[t]);
         t++;
@@ -184,28 +182,28 @@ function blocks(lines: string[], state: State): string {
       out.push(`<blockquote>${blocks(quoted, state)}</blockquote>`);
       continue;
     }
-    if (line.includes('|') && t + 1 < lines.length && TABLE_DIVIDER.test(lines[t + 1]) && lines[t + 1].includes('|')) {
+    if (line.includes("|") && t + 1 < lines.length && TABLE_DIVIDER.test(lines[t + 1]) && lines[t + 1].includes("|")) {
       const cells = (row: string) =>
         row
           .trim()
-          .replace(/^\|/, '')
-          .replace(/\|$/, '')
+          .replace(/^\|/, "")
+          .replace(/\|$/, "")
           .split(/(?<!\\)\|/)
-          .map((cell) => cell.trim().replace(/\\\|/g, '|'));
+          .map((cell) => cell.trim().replace(/\\\|/g, "|"));
       const head = cells(line),
-        align = cells(lines[t + 1]).map((d) => (/^:-+:$/.test(d) ? 'center' : /^-+:$/.test(d) ? 'right' : /^:-+$/.test(d) ? 'left' : ''));
+        align = cells(lines[t + 1]).map((d) => (/^:-+:$/.test(d) ? "center" : /^-+:$/.test(d) ? "right" : /^:-+$/.test(d) ? "left" : ""));
       t += 2;
       const rows: string[][] = [];
-      while (t < lines.length && lines[t].trim() !== '' && lines[t].includes('|')) {
+      while (t < lines.length && lines[t].trim() !== "" && lines[t].includes("|")) {
         rows.push(cells(lines[t]));
         t++;
       }
       const row = (tag: string, r: string[]) =>
-        `<tr>${r.map((cell, i) => `<${tag}${align[i] ? ` style="text-align:${align[i]}"` : ''}>${inline(cell, state)}</${tag}>`).join('')}</tr>`;
-      out.push(`<div class="table-wrap"><table><thead>${row('th', head)}</thead><tbody>${rows.map((r) => row('td', r)).join('')}</tbody></table></div>`);
+        `<tr>${r.map((cell, i) => `<${tag}${align[i] ? ` style="text-align:${align[i]}"` : ""}>${inline(cell, state)}</${tag}>`).join("")}</tr>`;
+      out.push(`<div class="table-wrap"><table><thead>${row("th", head)}</thead><tbody>${rows.map((r) => row("td", r)).join("")}</tbody></table></div>`);
       continue;
     }
-    if ((match = LIST_ITEM.exec(line)) && (match[3] || match[4] === '')) {
+    if ((match = LIST_ITEM.exec(line)) && (match[3] || match[4] === "")) {
       const indent = match[1].length,
         ordered = /\d/.test(match[2]),
         start = ordered ? parseInt(match[2], 10) : 1,
@@ -213,26 +211,26 @@ function blocks(lines: string[], state: State): string {
       while (t < lines.length) {
         const current = lines[t],
           item = LIST_ITEM.exec(current);
-        if (item && (item[3] || item[4] === '') && item[1].length <= indent) {
+        if (item && (item[3] || item[4] === "") && item[1].length <= indent) {
           if (item[1].length < indent || /\d/.test(item[2]) !== ordered) break;
           items.push({ content: [item[4]], contentIndent: item[1].length + item[2].length + Math.max(1, item[3].length) });
           t++;
           continue;
         }
         const last = items[items.length - 1];
-        if (current.trim() === '') {
+        if (current.trim() === "") {
           const next = lines[t + 1];
           if (next === undefined) break;
           const nextItem = LIST_ITEM.exec(next);
           if ((nextItem && nextItem[1].length >= indent) || indentOf(next) >= indent + 2) {
-            last.content.push('');
+            last.content.push("");
             t++;
             continue;
           }
           break;
         }
         const lineIndent = indentOf(current),
-          afterBlank = last.content[last.content.length - 1] === '';
+          afterBlank = last.content[last.content.length - 1] === "";
         if (lineIndent > indent || (!afterBlank && !startsBlock(current))) {
           last.content.push(lineIndent >= last.contentIndent ? current.slice(last.contentIndent) : current.trimStart());
           t++;
@@ -240,30 +238,37 @@ function blocks(lines: string[], state: State): string {
         }
         break;
       }
-      const tag = ordered ? 'ol' : 'ul',
-        startAttribute = ordered && start !== 1 ? ` start="${start}"` : '';
+      const tag = ordered ? "ol" : "ul",
+        startAttribute = ordered && start !== 1 ? ` start="${start}"` : "";
       const listItems = items.map((item) => {
         let html = blocks(item.content, state);
-        if ((html.match(/<p>/g) || []).length === 1) html = html.replace(/^<p>([\s\S]*?)<\/p>/, '$1');
+        if ((html.match(/<p>/g) || []).length === 1) html = html.replace(/^<p>([\s\S]*?)<\/p>/, "$1");
         const task = /^\[([ xX])\]\s+/.exec(html);
-        if (task) html = `<input type="checkbox" disabled${task[1] !== ' ' ? ' checked' : ''}> ${html.slice(task[0].length)}`;
+        if (task) html = `<input type="checkbox" disabled${task[1] !== " " ? " checked" : ""}> ${html.slice(task[0].length)}`;
         return `<li>${html}</li>`;
       });
-      out.push(`<${tag}${startAttribute}>${listItems.join('')}</${tag}>`);
+      out.push(`<${tag}${startAttribute}>${listItems.join("")}</${tag}>`);
       continue;
     }
     const paragraph = [line];
-    for (t++; t < lines.length && lines[t].trim() !== '' && !startsBlock(lines[t]) && !(lines[t].includes('|') && t + 1 < lines.length && TABLE_DIVIDER.test(lines[t + 1])); t++)
+    for (
+      t++;
+      t < lines.length &&
+      lines[t].trim() !== "" &&
+      !startsBlock(lines[t]) &&
+      !(lines[t].includes("|") && t + 1 < lines.length && TABLE_DIVIDER.test(lines[t + 1]));
+      t++
+    )
       paragraph.push(lines[t]);
-    out.push(`<p>${inline(paragraph.join('\n'), state).trim()}</p>`);
+    out.push(`<p>${inline(paragraph.join("\n"), state).trim()}</p>`);
   }
-  return out.join('\n');
+  return out.join("\n");
 }
 
 /** The article's HTML and its headings. */
 export function render(markdown: string, options?: RenderOptions): RenderedMarkdown {
   const state: State = { headings: [], slugs: new Set(), resolveLink: options && options.resolveLink };
-  const lines = String(markdown).replace(/\r\n?/g, '\n').split('\n');
+  const lines = String(markdown).replace(/\r\n?/g, "\n").split("\n");
   return { html: blocks(lines, state), headings: state.headings };
 }
 

@@ -1,4 +1,4 @@
-// AI and 3D infrastructure page. Content: RESOURCE_PAGES.aiInfra in ./data.js; layout: ./ResourcePage.jsx.
+// AI and 3D infrastructure page: RESOURCE_PAGES.aiInfra, rendered by ResourcePage.
 import ResourcePage from "./ResourcePage.tsx";
 import { RESOURCE_PAGES } from "./data.ts";
 

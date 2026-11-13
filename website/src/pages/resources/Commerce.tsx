@@ -1,4 +1,4 @@
-// 3D commerce page. Content: RESOURCE_PAGES.commerce in ./data.js; layout: ./ResourcePage.jsx.
+// 3D commerce page: RESOURCE_PAGES.commerce, rendered by ResourcePage.
 import ResourcePage from "./ResourcePage.tsx";
 import { RESOURCE_PAGES } from "./data.ts";
 

@@ -31,14 +31,7 @@ export interface ClaimPart {
   parts: Rich;
   fallback?: Rich;
 }
-export type RichPart =
-  | string
-  | LinkPart
-  | ClaimPart
-  | { strong: string }
-  | { code: string }
-  | { muted: string }
-  | { pill: string; tone?: string };
+export type RichPart = string | LinkPart | ClaimPart | { strong: string } | { code: string } | { muted: string } | { pill: string; tone?: string };
 export type Rich = RichPart | RichPart[];
 
 export interface Action {

@@ -1,9 +1,10 @@
-// Refund Policy (/refunds). Text copied from the production page https://verse.ctruh.com/refunds; styled like it by
-// public/css/legal.css.
+// Refund Policy (/refunds), text from https://verse.ctruh.com/refunds.
 export default function Refunds() {
   return (
     <>
-      <p className="mono" style={{ marginTop: "28px" }}>Legal</p>
+      <p className="mono" style={{ marginTop: "28px" }}>
+        Legal
+      </p>
       <h1>Refund Policy</h1>
       <p className="meta">Effective 20 October 2026 · Ctruh Technologies Private Limited</p>
       <h2>Summary</h2>
@@ -39,12 +40,12 @@ export default function Refunds() {
         {" (Razorpay for some customers in India). Refunds go back to the original payment method through them, including any tax charged. Write to "}
         <a href="mailto:hello@ctruh.com">hello@ctruh.com</a>
         {" from your account (include your account id or the invoice) or use the customer portal linked from "}
-        <a href="/billing">/billing</a>
-        . Once approved, a refund usually reaches you in 5–10 business days, depending on your bank or card issuer.
+        <a href="/billing">/billing</a>. Once approved, a refund usually reaches you in 5–10 business days, depending on your bank or card issuer.
       </p>
       <h2>Plan changes</h2>
       <p>
-        Upgrades take effect immediately and are charged pro rata for the rest of the period. Downgrades take effect at the end of the current period, with no refund for the remainder of the higher plan.
+        Upgrades take effect immediately and are charged pro rata for the rest of the period. Downgrades take effect at the end of the current period, with no
+        refund for the remainder of the higher plan.
       </p>
       <h2>Extra Studio seats</h2>
       <p>
@@ -53,14 +54,14 @@ export default function Refunds() {
       <h2>When a refund may be refused</h2>
       <p>
         {"Repeated refund requests on new subscriptions, or accounts suspended for breaking the "}
-        <a href="/terms">terms</a>
-        . Nothing here limits rights you have under consumer law.
+        <a href="/terms">terms</a>. Nothing here limits rights you have under consumer law.
       </p>
       <h2>Enterprise</h2>
       <p>Enterprise contracts set their own payment and refund terms.</p>
       <h2>Failed payments and chargebacks</h2>
       <p>
-        If a renewal fails, the plan keeps working for a 7-day grace period, then the account moves to Free; nothing is refunded or owed for that time. Please contact us before opening a chargeback; we can usually fix it faster.
+        If a renewal fails, the plan keeps working for a 7-day grace period, then the account moves to Free; nothing is refunded or owed for that time. Please
+        contact us before opening a chargeback; we can usually fix it faster.
       </p>
       <h2>Contact</h2>
       <p>

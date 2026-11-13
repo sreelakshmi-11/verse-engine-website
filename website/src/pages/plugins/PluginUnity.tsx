@@ -5,13 +5,21 @@ export default function PluginUnity() {
   return (
     <>
       <div className="content-width guide-breadcrumb">
-        <a href="/plugins" id="lnk-plug-ins-2">Plug-ins</a>
+        <a href="/plugins" id="lnk-plug-ins-2">
+          Plug-ins
+        </a>
         <span>/</span>
         <span>Unity</span>
         <nav aria-label="Editor install guides" id="nav-editor-install-guides">
-          <a href="/plugins/blender" id="lnk-blender-3">Blender</a>
-          <a href="/plugins/unity" aria-current="page" id="lnk-unity-3">Unity</a>
-          <a href="/plugins/unreal" id="lnk-unreal-engine-2">Unreal Engine</a>
+          <a href="/plugins/blender" id="lnk-blender-3">
+            Blender
+          </a>
+          <a href="/plugins/unity" aria-current="page" id="lnk-unity-3">
+            Unity
+          </a>
+          <a href="/plugins/unreal" id="lnk-unreal-engine-2">
+            Unreal Engine
+          </a>
         </nav>
       </div>
       <header className="guide-hero content-width" id="hdr-guide-hero">
@@ -170,18 +178,17 @@ export default function PluginUnity() {
                 {"Open "}
                 <b>Tools › Verse › Publish Scene</b>
                 {"; optionally paste an account token from "}
-                <a href="/studio" id="lnk-studio">Studio</a>
-                .
-                <span>The window remembers it.</span>
+                <a href="/studio" id="lnk-studio">
+                  Studio
+                </a>
+                .<span>The window remembers it.</span>
               </div>
             </li>
             <li>
               <span className="step-number">04</span>
               <div>
                 {"Press "}
-                <b>Publish scene</b>
-                .
-                <span>Upload %, then the build stages, then the link — copied for you.</span>
+                <b>Publish scene</b>.<span>Upload %, then the build stages, then the link — copied for you.</span>
               </div>
             </li>
           </ol>
@@ -212,7 +219,9 @@ export default function PluginUnity() {
           <div className="guide-key">
             <h3>Big projects.</h3>
             <p>Up to 20 GB, sent in resumable parts. Browser uploads stop at 500 MB.</p>
-            <a className="text-link" href="/studio" id="lnk-open-studio">{"Open Studio "}</a>
+            <a className="text-link" href="/studio" id="lnk-open-studio">
+              {"Open Studio "}
+            </a>
           </div>
         </aside>
       </section>

@@ -1,7 +1,4 @@
-// Routes whose page is a React component (the payload then only carries the page's meta).
-// Documentation pages use src/pages/docs/DocsPage.tsx (see App.tsx).
-// Each page's code is loaded only when the page is shown (its own file in the build, SEO blueprint Part E:
-// smaller first download); src/routes.ts loads and keeps them (App.tsx, main.tsx and src/prerender.tsx).
+// Routes whose page is a React component, each loaded on demand (src/routes.ts). Docs pages use DocsPage.tsx.
 import type { ComponentType } from "react";
 
 export const PAGES: Record<string, () => Promise<{ default: ComponentType }>> = {

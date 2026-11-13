@@ -1,22 +1,45 @@
-// Home page (/). Content lives in ./landing/data.ts and is rendered here with .map().
-// The scroll story, 3D model and other animations are src/animations/landing/ (GSAP, Three.js), mounted on this markup by the router;
-// the sections after the story are wired up by src/animations/landing/sections.js and styled by public/css/landing-sections.css.
+// Home page (/). Content is in ./landing/data.ts; the scroll story and animations are in src/animations/landing/
+// (sections.ts wires up the sections after the story).
 import { Fragment } from "react";
 import {
-  heroAside, realityModes, storyChapters, chapterNav,
-  lyonHeading, lyonViews, lyonSquaresLegend, lyonStops,
-  proofHeading, proofStats,
-  benchHeading, benchEngines, benchMeasures, benchTable,
-  raceHeading, raceLanes, raceMatrix,
-  workflowCards, shareBadges,
-  createHeading, createRoutes,
+  heroAside,
+  realityModes,
+  storyChapters,
+  chapterNav,
+  lyonHeading,
+  lyonViews,
+  lyonSquaresLegend,
+  lyonStops,
+  proofHeading,
+  proofStats,
+  benchHeading,
+  benchEngines,
+  benchMeasures,
+  benchTable,
+  raceHeading,
+  raceLanes,
+  raceMatrix,
+  workflowCards,
+  shareBadges,
+  createHeading,
+  createRoutes,
   galleryCards,
-  tryHeading, tryScenes,
-  engineHeading, engineLayers, techniques,
-  costHeading, costScale,
-  plugins, publishingLabels, pluginMeshes,
-  devHeading, devTabs, devFeatures,
-  pricingHeading, plans, contactUrl,
+  tryHeading,
+  tryScenes,
+  engineHeading,
+  engineLayers,
+  techniques,
+  costHeading,
+  costScale,
+  plugins,
+  publishingLabels,
+  pluginMeshes,
+  devHeading,
+  devTabs,
+  devFeatures,
+  pricingHeading,
+  plans,
+  contactUrl,
   faqs,
 } from "./landing/data.ts";
 import type { SectionHeading, StoryChapter as StoryChapterData } from "./landing/data.ts";
@@ -25,9 +48,15 @@ import type { SectionHeading, StoryChapter as StoryChapterData } from "./landing
 const nn = (i: number) => String(i + 1).padStart(2, "0");
 
 /** Lines joined with <br />. */
-const Lines = ({ lines }: { lines: string[] }) => lines.map((line, i) => <Fragment key={i}>{i > 0 && <br />}{line}</Fragment>);
+const Lines = ({ lines }: { lines: string[] }) =>
+  lines.map((line, i) => (
+    <Fragment key={i}>
+      {i > 0 && <br />}
+      {line}
+    </Fragment>
+  ));
 
-/** Section header used by the mx- sections: number, two-line heading (second line accented), intro and an optional link under it. */
+/** Section header: number, two-line heading (second line accented), intro and an optional link. */
 function SectionHead({ heading }: { heading: SectionHeading }) {
   return (
     <header className="mx-head">
@@ -44,7 +73,9 @@ function SectionHead({ heading }: { heading: SectionHeading }) {
         {heading.link && (
           <>
             <br />
-            <a className="under-link" href={heading.link.href} id={heading.link.id}>{heading.link.label}</a>
+            <a className="under-link" href={heading.link.href} id={heading.link.id}>
+              {heading.link.label}
+            </a>
           </>
         )}
       </p>
@@ -55,15 +86,19 @@ function SectionHead({ heading }: { heading: SectionHeading }) {
 /** Tab button attributes: first tab selected. */
 const tab = (i: number) => ({ role: "tab", "aria-selected": i === 0 });
 
-// ---------------------------------------------------------------- Story
+// ---------- Story ----------
 
 function StoryChapter({ c }: { c: StoryChapterData }) {
   return (
     <article className={`story-panel ${c.className}`} id={`chapter-${c.chapter}`} data-chapter={c.chapter}>
       <div className="panel-copy">
         <p className="chapter-label">{c.label}</p>
-        <h2><Lines lines={c.title} /></h2>
-        <p id={c.bodyId}><Lines lines={c.body} /></p>
+        <h2>
+          <Lines lines={c.title} />
+        </h2>
+        <p id={c.bodyId}>
+          <Lines lines={c.body} />
+        </p>
         {c.stat && (
           <div className="inline-stat">
             <strong>{c.stat.value}</strong>
@@ -73,24 +108,32 @@ function StoryChapter({ c }: { c: StoryChapterData }) {
         {c.note && (
           <small className="benchmark-note">
             {c.note.text}
-            <a href={c.note.link.href} id={c.note.link.id}>{c.note.link.label}</a>
+            <a href={c.note.link.href} id={c.note.link.id}>
+              {c.note.link.label}
+            </a>
             <br />
             {c.note.after}
           </small>
         )}
         {c.features && (
           <div className="link-features">
-            {c.features.map((f) => <span key={f}>{f}</span>)}
+            {c.features.map((f) => (
+              <span key={f}>{f}</span>
+            ))}
           </div>
         )}
         {c.modes && (
           <>
             <div className="reality-tabs" role="tablist" aria-label="Experience types">
               {realityModes.map((m, i) => (
-                <button key={m.mode} {...tab(i)} id={`mode-${m.mode}`} aria-controls="mode-description" data-mode={m.mode} tabIndex={i === 0 ? undefined : -1}>{m.label}</button>
+                <button key={m.mode} {...tab(i)} id={`mode-${m.mode}`} aria-controls="mode-description" data-mode={m.mode} tabIndex={i === 0 ? undefined : -1}>
+                  {m.label}
+                </button>
               ))}
             </div>
-            <div id="mode-description" role="tabpanel" aria-labelledby={`mode-${realityModes[0].mode}`}>{realityModes[0].note}</div>
+            <div id="mode-description" role="tabpanel" aria-labelledby={`mode-${realityModes[0].mode}`}>
+              {realityModes[0].note}
+            </div>
           </>
         )}
         {c.cta && (
@@ -98,7 +141,9 @@ function StoryChapter({ c }: { c: StoryChapterData }) {
             <a className="button action" href={c.cta.button.href} id={c.cta.button.id}>
               <span>{c.cta.button.label}</span>
             </a>
-            <a className="under-link" href={c.cta.link.href} id={c.cta.link.id}>{c.cta.link.label}</a>
+            <a className="under-link" href={c.cta.link.href} id={c.cta.link.id}>
+              {c.cta.link.label}
+            </a>
           </>
         )}
       </div>
@@ -130,52 +175,52 @@ function StoryChapter({ c }: { c: StoryChapterData }) {
   );
 }
 
-// ---------------------------------------------------------------- How to start: card illustrations
+// ---------- How to start: card illustrations ----------
 
 function UploadVisual() {
   return (
     <div className="workflow-visual upload-visual" role="img" aria-label="Supported scene formats">
-                <div className="upload-target">
-                  <span className="upload-icon">↑</span>
-                  <strong>Drag anything 3D here</strong>
-                  <p>.glb   .fbx   .usdz   .ifc   floor-plan.pdf</p>
-                  <small>20+ TYPES</small>
-                </div>
-                <div className="upload-file">
-                  <span>◇</span>
-                  <strong>hsr-office-scan.e57</strong>
-                  <small>3.4 GB</small>
-                </div>
-              </div>
+      <div className="upload-target">
+        <span className="upload-icon">↑</span>
+        <strong>Drag anything 3D here</strong>
+        <p>.glb   .fbx   .usdz   .ifc   floor-plan.pdf</p>
+        <small>20+ TYPES</small>
+      </div>
+      <div className="upload-file">
+        <span>◇</span>
+        <strong>hsr-office-scan.e57</strong>
+        <small>3.4 GB</small>
+      </div>
+    </div>
   );
 }
 
 function PrepareVisual() {
   return (
     <div className="workflow-visual prepare-visual">
-                <div className="prepare-file">
-                  <strong>warehouse_twin_final.fbx</strong>
-                  <span>RUNS ONCE</span>
-                </div>
-                <div className="prepare-label">
-                  <span>Scene streaming prep</span>
-                  <small>processing</small>
-                </div>
-                <div className="prepare-progress">
-                  <i />
-                </div>
-                <div className="security-sign">
-                  <span className="security-icon">✓</span>
-                  <div>
-                    <strong>Security signing</strong>
-                    <p>Signature attached · ready for phones, laptops, headsets</p>
-                  </div>
-                </div>
-                <div className="prepare-ready">
-                  <i />
-                  Ready to stream
-                </div>
-              </div>
+      <div className="prepare-file">
+        <strong>warehouse_twin_final.fbx</strong>
+        <span>RUNS ONCE</span>
+      </div>
+      <div className="prepare-label">
+        <span>Scene streaming prep</span>
+        <small>processing</small>
+      </div>
+      <div className="prepare-progress">
+        <i />
+      </div>
+      <div className="security-sign">
+        <span className="security-icon">✓</span>
+        <div>
+          <strong>Security signing</strong>
+          <p>Signature attached · ready for phones, laptops, headsets</p>
+        </div>
+      </div>
+      <div className="prepare-ready">
+        <i />
+        Ready to stream
+      </div>
+    </div>
   );
 }
 
@@ -190,7 +235,9 @@ function ShareVisual() {
         </button>
       </div>
       <div className="share-badges">
-        {shareBadges.map((b) => <span key={b}>{b}</span>)}
+        {shareBadges.map((b) => (
+          <span key={b}>{b}</span>
+        ))}
       </div>
       <span className="share-feedback" aria-live="polite" />
     </div>
@@ -199,7 +246,7 @@ function ShareVisual() {
 
 const workflowVisuals = { upload: UploadVisual, prepare: PrepareVisual, share: ShareVisual };
 
-// ---------------------------------------------------------------- Page
+// ---------- Page ----------
 
 export default function Landing() {
   const firstMeasure = benchMeasures[0];
@@ -212,12 +259,23 @@ export default function Landing() {
         <div className="story-stage">
           <div className="stage-wash" aria-hidden="true" />
           <div className="stage-grid" aria-hidden="true" />
-          <div className="ghost-type" aria-hidden="true">VERSE</div>
+          <div className="ghost-type" aria-hidden="true">
+            VERSE
+          </div>
           <div className="orbit orbit-one" aria-hidden="true" />
           <div className="orbit orbit-two" aria-hidden="true" />
           <div className="stage-three" id="stage-three" aria-hidden="true" />
-          <div className="scene-scale" id="scene-scale" aria-hidden="true">01 / OBJECT</div>
-          <img className="headset-poster" alt="Vertex point-cloud study of an object, table and furnished space" width="1000" height="800" fetchPriority="high" src="/assets/point-world-poster.svg" />
+          <div className="scene-scale" id="scene-scale" aria-hidden="true">
+            01 / OBJECT
+          </div>
+          <img
+            className="headset-poster"
+            alt="Vertex point-cloud study of an object, table and furnished space"
+            width="1000"
+            height="800"
+            fetchPriority="high"
+            src="/assets/point-world-poster.svg"
+          />
           <div className="geometry-number" aria-hidden="true">
             10.3
             <span>B</span>
@@ -228,15 +286,26 @@ export default function Landing() {
               <defs>
                 <path data-outline="web" d="M80 80C80 62 95 50 115 50H605C625 50 640 62 640 80V340C640 358 625 370 605 370H115C95 370 80 358 80 340Z" />
                 <path data-outline="ar" d="M260 40C260 23 274 14 290 14H430C446 14 460 23 460 40V382C460 399 446 408 430 408H290C274 408 260 399 260 382Z" />
-                <path data-outline="xr" d="M105 133C119 81 236 76 360 76S601 81 615 133L641 280C650 337 622 374 564 379L460 384C427 385 408 364 394 341C378 314 342 314 326 341C312 364 293 385 260 384L156 379C98 374 70 337 79 280Z" />
+                <path
+                  data-outline="xr"
+                  d="M105 133C119 81 236 76 360 76S601 81 615 133L641 280C650 337 622 374 564 379L460 384C427 385 408 364 394 341C378 314 342 314 326 341C312 364 293 385 260 384L156 379C98 374 70 337 79 280Z"
+                />
               </defs>
-              <path className="device-outline" stroke="currentColor" strokeWidth="2.5" vectorEffect="non-scaling-stroke" d="M80.00,80.00L82.95,67.12L91.51,57.06L103.51,51.44L116.72,50.00L130.05,50.00L143.38,50.00L156.71,50.00L170.04,50.00L183.37,50.00L196.70,50.00L210.04,50.00L223.37,50.00L236.70,50.00L250.03,50.00L263.36,50.00L276.69,50.00L290.03,50.00L303.36,50.00L316.69,50.00L330.02,50.00L343.35,50.00L356.68,50.00L370.02,50.00L383.35,50.00L396.68,50.00L410.01,50.00L423.34,50.00L436.67,50.00L450.01,50.00L463.34,50.00L476.67,50.00L490.00,50.00L503.33,50.00L516.66,50.00L529.99,50.00L543.33,50.00L556.66,50.00L569.99,50.00L583.32,50.00L596.65,50.00L609.98,50.26L622.79,53.70L633.39,61.61L639.29,73.42L640.00,86.70L640.00,100.03L640.00,113.36L640.00,126.69L640.00,140.03L640.00,153.36L640.00,166.69L640.00,180.02L640.00,193.35L640.00,206.68L640.00,220.02L640.00,233.35L640.00,246.68L640.00,260.01L640.00,273.34L640.00,286.67L640.00,300.01L640.00,313.34L640.00,326.67L640.00,340.00L637.05,352.88L628.49,362.94L616.49,368.56L603.28,370.00L589.95,370.00L576.62,370.00L563.29,370.00L549.96,370.00L536.63,370.00L523.30,370.00L509.96,370.00L496.63,370.00L483.30,370.00L469.97,370.00L456.64,370.00L443.31,370.00L429.97,370.00L416.64,370.00L403.31,370.00L389.98,370.00L376.65,370.00L363.32,370.00L349.98,370.00L336.65,370.00L323.32,370.00L309.99,370.00L296.66,370.00L283.33,370.00L269.99,370.00L256.66,370.00L243.33,370.00L230.00,370.00L216.67,370.00L203.34,370.00L190.01,370.00L176.67,370.00L163.34,370.00L150.01,370.00L136.68,370.00L123.35,370.00L110.02,369.74L97.21,366.30L86.61,358.39L80.71,346.58L80.00,333.30L80.00,319.97L80.00,306.64L80.00,293.31L80.00,279.97L80.00,266.64L80.00,253.31L80.00,239.98L80.00,226.65L80.00,213.32L80.00,199.98L80.00,186.65L80.00,173.32L80.00,159.99L80.00,146.66L80.00,133.33L80.00,119.99L80.00,106.66L80.00,93.33Z" />
+              <path
+                className="device-outline"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                vectorEffect="non-scaling-stroke"
+                d="M80.00,80.00L82.95,67.12L91.51,57.06L103.51,51.44L116.72,50.00L130.05,50.00L143.38,50.00L156.71,50.00L170.04,50.00L183.37,50.00L196.70,50.00L210.04,50.00L223.37,50.00L236.70,50.00L250.03,50.00L263.36,50.00L276.69,50.00L290.03,50.00L303.36,50.00L316.69,50.00L330.02,50.00L343.35,50.00L356.68,50.00L370.02,50.00L383.35,50.00L396.68,50.00L410.01,50.00L423.34,50.00L436.67,50.00L450.01,50.00L463.34,50.00L476.67,50.00L490.00,50.00L503.33,50.00L516.66,50.00L529.99,50.00L543.33,50.00L556.66,50.00L569.99,50.00L583.32,50.00L596.65,50.00L609.98,50.26L622.79,53.70L633.39,61.61L639.29,73.42L640.00,86.70L640.00,100.03L640.00,113.36L640.00,126.69L640.00,140.03L640.00,153.36L640.00,166.69L640.00,180.02L640.00,193.35L640.00,206.68L640.00,220.02L640.00,233.35L640.00,246.68L640.00,260.01L640.00,273.34L640.00,286.67L640.00,300.01L640.00,313.34L640.00,326.67L640.00,340.00L637.05,352.88L628.49,362.94L616.49,368.56L603.28,370.00L589.95,370.00L576.62,370.00L563.29,370.00L549.96,370.00L536.63,370.00L523.30,370.00L509.96,370.00L496.63,370.00L483.30,370.00L469.97,370.00L456.64,370.00L443.31,370.00L429.97,370.00L416.64,370.00L403.31,370.00L389.98,370.00L376.65,370.00L363.32,370.00L349.98,370.00L336.65,370.00L323.32,370.00L309.99,370.00L296.66,370.00L283.33,370.00L269.99,370.00L256.66,370.00L243.33,370.00L230.00,370.00L216.67,370.00L203.34,370.00L190.01,370.00L176.67,370.00L163.34,370.00L150.01,370.00L136.68,370.00L123.35,370.00L110.02,369.74L97.21,366.30L86.61,358.39L80.71,346.58L80.00,333.30L80.00,319.97L80.00,306.64L80.00,293.31L80.00,279.97L80.00,266.64L80.00,253.31L80.00,239.98L80.00,226.65L80.00,213.32L80.00,199.98L80.00,186.65L80.00,173.32L80.00,159.99L80.00,146.66L80.00,133.33L80.00,119.99L80.00,106.66L80.00,93.33Z"
+              />
               <g data-chrome="web">
                 <path d="M81 97H639" stroke="currentColor" opacity=".4" />
                 <circle cx="111" cy="74" r="3" fill="currentColor" />
                 <circle cx="126" cy="74" r="3" fill="currentColor" />
                 <circle cx="141" cy="74" r="3" fill="currentColor" />
-                <text x="360" y="78" textAnchor="middle" fill="currentColor">verse.ctruh.com / your-scene</text>
+                <text x="360" y="78" textAnchor="middle" fill="currentColor">
+                  verse.ctruh.com / your-scene
+                </text>
               </g>
               <g data-chrome="ar">
                 <path d="M331 29H389M337 393H383" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
@@ -244,7 +313,11 @@ export default function Landing() {
               </g>
               <g data-chrome="xr">
                 <path d="M111 151C119 45 227 24 360 24S601 45 609 151" stroke="currentColor" strokeWidth="20" opacity=".24" />
-                <path d="M130 151C147 115 246 114 360 114S573 115 590 151L611 268C617 303 599 331 561 335L469 340C430 342 412 297 360 297S290 342 251 340L159 335C121 331 103 303 109 268Z" stroke="currentColor" opacity=".35" />
+                <path
+                  d="M130 151C147 115 246 114 360 114S573 115 590 151L611 268C617 303 599 331 561 335L469 340C430 342 412 297 360 297S290 342 251 340L159 335C121 331 103 303 109 268Z"
+                  stroke="currentColor"
+                  opacity=".35"
+                />
                 <ellipse cx="240" cy="221" rx="86" ry="65" stroke="currentColor" opacity=".15" />
                 <ellipse cx="480" cy="221" rx="86" ry="65" stroke="currentColor" opacity=".15" />
               </g>
@@ -272,13 +345,16 @@ export default function Landing() {
                 </span>
               </h1>
               <p className="hero-description">
-                From a product to a whole city. Turn any 3D file, scan, floor plan or Blender, Unity or Unreal project into one link that opens in the browser on phones, laptops and headsets. No app. No download.
+                From a product to a whole city. Turn any 3D file, scan, floor plan or Blender, Unity or Unreal project into one link that opens in the browser
+                on phones, laptops and headsets. No app. No download.
               </p>
               <a className="button action" href="/studio" id="lnk-explore-verse-engine-2">
                 <span>Try it free</span>
               </a>
               <div className="hero-aside">
-                {heroAside.map((t) => <span key={t}>{t}</span>)}
+                {heroAside.map((t) => (
+                  <span key={t}>{t}</span>
+                ))}
               </div>
             </div>
             <div className="object-annotation">
@@ -298,7 +374,9 @@ export default function Landing() {
               <span>↓</span>
             </a>
           </article>
-          {storyChapters.map((c) => <StoryChapter key={c.chapter} c={c} />)}
+          {storyChapters.map((c) => (
+            <StoryChapter key={c.chapter} c={c} />
+          ))}
           <a className="button action story-cta" href="/studio" id="lnk-explore-verse-engine-4">
             <span>Try it free</span>
           </a>
@@ -312,7 +390,14 @@ export default function Landing() {
             </div>
             <nav className="chapter-nav" aria-label="Story chapters" id="nav-story-chapters">
               {chapterNav.map((c, i) => (
-                <button key={c.id} className={i === 0 ? "selected" : undefined} data-jump={i} aria-label={c.aria} aria-current={i === 0 ? "step" : undefined} id={c.id}>
+                <button
+                  key={c.id}
+                  className={i === 0 ? "selected" : undefined}
+                  data-jump={i}
+                  aria-label={c.aria}
+                  aria-current={i === 0 ? "step" : undefined}
+                  id={c.id}
+                >
                   <span>{c.label}</span>
                 </button>
               ))}
@@ -331,7 +416,15 @@ export default function Landing() {
           <div className="mx-lyon-stage" data-lyon="">
             <div className="mx-lyon-views">
               {lyonViews.map((v, i) => (
-                <img key={v.src} className={i === 0 ? "on" : undefined} src={v.src} alt={v.alt} width={v.width} height={v.height} loading={i === 0 ? undefined : "lazy"} />
+                <img
+                  key={v.src}
+                  className={i === 0 ? "on" : undefined}
+                  src={v.src}
+                  alt={v.alt}
+                  width={v.width}
+                  height={v.height}
+                  loading={i === 0 ? undefined : "lazy"}
+                />
               ))}
             </div>
             <div className="mx-lyon-hud">
@@ -353,13 +446,22 @@ export default function Landing() {
                 <small data-lyon-note="">{lyonViews[0].note}</small>
               </div>
               <div className="mx-lyon-tabs" role="tablist" aria-label="Lyon views">
-                {lyonViews.map((v, i) => <button key={v.tab} id={v.id} {...tab(i)} data-view={i}>{v.tab}</button>)}
+                {lyonViews.map((v, i) => (
+                  <button key={v.tab} id={v.id} {...tab(i)} data-view={i}>
+                    {v.tab}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
           <div className="mx-lyon-grid">
             <figure className="mx-squares-card">
-              <div className="mx-squares" data-squares="" role="img" aria-label="2,000 squares stand for the 556 GB file; one lit square is what it takes to show the whole city" />
+              <div
+                className="mx-squares"
+                data-squares=""
+                role="img"
+                aria-label="2,000 squares stand for the 556 GB file; one lit square is what it takes to show the whole city"
+              />
               <figcaption>
                 {lyonSquaresLegend.map((l) => (
                   <span key={l.label}>
@@ -377,8 +479,12 @@ export default function Landing() {
                 <span>The view comes to you.</span>
               </h3>
               <p>
-                {"Instead of sending the whole file, Verse streams only the part you are looking at, in the detail your screen can show. Showing all of Lyon takes about "}
-                <strong data-count="0.05" data-dec="2">0.05</strong>
+                {
+                  "Instead of sending the whole file, Verse streams only the part you are looking at, in the detail your screen can show. Showing all of Lyon takes about "
+                }
+                <strong data-count="0.05" data-dec="2">
+                  0.05
+                </strong>
                 % of the file. The rest streams as you move.
               </p>
               <ul className="mx-stops">
@@ -392,7 +498,9 @@ export default function Landing() {
               <p className="mx-claim">We know of no other engine that streams a real, non-repeating scene of this size from a single file.</p>
             </div>
           </div>
-          <p className="mx-credit">Stills from a screen recording of the engine running live. City data: Métropole de Lyon, 2023 photomesh, Licence Ouverte 2.0.</p>
+          <p className="mx-credit">
+            Stills from a screen recording of the engine running live. City data: Métropole de Lyon, 2023 photomesh, Licence Ouverte 2.0.
+          </p>
         </div>
       </section>
 
@@ -403,7 +511,9 @@ export default function Landing() {
             <button key={s.label} id={s.id} className="mx-stat" type="button">
               <strong>
                 {s.prefix || null}
-                <span data-count={s.count} data-dec={s.dec}>{s.count}</span>
+                <span data-count={s.count} data-dec={s.dec}>
+                  {s.count}
+                </span>
                 {s.suffix || null}
               </strong>
               <em>{s.label}</em>
@@ -413,7 +523,9 @@ export default function Landing() {
         </div>
         <p className="mx-credit">
           {"Desktop browser benchmarks unless noted. Results vary with scene, device and connection. "}
-          <a className="inline-link" href="/docs/how-we-measure">How we measure ↗</a>
+          <a className="inline-link" href="/docs/how-we-measure">
+            How we measure ↗
+          </a>
         </p>
       </section>
 
@@ -421,10 +533,16 @@ export default function Landing() {
         <SectionHead heading={benchHeading} />
         <div className="mx-bench-board" data-bench="">
           <div className="mx-bench-tabs" role="tablist" aria-label="Benchmark measures">
-            {benchMeasures.map((m, i) => <button key={m.tab} id={m.id} {...tab(i)} data-m={i}>{m.tab}</button>)}
+            {benchMeasures.map((m, i) => (
+              <button key={m.tab} id={m.id} {...tab(i)} data-m={i}>
+                {m.tab}
+              </button>
+            ))}
           </div>
           <div className="mx-bench-chart">
-            <p className="mx-bench-q" data-bench-q="">{firstMeasure.question}</p>
+            <p className="mx-bench-q" data-bench-q="">
+              {firstMeasure.question}
+            </p>
             <div className="mx-bars" data-bars="">
               {benchEngines.map((name, i) => (
                 <div key={name} className={i === 0 ? "mx-bar us" : "mx-bar"}>
@@ -449,14 +567,22 @@ export default function Landing() {
               <thead>
                 <tr>
                   <th scope="col">Measure</th>
-                  {benchEngines.map((name, i) => <th key={name} scope="col" className={i === 0 ? "us" : undefined}>{name}</th>)}
+                  {benchEngines.map((name, i) => (
+                    <th key={name} scope="col" className={i === 0 ? "us" : undefined}>
+                      {name}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 {benchTable.map((row) => (
                   <tr key={row.measure}>
                     <th scope="row">{row.measure}</th>
-                    {row.cells.map((cell, i) => <td key={i} className={i === 0 ? "us" : i === row.win ? "win" : undefined}>{cell}</td>)}
+                    {row.cells.map((cell, i) => (
+                      <td key={i} className={i === 0 ? "us" : i === row.win ? "win" : undefined}>
+                        {cell}
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
@@ -464,7 +590,8 @@ export default function Landing() {
           </div>
         </details>
         <p className="mx-credit">
-          Apple M5 Pro, Chrome, served from a CDN, 4–5 November 2026. CesiumJS 1.146 ran the city's own published 3D Tiles, its strongest setup. Google's tiles are Google's own capture of Lyon. On Windows with an RTX 5060, Verse ran Lyon at about 45–60 fps.
+          Apple M5 Pro, Chrome, served from a CDN, 4–5 November 2026. CesiumJS 1.146 ran the city's own published 3D Tiles, its strongest setup. Google's tiles
+          are Google's own capture of Lyon. On Windows with an RTX 5060, Verse ran Lyon at about 45–60 fps.
         </p>
       </section>
 
@@ -490,22 +617,34 @@ export default function Landing() {
               </div>
             </div>
           ))}
-          <button className="mx-race-replay" type="button" data-race-replay="" id="btn-race-replay">↻ Run it again</button>
+          <button className="mx-race-replay" type="button" data-race-replay="" id="btn-race-replay">
+            ↻ Run it again
+          </button>
         </div>
         <div className="mx-matrix-box">
           <table className="mx-matrix">
             <thead>
               <tr>
                 <th scope="col" />
-                {raceMatrix.columns.map((c) => <th key={c} scope="col">{c}</th>)}
-                <th scope="col" className="us">{raceMatrix.verse}</th>
+                {raceMatrix.columns.map((c) => (
+                  <th key={c} scope="col">
+                    {c}
+                  </th>
+                ))}
+                <th scope="col" className="us">
+                  {raceMatrix.verse}
+                </th>
               </tr>
             </thead>
             <tbody>
               {raceMatrix.rows.map((row) => (
                 <tr key={row.label}>
                   <th scope="row">{row.label}</th>
-                  {row.cells.map(([text, mark], i) => <td key={i} className={mark}>{text}</td>)}
+                  {row.cells.map(([text, mark], i) => (
+                    <td key={i} className={mark}>
+                      {text}
+                    </td>
+                  ))}
                   <td className="us">{row.verse}</td>
                 </tr>
               ))}
@@ -559,14 +698,28 @@ export default function Landing() {
           </div>
           <figure className="mx-create-stage">
             {createRoutes.map(({ image }, i) => (
-              <img key={image.src} className={i === 0 ? "on" : undefined} src={image.src} alt={image.alt} width={image.width} height={image.height} loading={i === 0 ? undefined : "lazy"} />
+              <img
+                key={image.src}
+                className={i === 0 ? "on" : undefined}
+                src={image.src}
+                alt={image.alt}
+                width={image.width}
+                height={image.height}
+                loading={i === 0 ? undefined : "lazy"}
+              />
             ))}
             <figcaption>
-              <span className="mx-route-in" data-route-in="">{firstRoute.input}</span>
+              <span className="mx-route-in" data-route-in="">
+                {firstRoute.input}
+              </span>
               <span className="mx-route-arrow">→</span>
-              <span className="mx-route-out" data-route-out="">{firstRoute.output}</span>
+              <span className="mx-route-out" data-route-out="">
+                {firstRoute.output}
+              </span>
             </figcaption>
-            <span className="mx-route-tag" data-route-tag="">{firstRoute.tag}</span>
+            <span className="mx-route-tag" data-route-tag="">
+              {firstRoute.tag}
+            </span>
           </figure>
         </div>
       </section>
@@ -585,20 +738,29 @@ export default function Landing() {
             </div>
             <p>
               The same scene serves a buyer, a client, a shopper,
-              <br />
-              a player or an AI agent.
+              <br />a player or an AI agent.
             </p>
           </header>
           <div className="gallery-viewport">
             <div className="gallery-track" id="gallery-track">
               {galleryCards.map((card, i) => (
-                <a key={card.id} className={card.long ? "possibility-card long-title" : "possibility-card"} href={card.href} data-gallery-index={i} aria-label={card.label} id={card.id} aria-current={i === 0 ? "true" : undefined}>
+                <a
+                  key={card.id}
+                  className={card.long ? "possibility-card long-title" : "possibility-card"}
+                  href={card.href}
+                  data-gallery-index={i}
+                  aria-label={card.label}
+                  id={card.id}
+                  aria-current={i === 0 ? "true" : undefined}
+                >
                   <div className="gallery-picture">
                     <img alt={card.alt} width="720" height="450" loading="lazy" src={card.image} />
                     <span className="gallery-scrim" />
                   </div>
                   <span className="gallery-card-index">{nn(i)}</span>
-                  <h3><Lines lines={card.title} /></h3>
+                  <h3>
+                    <Lines lines={card.title} />
+                  </h3>
                   <div className="gallery-card-bottom">
                     <span>REAL VERSE SAMPLE</span>
                     <strong>{card.label}</strong>
@@ -610,15 +772,21 @@ export default function Landing() {
           <div className="gallery-controls">
             <span className="gallery-instruction">SCROLL TO EXPLORE</span>
             <div className="gallery-pagination">
-              <span id="gallery-current" aria-live="polite">01</span>
+              <span id="gallery-current" aria-live="polite">
+                01
+              </span>
               <span>{`/ ${nn(galleryCards.length - 1)}`}</span>
               <div className="gallery-progress">
                 <i />
               </div>
             </div>
             <div className="gallery-arrows">
-              <button data-gallery-prev="" aria-label="Previous possibility" id="btn-previous-possibility" disabled>←</button>
-              <button data-gallery-next="" aria-label="Next possibility" id="btn-next-possibility">→</button>
+              <button data-gallery-prev="" aria-label="Previous possibility" id="btn-previous-possibility" disabled>
+                ←
+              </button>
+              <button data-gallery-next="" aria-label="Next possibility" id="btn-next-possibility">
+                →
+              </button>
             </div>
           </div>
         </div>
@@ -648,7 +816,9 @@ export default function Landing() {
                 </a>
               </div>
             </div>
-            <span className="mx-try-url" data-try-url="">{firstScene.scene.replace("https://", "")}</span>
+            <span className="mx-try-url" data-try-url="">
+              {firstScene.scene.replace("https://", "")}
+            </span>
           </div>
         </div>
       </section>
@@ -674,7 +844,9 @@ export default function Landing() {
             ))}
           </div>
           <div className="mx-tech-view" role="tabpanel" aria-live="polite">
-            <span className="mx-tech-n" data-tech-n="">{nn(0)}</span>
+            <span className="mx-tech-n" data-tech-n="">
+              {nn(0)}
+            </span>
             <h3 data-tech-title="">{techniques[0].title}</h3>
             <p data-tech-copy="">{techniques[0].text}</p>
             <canvas className="mx-tech-canvas" data-tech-canvas="" aria-hidden="true" />
@@ -690,7 +862,9 @@ export default function Landing() {
             <output data-calc-hours="">10,000</output>
             <input id="calc-hours" type="range" min="0" max="300" step="1" defaultValue="100" data-calc-range="" />
             <div className="mx-calc-scale">
-              {costScale.map((s) => <span key={s}>{s}</span>)}
+              {costScale.map((s) => (
+                <span key={s}>{s}</span>
+              ))}
             </div>
             <p>A viewer-hour is one person exploring a scene for an hour. 10,000 is about 2,000 buyers spending five minutes each, every day of the month.</p>
           </div>
@@ -716,7 +890,8 @@ export default function Landing() {
           </div>
         </div>
         <p className="mx-credit">
-          Delivery cost to serve the scene: Verse at most about $252 per thousand viewer-hours; cloud GPU streaming $498–$6,000. Your plan price is separate, and starts free.
+          Delivery cost to serve the scene: Verse at most about $252 per thousand viewer-hours; cloud GPU streaming $498–$6,000. Your plan price is separate,
+          and starts free.
         </p>
       </section>
 
@@ -736,7 +911,8 @@ export default function Landing() {
           </div>
           <div className="challenge-invitation">
             <p>
-              A real 10.3-billion-triangle city already opens from a link. Think yours is bigger? Send your heaviest file. If Verse Engine fails to stream it, you win.
+              A real 10.3-billion-triangle city already opens from a link. Think yours is bigger? Send your heaviest file. If Verse Engine fails to stream it,
+              you win.
             </p>
             <a className="button action" href="/challenge" id="lnk-take-the-challenge">
               <span>Take the Challenge</span>
@@ -744,7 +920,8 @@ export default function Landing() {
           </div>
         </header>
         <p className="technical-note">
-          Performance figures are desktop browser benchmarks. Results vary with scene, device and connection. The point-cloud story above is an illustrative visualization; Lyon and the use-case samples are real Verse scenes.
+          Performance figures are desktop browser benchmarks. Results vary with scene, device and connection. The point-cloud story above is an illustrative
+          visualization; Lyon and the use-case samples are real Verse scenes.
         </p>
       </section>
 
@@ -768,7 +945,9 @@ export default function Landing() {
         <div className="plugin-tabs" role="tablist" aria-label="Publishing tools" aria-orientation="horizontal">
           {plugins.map((p, i) => (
             <button key={p.model} id={`publisher-${p.model}`} {...tab(i)} aria-controls="plugin-view" tabIndex={i === 0 ? undefined : -1} data-publisher={i}>
-              <span className="plugin-order" aria-hidden="true">{nn(i)}</span>
+              <span className="plugin-order" aria-hidden="true">
+                {nn(i)}
+              </span>
               <span>{p.name}</span>
               <i aria-hidden="true">↓</i>
             </button>
@@ -791,20 +970,33 @@ export default function Landing() {
                 <small>Desktop browser benchmark</small>
               </div>
             </div>
-            <a className="plugin-transfer" href="/plugins" aria-label="See all plug-ins" id="lnk-see-all-plug-ins-2">→</a>
+            <a className="plugin-transfer" href="/plugins" aria-label="See all plug-ins" id="lnk-see-all-plug-ins-2">
+              →
+            </a>
           </div>
           <figure className="plugin-scene plugin-workflow" id="fig-plugin-scene">
             <div className="plugin-publishing" data-plugin-visual="">
               <div className="publishing-heading">
                 <span className="workflow-editor">{firstPlugin.name}</span>
-                <span className="publishing-arrow" aria-hidden="true">→</span>
+                <span className="publishing-arrow" aria-hidden="true">
+                  →
+                </span>
                 <span>Verse Engine</span>
               </div>
               <svg className="publishing-drawing" viewBox="0 0 760 300" role="img" aria-label={firstPlugin.alt}>
                 <defs>
                   {plugins.map(({ model }) => (
-                    <g key={model} id={`plugin-mesh-${model}`} fill="none" stroke="currentColor" strokeWidth={pluginMeshes[model].strokeWidth} strokeLinejoin="round">
-                      {pluginMeshes[model].paths.map((d, i) => <path key={i} d={d} />)}
+                    <g
+                      key={model}
+                      id={`plugin-mesh-${model}`}
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={pluginMeshes[model].strokeWidth}
+                      strokeLinejoin="round"
+                    >
+                      {pluginMeshes[model].paths.map((d, i) => (
+                        <path key={i} d={d} />
+                      ))}
                     </g>
                   ))}
                 </defs>
@@ -835,7 +1027,9 @@ export default function Landing() {
                 <use data-publishing-model="" href="#plugin-mesh-blender" x="465" y="110" color="#0066cc" />
               </svg>
               <div className="publishing-labels">
-                {publishingLabels.map((l) => <span key={l}>{l}</span>)}
+                {publishingLabels.map((l) => (
+                  <span key={l}>{l}</span>
+                ))}
               </div>
             </div>
             <figcaption>
@@ -848,7 +1042,9 @@ export default function Landing() {
           <span>Coming soon</span>
           <p>
             {"Revit, SketchUp, Rhino, 3ds Max, Archicad, Maya, Cinema 4D, Houdini and more. BIM models arrive through IFC today. "}
-            <a href="/plugins#aec" id="lnk-explore-beta-plug-ins">Explore beta plug-ins</a>
+            <a href="/plugins#aec" id="lnk-explore-beta-plug-ins">
+              Explore beta plug-ins
+            </a>
           </p>
         </div>
       </section>
@@ -866,11 +1062,49 @@ export default function Landing() {
                   </button>
                 ))}
               </div>
-              <button className="mx-copy" type="button" data-copy-code="" id="btn-dev-copy-code">Copy</button>
+              <button className="mx-copy" type="button" data-copy-code="" id="btn-dev-copy-code">
+                Copy
+              </button>
             </div>
-            <pre data-pane="embed"><code><span className="c">{"<!-- the whole embed -->"}</span>{"\n"}<span className="k">{"<script"}</span>{" src\x3d"}<span className="s">{"\"https://verse.ctruh.com/embed.js\""}</span>{"\n        data-scene="}<span className="s">{"\"your-scene\""}</span><span className="k">{"></script>"}</span>{"\n\n"}<span className="c">{"<!-- or as a component -->"}</span>{"\n"}<span className="k">{"<verse-viewer"}</span>{" scene="}<span className="s">{"\"your-scene\""}</span><span className="k">{"></verse-viewer>"}</span></code></pre>
-            <pre data-pane="rest" hidden><code><span className="c">{"# Upload any 3D file. Get a streamable scene back."}</span>{"\ncurl -X POST https://verse.ctruh.com/v1/ingest \\\n  -H "}<span className="s">{"\"Authorization: Bearer $VERSE_API_KEY\""}</span>{" \\\n  --data-binary @scene.glb\n\n"}<span className="c">{"# → { \"job\": \"…\" }  poll it, or get a webhook when it's live"}</span></code></pre>
-            <pre data-pane="mcp" hidden><code><span className="c">{"# Connect the Verse MCP server to your AI assistant, then ask:"}</span>{"\n\n"}<span className="s">{"\"Publish warehouse.fbx to Verse as a private link.\""}</span>{"\n\n"}<span className="c">{"# The assistant uploads the file and hands back"}</span>{"\n"}<span className="c">{"# a published, signed link."}</span></code></pre>
+            <pre data-pane="embed">
+              <code>
+                <span className="c">{"<!-- the whole embed -->"}</span>
+                {"\n"}
+                <span className="k">{"<script"}</span>
+                {" src\x3d"}
+                <span className="s">{'"https://verse.ctruh.com/embed.js"'}</span>
+                {"\n        data-scene="}
+                <span className="s">{'"your-scene"'}</span>
+                <span className="k">{"></script>"}</span>
+                {"\n\n"}
+                <span className="c">{"<!-- or as a component -->"}</span>
+                {"\n"}
+                <span className="k">{"<verse-viewer"}</span>
+                {" scene="}
+                <span className="s">{'"your-scene"'}</span>
+                <span className="k">{"></verse-viewer>"}</span>
+              </code>
+            </pre>
+            <pre data-pane="rest" hidden>
+              <code>
+                <span className="c">{"# Upload any 3D file. Get a streamable scene back."}</span>
+                {"\ncurl -X POST https://verse.ctruh.com/v1/ingest \\\n  -H "}
+                <span className="s">{'"Authorization: Bearer $VERSE_API_KEY"'}</span>
+                {" \\\n  --data-binary @scene.glb\n\n"}
+                <span className="c">{'# → { "job": "…" }  poll it, or get a webhook when it\'s live'}</span>
+              </code>
+            </pre>
+            <pre data-pane="mcp" hidden>
+              <code>
+                <span className="c">{"# Connect the Verse MCP server to your AI assistant, then ask:"}</span>
+                {"\n\n"}
+                <span className="s">{'"Publish warehouse.fbx to Verse as a private link."'}</span>
+                {"\n\n"}
+                <span className="c">{"# The assistant uploads the file and hands back"}</span>
+                {"\n"}
+                <span className="c">{"# a published, signed link."}</span>
+              </code>
+            </pre>
           </div>
           <ul className="mx-dev-list">
             {devFeatures.map((f) => (
@@ -880,7 +1114,9 @@ export default function Landing() {
               </li>
             ))}
             <li>
-              <a className="under-link" href="/developers">Read the docs →</a>
+              <a className="under-link" href="/developers">
+                Read the docs →
+              </a>
             </li>
           </ul>
         </div>
@@ -908,7 +1144,9 @@ export default function Landing() {
           <a className="button action" href="/pricing">
             <span>Compare plans</span>
           </a>
-          <a className="under-link" href={contactUrl}>Talk to us</a>
+          <a className="under-link" href={contactUrl}>
+            Talk to us
+          </a>
         </div>
       </section>
 
@@ -920,7 +1158,9 @@ export default function Landing() {
             <br />
             before you go.
           </h2>
-          <a className="under-link" href="/docs/what-is-verse-engine" id="lnk-read-the-documentation">Read the documentation</a>
+          <a className="under-link" href="/docs/what-is-verse-engine" id="lnk-read-the-documentation">
+            Read the documentation
+          </a>
         </div>
         <div className="faq-list">
           {faqs.map((f, i) => (
@@ -948,11 +1188,22 @@ export default function Landing() {
               <a className="button action" href="/studio" id="lnk-explore-verse-engine-5">
                 <span>Try it free</span>
               </a>
-              <a className="under-link" href="/pricing" id="lnk-see-pricing">See pricing</a>
+              <a className="under-link" href="/pricing" id="lnk-see-pricing">
+                See pricing
+              </a>
             </div>
           </header>
           <figure className="footer-landscape footer-film" data-film="" id="fig-verse-film">
-            <video muted loop playsInline preload="none" poster="/media/verse-film-poster.webp" width="1920" height="1080" aria-label="Verse Engine launch film (no sound): the 10-billion-triangle city of Lyon, opened in a browser">
+            <video
+              muted
+              loop
+              playsInline
+              preload="none"
+              poster="/media/verse-film-poster.webp"
+              width="1920"
+              height="1080"
+              aria-label="Verse Engine launch film (no sound): the 10-billion-triangle city of Lyon, opened in a browser"
+            >
               <source src="/media/verse-film-720.mp4" type="video/mp4" media="(max-width: 800px)" />
               <source src="/media/verse-film-1080.mp4" type="video/mp4" />
             </video>

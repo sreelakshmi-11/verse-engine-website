@@ -1,5 +1,4 @@
-// Site footer. Privacy and Terms link to verse.ctruh.com, as before. FOOTER_LINKS adds the Resources
-// pages and related links to the columns.
+// Site footer. FOOTER_LINKS adds the Resources pages and related links to the columns.
 import Logo from "./Logo.tsx";
 import { FOOTER_LINKS, PRODUCT } from "../pages/resources/data.ts";
 
@@ -29,12 +28,7 @@ export default function Footer({ hidden, intro }: { hidden: boolean; intro: bool
       )}
       <div className={"footer-links" + (intro ? "" : " border-t-0! pt-0!")}>
         <div>
-          <a
-            className="brand"
-            href="/"
-            aria-label="Verse Engine by Ctruh – Home"
-            id="lnk-verse-engine-home"
-          >
+          <a className="brand" href="/" aria-label="Verse Engine by Ctruh – Home" id="lnk-verse-engine-home">
             <Logo className="h-12" />
           </a>
           <p>{PRODUCT.definition}</p>
@@ -109,11 +103,7 @@ export default function Footer({ hidden, intro }: { hidden: boolean; intro: bool
         </nav>
       </div>
       <div className="page-footer-bottom">
-        <span>
-          {
-            "© 2026 CTRUH Technologies Private Limited. Verse Engine by Ctruh is a product of Ctruh."
-          }
-        </span>
+        <span>{"© 2026 CTRUH Technologies Private Limited. Verse Engine by Ctruh is a product of Ctruh."}</span>
         <a href="https://verse.ctruh.com/privacy" id="lnk-privacy">
           {"Privacy"}
         </a>

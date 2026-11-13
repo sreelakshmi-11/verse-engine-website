@@ -1,7 +1,5 @@
-// About page (/about): two tabs, "About Ctruh" and "About Verse Engine".
-// The URL hash picks the tab (#verse-engine, otherwise Ctruh); choosing a tab updates the
-// hash without a new history entry. Arrow keys, Home and End move between the tabs.
-// (Was the About part of public/js/pages.js.)
+// About page (/about): "About Ctruh" and "About Verse Engine" tabs. The URL hash picks the tab (#verse-engine,
+// otherwise Ctruh) and is updated without a history entry; arrow keys, Home and End switch tabs.
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, KeyboardEvent } from "react";
 
@@ -31,7 +29,9 @@ export default function About() {
     buttons.current[next]!.focus();
   }
   const tabProps = (key: Tab, index: number) => ({
-    ref: (el: HTMLButtonElement | null) => { buttons.current[index] = el; },
+    ref: (el: HTMLButtonElement | null) => {
+      buttons.current[index] = el;
+    },
     "aria-selected": tab === key,
     tabIndex: tab === key ? 0 : -1,
     onClick: () => choose(key),
@@ -41,7 +41,9 @@ export default function About() {
   return (
     <>
       <div className="about-switch content-width" role="tablist" aria-label="About">
-        <button id="about-ctruh" role="tab" aria-controls="about-company" data-about-tab="ctruh" {...tabProps(TABS[0], 0)}>About Ctruh</button>
+        <button id="about-ctruh" role="tab" aria-controls="about-company" data-about-tab="ctruh" {...tabProps(TABS[0], 0)}>
+          About Ctruh
+        </button>
         <button id="about-verse" role="tab" aria-controls="about-engine" data-about-tab="verse-engine" {...tabProps(TABS[1], 1)}>
           About Verse Engine
         </button>
@@ -56,7 +58,8 @@ export default function About() {
           </h1>
           <p className="hero-description tagline">Building the spatial internet.</p>
           <p className="hero-description">
-            Ctruh is a deep-tech company building 3D, XR and AI infrastructure for the spatial internet, with teams in Bengaluru and San Francisco. Verse Engine by Ctruh is our browser-native 3D engine: it lets anyone share a 3D world as a link.
+            Ctruh is a deep-tech company building 3D, XR and AI infrastructure for the spatial internet, with teams in Bengaluru and San Francisco. Verse Engine
+            by Ctruh is our browser-native 3D engine: it lets anyone share a 3D world as a link.
           </p>
         </header>
         <figure className="about-panorama" id="fig-about-panorama">
@@ -73,16 +76,25 @@ export default function About() {
             </h2>
           </div>
           <p>
-            Ctruh is a deep-tech company building 3D, XR and AI infrastructure for the spatial internet, with teams in Bengaluru and San Francisco. Verse Engine by Ctruh is our browser-native 3D engine: it lets anyone share a 3D world as a link.
+            Ctruh is a deep-tech company building 3D, XR and AI infrastructure for the spatial internet, with teams in Bengaluru and San Francisco. Verse Engine
+            by Ctruh is our browser-native 3D engine: it lets anyone share a 3D world as a link.
           </p>
         </section>
         <section className="ctruh-products content-width section-space" id="sec-ctruh-products">
           <h2>How Verse Engine by Ctruh fits with other Ctruh products</h2>
           <ul>
-            <li><strong>Ctruh</strong>: the company. Builds 3D, XR and AI infrastructure.</li>
-            <li><strong>Verse Engine by Ctruh</strong>: the browser-native 3D engine that prepares, streams and shows 3D scenes as a link.</li>
-            <li><strong>VersaAI</strong>: Ctruh&apos;s AI that creates 3D models from photos and video.</li>
-            <li><strong>Ctruh Studio</strong>: Ctruh&apos;s no-code builder for immersive experiences.</li>
+            <li>
+              <strong>Ctruh</strong>: the company. Builds 3D, XR and AI infrastructure.
+            </li>
+            <li>
+              <strong>Verse Engine by Ctruh</strong>: the browser-native 3D engine that prepares, streams and shows 3D scenes as a link.
+            </li>
+            <li>
+              <strong>VersaAI</strong>: Ctruh&apos;s AI that creates 3D models from photos and video.
+            </li>
+            <li>
+              <strong>Ctruh Studio</strong>: Ctruh&apos;s no-code builder for immersive experiences.
+            </li>
           </ul>
         </section>
         <section className="company-facts content-width section-space" id="sec-company-facts">
@@ -139,7 +151,10 @@ export default function About() {
               <span className="step-number">01</span>
               <h2>Modern browsers, every screen</h2>
               <p>
-                Runs on phones, laptops and headsets, using WebGPU where available and WebGL2 otherwise. <a className="inline-link" href="/docs/browser-support">See browser support</a>
+                Runs on phones, laptops and headsets, using WebGPU where available and WebGL2 otherwise.{" "}
+                <a className="inline-link" href="/docs/browser-support">
+                  See browser support
+                </a>
               </p>
             </article>
             <article id="art-item-5">
@@ -200,7 +215,9 @@ export default function About() {
           </div>
           <p className="benchmark-note">Desktop browser benchmarks. Results vary with scene, device and connection.</p>
           <p className="benchmark-link">
-            <a className="inline-link" href="/docs/browser-3d-vs-pixel-streaming">Browser 3D vs. cloud pixel streaming</a>
+            <a className="inline-link" href="/docs/browser-3d-vs-pixel-streaming">
+              Browser 3D vs. cloud pixel streaming
+            </a>
           </p>
         </section>
       </div>

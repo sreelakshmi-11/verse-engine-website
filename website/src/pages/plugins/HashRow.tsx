@@ -1,4 +1,4 @@
-// A plug-in package's SHA-256 checksum with a Copy button (was the copy-hash part of public/js/pages.js).
+// A plug-in package's SHA-256 checksum with a Copy button.
 import { useState } from "react";
 
 export default function HashRow({ hash, name, buttonId }: { hash: string; name: string; buttonId: string }) {
@@ -20,7 +20,9 @@ export default function HashRow({ hash, name, buttonId }: { hash: string; name: 
       <button type="button" data-copy-hash="" aria-label={"Copy SHA-256 for " + name} id={buttonId} onClick={copy}>
         Copy ⧉
       </button>
-      <span className="hash-status" aria-live="polite">{status}</span>
+      <span className="hash-status" aria-live="polite">
+        {status}
+      </span>
     </div>
   );
 }
