@@ -75,28 +75,53 @@ export function createEnhancements({ gsap, ST, reduced, scrollToTarget }: Landin
     options,
   );
   setIndex(0);
+  // Desktop: the track is pinned and moved by page scroll. Phones/tablets (≤800px) or reduced motion: the viewport scrolls sideways.
+  const narrow = matchMedia("(max-width: 800px)");
+  function pin() {
+    if (tween || reduced || narrow.matches || !gsap || !ST) return;
+    section.dataset.pinned = "true";
+    viewport.scrollLeft = 0;
+    tween = gsap.to(track, {
+      x: () => -maxTravel(),
+      ease: "none",
+      onUpdate: positionCards,
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: () => "+=" + Math.max(innerWidth * 1.3, maxTravel() * 1.25),
+        pin: ".gallery-stage",
+        scrub: 0.65,
+        invalidateOnRefresh: true,
+        onRefresh: positionCards,
+      },
+    });
+  }
+  function unpin() {
+    if (!tween) return;
+    tween.scrollTrigger?.kill(true);
+    tween.kill();
+    tween = null;
+    gsap.set(track, { clearProps: "transform" });
+    delete section.dataset.pinned;
+  }
+  // The window can cross the breakpoint after load (a resized window, a tablet turned round): switch mode, keep the card shown.
+  function onBreakpoint() {
+    const current = index;
+    if (narrow.matches) {
+      unpin();
+      ST?.refresh();
+      goTo(current, true);
+    } else {
+      pin();
+      ST?.refresh();
+      positionCards();
+    }
+  }
   return {
     mount() {
-      if (reduced || innerWidth <= 800 || !gsap || !ST) {
-        positionCards();
-        return;
-      }
-      section.dataset.pinned = "true";
-      tween = gsap.to(track, {
-        x: () => -maxTravel(),
-        ease: "none",
-        onUpdate: positionCards,
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () => "+=" + Math.max(innerWidth * 1.3, maxTravel() * 1.25),
-          pin: ".gallery-stage",
-          scrub: 0.65,
-          invalidateOnRefresh: true,
-          onRefresh: positionCards,
-        },
-      });
+      pin();
       positionCards();
+      narrow.addEventListener("change", onBreakpoint, options);
     },
     dispose() {
       abort.abort();

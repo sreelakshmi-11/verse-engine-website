@@ -343,7 +343,8 @@
 }
 @media (max-width: 600px) {
   .mx-stat { min-height: 190px; padding: 22px 18px; }
-  .mx-stat small { left: 18px; right: 18px; bottom: 16px; font-size: 12.5px; }
+  .mx-stat { grid-template-rows: auto auto 1fr; }
+  .mx-stat small { position: relative; left: auto; right: auto; bottom: auto; align-self: end; margin-bottom: -6px; font-size: 12.5px; }
   .mx-stat strong { font-size: 46px; }
   .mx-try-list { grid-template-columns: minmax(0, 1fr); }
   .mx-try-card { grid-template-columns: minmax(0, 1fr); left: 14px; right: 14px; bottom: 14px; }
