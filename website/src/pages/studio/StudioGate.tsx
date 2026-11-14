@@ -34,7 +34,7 @@ export default function StudioGate({ path }: { path: string }) {
         <a className="st-gate-btn" id="st-gate-mail" href={mailHref(path)}>
           Email me a link
         </a>
-        <a className="st-gate-link" href="/" id="lnk-back-to-the-website">
+        <a className="st-gate-link" href="/">
           Back to the website
         </a>
       </div>

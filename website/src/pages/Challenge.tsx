@@ -91,7 +91,7 @@ export default function Challenge() {
           <p className="ch-preview" role="note">
             <strong>Preview.</strong>
             {" This form is a design mockup. Nothing you enter is sent or stored. To enter for real, use the "}
-            <a href="https://verse.ctruh.com/challenge" target="_blank" rel="noopener" id="lnk-live-form">
+            <a href="https://verse.ctruh.com/challenge" target="_blank" rel="noopener">
               live form
             </a>
             .
@@ -112,15 +112,15 @@ export default function Challenge() {
           <div className="ch-grid">
             <label>
               Your name
-              <input name="name" autoComplete="name" required id="inp-name" />
+              <input name="name" autoComplete="name" required />
             </label>
             <label>
               Email
-              <input name="email" type="email" autoComplete="email" required id="inp-email" />
+              <input name="email" type="email" autoComplete="email" required />
             </label>
             <label className="ch-wide">
               Company
-              <input name="company" autoComplete="organization" required id="inp-company" />
+              <input name="company" autoComplete="organization" required />
             </label>
           </div>
           {"\n"}
@@ -138,7 +138,7 @@ export default function Challenge() {
           <div className="ch-panel" id="p-link" role="tabpanel" aria-labelledby="t-link" hidden={active !== "link"}>
             <label className="ch-wide">
               Link to the hosted file
-              <input name="link" type="url" placeholder="https://" id="inp-link" />
+              <input name="link" type="url" placeholder="https://" />
             </label>
             <p className="ch-help">Drive, Dropbox, S3, WeTransfer… up to 20 GB.</p>
           </div>
@@ -149,7 +149,7 @@ export default function Challenge() {
               <strong>+91 74115 97778</strong>
               {" on WhatsApp, from any number. Submit this form too, so we can match your file to you."}
             </p>
-            <SiteButton href="https://wa.me/917411597778" target="_blank" rel="noopener" id="lnk-open-whatsapp">
+            <SiteButton href="https://wa.me/917411597778" target="_blank" rel="noopener">
               Open WhatsApp
             </SiteButton>
           </div>
@@ -158,29 +158,27 @@ export default function Challenge() {
             <label className="ch-wide">
               {"What makes it hard? "}
               <em>(optional)</em>
-              <textarea name="hard" rows={3} id="txt-hard" />
+              <textarea name="hard" rows={3} />
             </label>
             <label className="ch-wide">
               {"Website "}
               <em>(optional)</em>
-              <input name="website" type="url" placeholder="https://" id="inp-website" />
+              <input name="website" type="url" placeholder="https://" />
             </label>
           </div>
           {"\n"}
           <label className="ch-check">
-            <input type="checkbox" name="hall" id="inp-hall" />
+            <input type="checkbox" name="hall" />
             <span>You may show this scene in the public hall of fame once a person at Ctruh approves it. Leave this unticked and it stays private.</span>
           </label>
           {"\n"}
           <label className="ch-check">
-            <input type="checkbox" name="rights" required id="inp-rights" />
+            <input type="checkbox" name="rights" required />
             <span>
               {"I have the right to send this file and accept the "}
-              <a href="#rules" id="lnk-challenge-rules">
-                challenge rules
-              </a>
+              <a href="#rules">challenge rules</a>
               {" and the "}
-              <a href="https://verse.ctruh.com/privacy" target="_blank" rel="noopener" id="lnk-privacy-policy">
+              <a href="https://verse.ctruh.com/privacy" target="_blank" rel="noopener">
                 privacy policy
               </a>
               .
@@ -191,7 +189,7 @@ export default function Challenge() {
             {error}
           </p>
           {"\n"}
-          <button className="site-button" type="submit" id="btn-send-it-to-verse">
+          <button className="site-button" type="submit">
             Send it to Verse
             <span aria-hidden="true" />
           </button>
@@ -199,7 +197,7 @@ export default function Challenge() {
           <div className="ch-done" id="ch-done" role="status" hidden={!done} ref={doneBox}>
             <h3>This is a preview.</h3>
             <p>Your entry was not sent. To take the challenge, continue on the live form.</p>
-            <SiteButton href="https://verse.ctruh.com/challenge" target="_blank" rel="noopener" id="lnk-open-the-live-form">
+            <SiteButton href="https://verse.ctruh.com/challenge" target="_blank" rel="noopener">
               Open the live form
             </SiteButton>
           </div>
@@ -207,7 +205,7 @@ export default function Challenge() {
         </form>
       </section>
       {"\n"}
-      <section className="page-band ch-proof" aria-labelledby="ch-proof" id="sec-ch-proof">
+      <section className="page-band ch-proof" aria-labelledby="ch-proof">
         <div className="content-width">
           <p className="eyebrow">PROOF</p>
           <h2 id="ch-proof">
@@ -220,7 +218,7 @@ export default function Challenge() {
         </div>
       </section>
       {"\n"}
-      <section className="content-width section-space" aria-labelledby="ch-hall" id="sec-ch-hall">
+      <section className="content-width section-space" aria-labelledby="ch-hall">
         <p className="eyebrow">HALL OF FAME</p>
         <h2 id="ch-hall">
           Scenes whose owners said yes,
@@ -236,7 +234,7 @@ export default function Challenge() {
         <h2 id="ch-rules">Rules and terms</h2>
         <div className="ch-rule-grid">
           {"\n"}
-          <article id="art-item">
+          <article>
             <h3>What we do with your file</h3>
             <ul>
               <li>Your file is private by default. Only you and Ctruh staff handling the challenge can see it.</li>
@@ -244,17 +242,14 @@ export default function Challenge() {
                 {
                   "We publish a scene to the hall of fame only if you ticked permission on the form and a person at Ctruh approved it. You can ask us to remove it any time at "
                 }
-                <a href="mailto:hello@ctruh.com" id="lnk-hello-ctruh-com-2">
-                  hello@ctruh.com
-                </a>
-                .
+                <a href="mailto:hello@ctruh.com">hello@ctruh.com</a>.
               </li>
               <li>We use your name, email and company to reply and to follow up about Verse. We do not sell them.</li>
               <li>Unpublished files are deleted on request.</li>
             </ul>
           </article>
           {"\n"}
-          <article id="art-item-2">
+          <article>
             <h3>Limits and fair play</h3>
             <ul>
               <li>Upload limit: 1 GB in the browser. Bigger files: send a link (up to 20 GB) or WhatsApp.</li>

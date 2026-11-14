@@ -1,8 +1,10 @@
 // Home page: create section.
 import { createHeading, createRoutes } from "../data.ts";
 import { SectionHead, tab } from "../parts.tsx";
+import { useHomeButtonIds } from "../button-ids.ts";
 
 export default function WaysToCreate() {
+  const ids = useHomeButtonIds();
   const firstRoute = createRoutes[0];
   return (
     <section className="mx-create section-pad" id="create" aria-labelledby="create-heading">
@@ -10,7 +12,7 @@ export default function WaysToCreate() {
       <div className="mx-create-body" data-create="">
         <div className="mx-create-list" role="tablist" aria-label="Ways to create">
           {createRoutes.map((r, i) => (
-            <button key={r.title} id={r.id} {...tab(i)} data-route={i}>
+            <button key={r.title} id={ids.create?.[i]} {...tab(i)} data-route={i}>
               <span className={`mx-badge ${r.badge.className}`}>{r.badge.label}</span>
               <strong>{r.title}</strong>
               <small>{r.text}</small>

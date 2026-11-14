@@ -21,9 +21,7 @@ export default function PluginBlender() {
         </>,
         <>
           {"Optional: paste an account token from "}
-          <a href="/studio" id="lnk-studio">
-            Studio
-          </a>
+          <a href="/studio">Studio</a>
           {" in "}
           <b>Preferences › Add-ons › Verse Publish</b>.<span>Your scenes become permanent and are listed in your library.</span>
         </>,

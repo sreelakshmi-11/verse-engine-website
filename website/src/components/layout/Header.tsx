@@ -9,31 +9,30 @@ type HeaderProps = { view: ShellView; menuOpen: boolean; menuButtonRef: RefObjec
 
 export default function Header({ view, menuOpen, menuButtonRef, onOpenMenu }: HeaderProps) {
   return (
-    <header id="site-header" className="site-header growth-header" hidden={view.headerHidden}>
-      <a id="lnk-brand" className="brand" href="/" aria-label="Verse Engine by Ctruh – Home">
+    <header className="site-header growth-header" hidden={view.headerHidden}>
+      <a className="brand" href="/" aria-label="Verse Engine by Ctruh – Home">
         <Logo className="h-10 md:h-12" />
       </a>
-      <nav id="nav-main" className="desktop-nav" aria-label="Main navigation">
-        {HEADER_NAV.desktopBeforeResources.map(({ href, label, id, current }) => (
-          <a key={id} className="nav-link" href={href} id={id} aria-current={view.navCurrent === current ? "page" : undefined}>
+      <nav className="desktop-nav" aria-label="Main navigation">
+        {HEADER_NAV.desktopBeforeResources.map(({ href, label, current }) => (
+          <a key={href} className="nav-link" href={href} aria-current={view.navCurrent === current ? "page" : undefined}>
             {label}
           </a>
         ))}
         <ResourcesNav current={view.navCurrent} />
-        {HEADER_NAV.desktopAfterResources.map(({ href, label, id, current }) => (
-          <a key={id} className="nav-link" href={href} id={id} aria-current={view.navCurrent === current ? "page" : undefined}>
+        {HEADER_NAV.desktopAfterResources.map(({ href, label, current }) => (
+          <a key={href} className="nav-link" href={href} aria-current={view.navCurrent === current ? "page" : undefined}>
             {label}
           </a>
         ))}
       </nav>
-      <div id="hdr-actions" className="header-actions">
+      <div className="header-actions">
         {HEADER_NAV.desktopActions.map(({ href, label, id, className }) => (
           <a key={id} id={id} className={className} href={href}>
             <span>{label}</span>
           </a>
         ))}
         <button
-          id="btn-menu-open"
           ref={menuButtonRef}
           className="menu-button"
           aria-label="Open navigation"

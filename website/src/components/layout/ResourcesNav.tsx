@@ -64,7 +64,6 @@ export default function ResourcesNav({ current }: { current?: string | null }) {
     <div className={"nav-drop" + (open ? " is-open" : "")} ref={rootRef} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} onBlur={onBlur}>
       <button
         type="button"
-        id="btn-nav-resources"
         ref={buttonRef}
         className="nav-link nav-drop-toggle"
         aria-expanded={open}
@@ -77,7 +76,7 @@ export default function ResourcesNav({ current }: { current?: string | null }) {
       </button>
       <div className="nav-drop-menu" id="nav-resources-menu" hidden={!open} onClick={onMenuClick}>
         {RESOURCES_MENU.map((r) => (
-          <a key={r.href} href={r.href} id={r.id} aria-current={current === r.href ? "page" : undefined}>
+          <a key={r.href} href={r.href} aria-current={current === r.href ? "page" : undefined}>
             {r.label}
           </a>
         ))}

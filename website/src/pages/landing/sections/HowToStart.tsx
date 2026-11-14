@@ -53,7 +53,7 @@ function ShareVisual() {
     <div className="workflow-visual share-visual">
       <div className="scene-share">
         <span>verse.ctruh.com/s/your-scene</span>
-        <button data-copy-scene="" aria-label="Copy link" id="btn-copy-link">
+        <button data-copy-scene="" aria-label="Copy link">
           {"Copy link "}
           <i>⧉</i>
         </button>
@@ -86,8 +86,8 @@ export default function HowToStart() {
         {workflowCards.map((card) => {
           const Visual = workflowVisuals[card.visual];
           return (
-            <article key={card.id} className="workflow-card" id={card.id}>
-              <header id={card.headerId}>
+            <article key={card.title} className="workflow-card">
+              <header>
                 <span>{card.n}</span>
                 <h3>{card.title}</h3>
                 <small>{card.sub}</small>

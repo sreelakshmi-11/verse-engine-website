@@ -10,14 +10,14 @@ type MenuGroup = (typeof HEADER_NAV.mobileGroups)[keyof typeof HEADER_NAV.mobile
 
 const emit = (open: boolean) => document.dispatchEvent(new CustomEvent("verse:menu", { detail: { open } }));
 const menuGroup = (group: MenuGroup) => (
-  <details className="m-group" id={group.id} key={group.id}>
-    <summary id={group.summaryId}>
+  <details className="m-group" key={group.label}>
+    <summary>
       {group.label}
       <Chevron className="m-chev" />
     </summary>
     <div>
-      {group.links.map(({ href, label, id }) => (
-        <a key={id} href={href} id={id}>
+      {group.links.map(({ href, label }) => (
+        <a key={href} href={href}>
           {label}
         </a>
       ))}
@@ -53,37 +53,31 @@ export default function MobileMenu({
     <dialog className="menu-dialog growth-menu" id="menu-dialog" ref={dialogRef} onClose={onClose} onClick={onClick}>
       <div className="menu-top">
         <span>{"Verse Engine / Ctruh"}</span>
-        <button id="btn-menu-close" className="menu-close" aria-label="Close navigation" onClick={onCloseButton}>
+        <button className="menu-close" aria-label="Close navigation" onClick={onCloseButton}>
           {"Close ×"}
         </button>
       </div>
-      <nav id="nav-mobile" aria-label="Mobile navigation">
-        <a href={HEADER_NAV.mobilePrimary.engine.href} id={HEADER_NAV.mobilePrimary.engine.id}>
-          {HEADER_NAV.mobilePrimary.engine.label}
-        </a>
+      <nav aria-label="Mobile navigation">
+        <a href={HEADER_NAV.mobilePrimary.engine.href}>{HEADER_NAV.mobilePrimary.engine.label}</a>
         {menuGroup(HEADER_NAV.mobileGroups.developers)}
-        <a href={HEADER_NAV.mobilePrimary.pricing.href} id={HEADER_NAV.mobilePrimary.pricing.id}>
-          {HEADER_NAV.mobilePrimary.pricing.label}
-        </a>
+        <a href={HEADER_NAV.mobilePrimary.pricing.href}>{HEADER_NAV.mobilePrimary.pricing.label}</a>
         {menuGroup(HEADER_NAV.mobileGroups.plugins)}
-        <details className="m-group" id={HEADER_NAV.resources.mobileId}>
-          <summary id={HEADER_NAV.resources.mobileSummaryId}>
+        <details className="m-group">
+          <summary>
             {HEADER_NAV.resources.label}
             <Chevron className="m-chev" />
           </summary>
           <div>
             {RESOURCES_MENU.map((r) => (
-              <a key={r.href} href={r.href} id={r.mobileId}>
+              <a key={r.href} href={r.href}>
                 {r.label}
               </a>
             ))}
           </div>
         </details>
-        <a href={HEADER_NAV.mobilePrimary.about.href} id={HEADER_NAV.mobilePrimary.about.id}>
-          {HEADER_NAV.mobilePrimary.about.label}
-        </a>
-        {HEADER_NAV.mobileActions.map(({ href, label, mobileId, mobileClassName, mobileArrow }) => (
-          <a key={mobileId} id={mobileId} className={mobileClassName} href={href}>
+        <a href={HEADER_NAV.mobilePrimary.about.href}>{HEADER_NAV.mobilePrimary.about.label}</a>
+        {HEADER_NAV.mobileActions.map(({ href, label, mobileClassName, mobileArrow }) => (
+          <a key={href} className={mobileClassName} href={href}>
             {label}
             {mobileArrow && <span aria-hidden="true" />}
           </a>

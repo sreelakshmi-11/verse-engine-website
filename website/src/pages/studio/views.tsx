@@ -28,13 +28,6 @@ import type { Hook, Opening, Plan, PlanTool, Scene, SceneKind, SceneOption, Stor
 
 const NL = "\n  ",
   NL4 = "\n    ";
-const slug = (t: string) =>
-  String(t)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
 
 /* ---------- live parts (updated in place, without rebuilding the view) ---------- */
 /** What the in-place parts read: the store and the floor plan's redraw counter. */
@@ -192,7 +185,7 @@ function SceneCard({ s }: { s: Scene }) {
         </div>
       </div>
       <div className="scene-actions">
-        <button className="btn ghost sm" data-action="copy-scene" data-id={s.id} id={`btn-scene-card-copy-link-${s.id}`}>
+        <button className="btn ghost sm" data-action="copy-scene" data-id={s.id}>
           Copy link
         </button>
         <a className="btn ghost sm" href={`/studio/analytics/${s.id}`}>
@@ -255,7 +248,7 @@ function viewScenes(S: Store) {
             ["ready", "Ready"],
             ["processing", "Processing"],
           ].map(([k, l]) => (
-            <button key={k} className="tab" data-action="filter" data-v={k} id={`btn-filter-${k}`} aria-pressed={S.filter === k}>
+            <button key={k} className="tab" data-action="filter" data-v={k} aria-pressed={S.filter === k}>
               {l}
             </button>
           ))}
@@ -283,7 +276,7 @@ function ShareControls({ s }: { s: Scene }) {
         <p className="label">Share one link</p>
         <div className="linkbox" style={{ marginTop: "12px" }}>
           <input readOnly aria-label="Scene link" defaultValue={sceneUrl(s.id)} />
-          <button className="btn sm" data-action="copy-scene" data-id={s.id} id={`btn-share-copy-link-${s.id}`}>
+          <button className="btn sm" data-action="copy-scene" data-id={s.id}>
             Copy
           </button>
         </div>
@@ -303,10 +296,10 @@ function ShareControls({ s }: { s: Scene }) {
           Who can open it
         </p>
         <div className="seg" role="group" aria-label="Privacy">
-          <button data-action="privacy" data-id={s.id} data-v="private" id={`btn-privacy-private-${s.id}`} aria-pressed={s.privacy === "private"}>
+          <button data-action="privacy" data-id={s.id} data-v="private" aria-pressed={s.privacy === "private"}>
             Private link
           </button>
-          <button data-action="privacy" data-id={s.id} data-v="public" id={`btn-privacy-public-${s.id}`} aria-pressed={s.privacy === "public"}>
+          <button data-action="privacy" data-id={s.id} data-v="public" aria-pressed={s.privacy === "public"}>
             Public
           </button>
         </div>
@@ -317,7 +310,7 @@ function ShareControls({ s }: { s: Scene }) {
             : "Anyone can find and open a public scene."}
         </p>
         {NL}
-        <button className="under-link" data-action="revoke" data-id={s.id} id={`btn-revoke-link-${s.id}`}>
+        <button className="under-link" data-action="revoke" data-id={s.id}>
           Revoke and regenerate link
         </button>
       </div>
@@ -338,16 +331,16 @@ function ShareControls({ s }: { s: Scene }) {
       </div>
       {NL}
       <div className="row">
-        <button className="btn ghost sm" data-action="export" data-id={s.id} id={`btn-export-video-${s.id}`}>
+        <button className="btn ghost sm" data-action="export" data-id={s.id}>
           Export video
         </button>
-        <button className="btn ghost sm" data-action="embed" data-id={s.id} id={`btn-embed-${s.id}`}>
+        <button className="btn ghost sm" data-action="embed" data-id={s.id}>
           Embed
         </button>
-        <button className="btn ghost sm" data-action="tour" data-id={s.id} id={`btn-live-tour-${s.id}`}>
+        <button className="btn ghost sm" data-action="tour" data-id={s.id}>
           Start live tour
         </button>
-        <button className="btn ghost sm" data-action="phone" data-id={s.id} id={`btn-open-on-phone-${s.id}`}>
+        <button className="btn ghost sm" data-action="phone" data-id={s.id}>
           Open on phone
         </button>
       </div>
@@ -366,7 +359,7 @@ function viewScene(S: Store, id?: string) {
         sub={`${s.source} · ${status(s) === "ready" ? "Ready" : "Processing"}`}
         scope="scene"
         action={
-          <button className="btn" data-action="copy-scene" data-id={s.id} id={`btn-scene-copy-link-${s.id}`}>
+          <button className="btn" data-action="copy-scene" data-id={s.id}>
             Copy link
           </button>
         }
@@ -445,7 +438,7 @@ function viewAnalytics(S: Store, id?: string): ReactNode {
         sub="How your scenes are landing. Demo scenes use sample figures."
         scope="analytics"
         action={
-          <button className="btn" data-action="export-csv" id="btn-export-csv">
+          <button className="btn" data-action="export-csv">
             Export CSV
           </button>
         }
@@ -465,7 +458,7 @@ function viewAnalytics(S: Store, id?: string): ReactNode {
         {NL}
         <div className="seg" role="group" aria-label="Date range">
           {[7, 30, 90].map((d) => (
-            <button key={d} data-action="range" data-v={String(d)} id={`btn-range-${d}d`} aria-pressed={range === d}>{`${d} days`}</button>
+            <button key={d} data-action="range" data-v={String(d)} aria-pressed={range === d}>{`${d} days`}</button>
           ))}
         </div>
       </div>
@@ -480,7 +473,7 @@ function viewAnalytics(S: Store, id?: string): ReactNode {
             <p className="note">{`Published ${fmtDate(s.date)}`}</p>
           </div>
           <div className="row">
-            <button className="btn ghost sm" data-action="copy-scene" data-id={s.id} id={`btn-analytics-copy-link-${s.id}`}>
+            <button className="btn ghost sm" data-action="copy-scene" data-id={s.id}>
               Copy link
             </button>
             <a className="btn sm" href={`/studio/scene/${s.id}`}>
@@ -587,7 +580,7 @@ function viewWebhooks(S: Store) {
       sub="Get notified when a scene is ready, viewed or fails. Deliveries here are simulated."
       scope="webhooks"
       action={
-        <button className="btn" data-action="new-hook" id="btn-new-webhook">
+        <button className="btn" data-action="new-hook">
           + Create webhook
         </button>
       }
@@ -607,7 +600,7 @@ function viewWebhooks(S: Store) {
       <div className="wh-layout">
         <div className="wh-list">
           {hooks.map((x) => (
-            <button key={x.id} className="wh-item" data-action="sel-hook" data-id={x.id} id={`btn-select-webhook-${x.id}`} aria-pressed={x.id === S.whSel}>
+            <button key={x.id} className="wh-item" data-action="sel-hook" data-id={x.id} aria-pressed={x.id === S.whSel}>
               <span>
                 <HookBadge status={x.status} />
               </span>
@@ -641,13 +634,13 @@ function viewWebhooks(S: Store) {
             </div>
             {NL}
             <div className="row" style={{ marginTop: "20px" }}>
-              <button className="btn ghost sm" data-action="test-hook" data-id={h.id} id={`btn-test-webhook-${h.id}`}>
+              <button className="btn ghost sm" data-action="test-hook" data-id={h.id}>
                 Send test event
               </button>
-              <button className="btn ghost sm" data-action="toggle-hook" data-id={h.id} id={`btn-toggle-webhook-${h.id}`}>
+              <button className="btn ghost sm" data-action="toggle-hook" data-id={h.id}>
                 {h.status === "paused" ? "Resume" : "Pause"}
               </button>
-              <button className="btn danger sm" data-action="del-hook" data-id={h.id} id={`btn-delete-webhook-${h.id}`}>
+              <button className="btn danger sm" data-action="del-hook" data-id={h.id}>
                 Delete
               </button>
             </div>
@@ -725,7 +718,7 @@ function viewPlugins(S: Store) {
         sub="Publish from your editor, or drive Verse from code. Playground keys are placeholders."
         scope="plugins"
         action={
-          <button className="btn" data-action="new-key" id="btn-new-api-key">
+          <button className="btn" data-action="new-key">
             + Create key
           </button>
         }
@@ -767,13 +760,13 @@ function viewPlugins(S: Store) {
                 <p className="mono">{k.shown ? k.secret : k.secret.slice(0, 8) + "••••••••••••••••"}</p>
               </div>
               <div className="row">
-                <button className="btn ghost sm" data-action="show-key" data-id={k.id} id={`btn-show-key-${k.id}`}>
+                <button className="btn ghost sm" data-action="show-key" data-id={k.id}>
                   {k.shown ? "Hide" : "Reveal"}
                 </button>
-                <button className="btn ghost sm" data-action="copy-key" data-id={k.id} id={`btn-copy-key-${k.id}`}>
+                <button className="btn ghost sm" data-action="copy-key" data-id={k.id}>
                   Copy
                 </button>
-                <button className="btn danger sm" data-action="del-key" data-id={k.id} id={`btn-delete-key-${k.id}`}>
+                <button className="btn danger sm" data-action="del-key" data-id={k.id}>
                   Revoke
                 </button>
               </div>
@@ -789,7 +782,7 @@ function viewPlugins(S: Store) {
         <pre className="code">{QUICKSTART}</pre>
       </div>
       <div className="row" style={{ marginTop: "14px" }}>
-        <button className="btn ghost sm" data-action="copy-text" data-t={QUICKSTART} id="btn-copy-quickstart">
+        <button className="btn ghost sm" data-action="copy-text" data-t={QUICKSTART}>
           Copy snippet
         </button>
         <a className="under-link" href="/developers">
@@ -834,11 +827,11 @@ function viewNew(S: Store) {
       <Stepper n={1} />
       {NL}
       <div className="src-opts">
-        <button className="src-opt" data-action="src" data-v="3d" id="btn-source-3d" aria-pressed={draft.type === "3d"}>
+        <button className="src-opt" data-action="src" data-v="3d" aria-pressed={draft.type === "3d"}>
           <b>3D file or scan</b>
           <span>Models, point clouds, splats and BIM.</span>
         </button>
-        <button className="src-opt" data-action="src" data-v="plan" id="btn-source-plan" aria-pressed={draft.type === "plan"}>
+        <button className="src-opt" data-action="src" data-v="plan" aria-pressed={draft.type === "plan"}>
           <b>Floor plan → 3D home</b>
           <span>A PNG, JPG or PDF plan becomes a walkable home.</span>
         </button>
@@ -860,7 +853,7 @@ function viewNew(S: Store) {
             <input id="file" type="file" hidden accept={draft.type === "plan" ? ".png,.jpg,.jpeg,.pdf" : undefined} />
             Choose file
           </label>
-          <button className="btn ghost" data-action="sample" id="btn-use-sample">
+          <button className="btn ghost" data-action="sample">
             Use a sample file
           </button>
         </div>
@@ -1006,22 +999,22 @@ function viewReview(S: Store, redirect: Redirect) {
                   ["win", "+ Window"],
                   ["gap", "Open gap"],
                 ].map(([k, l]) => (
-                  <button key={k} data-action="tool" data-v={k} id={`btn-plan-tool-${k}`} aria-pressed={p.tool === k}>
+                  <button key={k} data-action="tool" data-v={k} aria-pressed={p.tool === k}>
                     {l}
                   </button>
                 ))}
               </div>
               <div className="row" style={{ gap: "6px" }}>
-                <button className="btn ghost sm" data-action="rot" id="btn-plan-rotate" aria-label="Rotate 90 degrees">
+                <button className="btn ghost sm" data-action="rot" aria-label="Rotate 90 degrees">
                   ⟳ Rotate
                 </button>
-                <button className="btn ghost sm" data-action="flip" data-v="x" id="btn-plan-flip-x" aria-label="Flip horizontal">
+                <button className="btn ghost sm" data-action="flip" data-v="x" aria-label="Flip horizontal">
                   ⇋ Flip H
                 </button>
-                <button className="btn ghost sm" data-action="flip" data-v="y" id="btn-plan-flip-y" aria-label="Flip vertical">
+                <button className="btn ghost sm" data-action="flip" data-v="y" aria-label="Flip vertical">
                   ⇅ Flip V
                 </button>
-                <button className="btn ghost sm" data-action="reset-plan" id="btn-plan-reset">
+                <button className="btn ghost sm" data-action="reset-plan">
                   Reset
                 </button>
               </div>
@@ -1219,7 +1212,7 @@ function viewShare(S: Store, redirect: Redirect) {
       {NL}
       <div className="step-actions">
         <span className="note">Save to keep it in your Playground scenes.</span>
-        <button className="btn" data-action="save-scene" id="btn-save-scene">
+        <button className="btn" data-action="save-scene">
           Save to Playground
         </button>
       </div>
@@ -1263,7 +1256,7 @@ export function viewFor(S: Store, page: string, redirect: Redirect): { nav: stri
 const DialogHead = ({ title }: { title: string }) => (
   <div className="dlg-head">
     <h3>{title}</h3>
-    <button className="dlg-x" data-action="close" id={`btn-dialog-close-${slug(title)}`}>
+    <button className="dlg-x" data-action="close">
       Close ×
     </button>
   </div>
@@ -1292,7 +1285,7 @@ export const dialogs = {
       </label>
       <p className="note">Video export runs on the Verse service. In the Playground this only queues a placeholder.</p>
       <div className="row">
-        <button className="btn" data-action="queue-export" data-id={s.id} id={`btn-queue-export-${s.id}`}>
+        <button className="btn" data-action="queue-export" data-id={s.id}>
           Queue export
         </button>
       </div>
@@ -1306,7 +1299,7 @@ export const dialogs = {
         {embedSnippet(s)}
       </pre>
       <div className="row">
-        <button className="btn" data-action="copy-text" data-t={embedSnippet(s)} id="btn-copy-embed-code">
+        <button className="btn" data-action="copy-text" data-t={embedSnippet(s)}>
           Copy snippet
         </button>
         <a className="under-link" href="/docs/embed-sdk">
@@ -1326,7 +1319,7 @@ export const dialogs = {
       </p>
       <p className="note">Live tours run on the Verse service. This code is a Playground placeholder and cannot be joined by others.</p>
       <div className="row">
-        <button className="btn" data-action="copy-text" data-t={s.tour} id="btn-copy-tour-link">
+        <button className="btn" data-action="copy-text" data-t={s.tour}>
           Copy code
         </button>
       </div>
@@ -1338,7 +1331,7 @@ export const dialogs = {
       <p>Send yourself this link, then open it on your phone. Playground scenes live in this browser, so the link only resolves here.</p>
       <div className="linkbox">
         <input readOnly aria-label="Link" defaultValue={sceneUrl(s.id)} />
-        <button className="btn sm" data-action="copy-text" data-t={sceneUrl(s.id)} id="btn-copy-phone-link">
+        <button className="btn sm" data-action="copy-text" data-t={sceneUrl(s.id)}>
           Copy
         </button>
       </div>
@@ -1349,10 +1342,10 @@ export const dialogs = {
       <DialogHead title="Delete webhook?" />
       <p>This removes it from the Playground.</p>
       <div className="row">
-        <button className="btn danger" data-action="del-hook-ok" data-id={id} id="btn-delete-webhook-confirm">
+        <button className="btn danger" data-action="del-hook-ok" data-id={id}>
           Delete
         </button>
-        <button className="btn ghost" data-action="close" id="btn-delete-webhook-cancel">
+        <button className="btn ghost" data-action="close">
           Cancel
         </button>
       </div>
@@ -1380,10 +1373,10 @@ export const dialogs = {
           ))}
         </fieldset>
         <div className="row">
-          <button className="btn" type="submit" id="btn-create-webhook-submit">
+          <button className="btn" type="submit">
             Create webhook
           </button>
-          <button className="btn ghost" type="button" data-action="close" id="btn-create-webhook-cancel">
+          <button className="btn ghost" type="button" data-action="close">
             Cancel
           </button>
         </div>
@@ -1400,10 +1393,10 @@ export const dialogs = {
         </label>
         <p className="note">Playground keys are random placeholders. They do not authenticate with the production API.</p>
         <div className="row">
-          <button className="btn" type="submit" id="btn-create-api-key-submit">
+          <button className="btn" type="submit">
             Create key
           </button>
-          <button className="btn ghost" type="button" data-action="close" id="btn-create-api-key-cancel">
+          <button className="btn ghost" type="button" data-action="close">
             Cancel
           </button>
         </div>
@@ -1415,10 +1408,10 @@ export const dialogs = {
       <DialogHead title="Reset Playground?" />
       <p>This clears the scenes, webhooks and keys stored in this browser and restores the demo data.</p>
       <div className="row">
-        <button className="btn danger" data-action="reset-ok" id="btn-reset-confirm">
+        <button className="btn danger" data-action="reset-ok">
           Reset
         </button>
-        <button className="btn ghost" data-action="close" id="btn-reset-cancel">
+        <button className="btn ghost" data-action="close">
           Cancel
         </button>
       </div>

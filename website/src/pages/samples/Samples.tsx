@@ -1,6 +1,5 @@
 // Samples page (/samples).
 import PageHero from "../../components/ui/PageHero.tsx";
-import { nth, slug } from "../../utils/ids.ts";
 import { SAMPLES } from "./data.ts";
 import { stepNumber } from "../../utils/format.ts";
 
@@ -13,10 +12,10 @@ export default function Samples() {
           agents.
         </p>
       </PageHero>
-      <section className="samples-grid content-width section-space" id="sec-samples-grid">
+      <section className="samples-grid content-width section-space">
         {SAMPLES.map((sample, i) => (
-          <article className="sample-card" id={nth("art-sample-card", i)} key={sample.href}>
-            <a href={sample.href} aria-label={sample.label} id={"lnk-" + slug(sample.label)}>
+          <article className="sample-card" key={sample.href}>
+            <a href={sample.href} aria-label={sample.label} id={sample.id}>
               <img src={`/assets/sample-${i}.webp`} alt={sample.alt} width="720" height="450" loading={i === 0 ? "eager" : "lazy"} />
               <div>
                 <span className="step-number">{stepNumber(i)}</span>
@@ -30,9 +29,7 @@ export default function Samples() {
       </section>
       <p className="sample-credits content-width">
         {"Sample imagery from Verse by Ctruh. Game-world image: Amazon Lumberyard Bistro, CC BY 4.0. "}
-        <a href="/docs/attributions" id="lnk-demo-scene-credits">
-          Demo scene credits
-        </a>
+        <a href="/docs/attributions">Demo scene credits</a>
       </p>
     </>
   );

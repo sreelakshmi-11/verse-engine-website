@@ -61,7 +61,7 @@ function Rich({ value }: { value?: RichValue }) {
 
 /** A call-to-action link styled as the site's button (outlined when `outline`). */
 const Action = ({ a }: { a: ActionData }) => (
-  <a className={"site-button" + (a.outline ? " rs-outline" : "")} href={a.href} data-event="cta_click" data-cta={a.event}>
+  <a className={"site-button" + (a.outline ? " rs-outline" : "")} href={a.href} id={a.id} data-event="cta_click" data-cta={a.event}>
     {a.label}
   </a>
 );
@@ -77,7 +77,7 @@ function Figure({ src, alt, caption, width = 1600, height = 900, eager = false }
 
 /** Click-to-load live 3D scene. Until embedding is confirmed (`embedClaim`), the poster is a link
     that opens the live scene in a new tab. */
-function LiveDemo({ src, title, poster, posterAlt, openLabel, embedClaim = "demo-iframe", note, buttonId }: LiveDemoProps) {
+function LiveDemo({ src, title, poster, posterAlt, openLabel, embedClaim = "demo-iframe", note, posterId, openId }: LiveDemoProps) {
   const [on, setOn] = useState(false);
   const newTab = {
     href: src,
@@ -97,19 +97,19 @@ function LiveDemo({ src, title, poster, posterAlt, openLabel, embedClaim = "demo
   return (
     <div className="rs-demo">
       {!claimOk(embedClaim) ? (
-        <a className="rs-demo-poster" {...newTab}>
+        <a className="rs-demo-poster" id={posterId} {...newTab}>
           {posterWith("Open the live 3D scene")}
         </a>
       ) : on ? (
         <iframe src={src} title={title} allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope" allowFullScreen loading="lazy" />
       ) : (
-        <button type="button" className="rs-demo-poster" id={buttonId} onClick={() => setOn(true)} data-event="demo_load" data-demo={title}>
+        <button type="button" className="rs-demo-poster" id={posterId} onClick={() => setOn(true)} data-event="demo_load" data-demo={title}>
           {posterWith("Load the live 3D scene here")}
         </button>
       )}
       <div className="rs-demo-bar">
         <span className="rs-small rs-muted">{note}</span>
-        <a className="site-button rs-outline rs-sm" {...newTab}>
+        <a className="site-button rs-outline rs-sm" id={openId} {...newTab}>
           {openLabel} ↗
         </a>
       </div>

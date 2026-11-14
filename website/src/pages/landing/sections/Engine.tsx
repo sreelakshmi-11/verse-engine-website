@@ -2,8 +2,10 @@
 import { engineHeading, engineLayers, techniques } from "../data.ts";
 import { SectionHead, tab } from "../parts.tsx";
 import { stepNumber } from "../../../utils/format.ts";
+import { useHomeButtonIds } from "../button-ids.ts";
 
 export default function Engine() {
+  const ids = useHomeButtonIds();
   return (
     <section className="mx-engine section-pad" id="engine" aria-labelledby="engine-heading">
       <SectionHead heading={engineHeading} />
@@ -19,7 +21,7 @@ export default function Engine() {
       <div className="mx-tech" data-tech="">
         <div className="mx-tech-list" role="tablist" aria-label="Nine techniques">
           {techniques.map((t, i) => (
-            <button key={t.title} id={t.id} {...tab(i)} data-t={i}>
+            <button key={t.title} id={ids.engine?.[i]} {...tab(i)} data-t={i}>
               <span>{stepNumber(i)}</span>
               {t.title}
             </button>

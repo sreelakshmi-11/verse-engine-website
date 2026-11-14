@@ -41,7 +41,7 @@ export default function Lyon() {
             </div>
             <div className="mx-lyon-tabs" role="tablist" aria-label="Lyon views">
               {lyonViews.map((v, i) => (
-                <button key={v.tab} id={v.id} {...tab(i)} data-view={i}>
+                <button key={v.tab} {...tab(i)} data-view={i}>
                   {v.tab}
                 </button>
               ))}

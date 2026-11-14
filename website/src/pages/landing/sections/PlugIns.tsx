@@ -3,12 +3,14 @@ import { plugins, publishingLabels } from "../data.ts";
 import { tab } from "../parts.tsx";
 import { pluginMeshes } from "../../../data/plugins.ts";
 import { stepNumber } from "../../../utils/format.ts";
+import { useHomeButtonIds } from "../button-ids.ts";
 
 export default function PlugIns() {
+  const ids = useHomeButtonIds();
   const firstPlugin = plugins[0];
   return (
     <section className="tools-section plugin-section section-pad" id="tools" aria-labelledby="publish-heading">
-      <header className="plugin-heading" id="hdr-plugin-heading">
+      <header className="plugin-heading">
         <div>
           <p className="plugin-eyebrow">YOUR TOOLS, UNTOUCHED</p>
           <h2 id="publish-heading">
@@ -19,14 +21,14 @@ export default function PlugIns() {
         </div>
         <div className="plugin-intro">
           <p>No export dance. One button inside the editor you already live in, on Mac and Windows. Substance 3D Painter is in beta.</p>
-          <a className="button action" href="/plugins" id="lnk-see-all-plug-ins">
+          <a className="button action" href="/plugins" id={ids.toolsSeeAll}>
             <span>See all plug-ins</span>
           </a>
         </div>
       </header>
       <div className="plugin-tabs" role="tablist" aria-label="Publishing tools" aria-orientation="horizontal">
         {plugins.map((p, i) => (
-          <button key={p.model} id={`publisher-${p.model}`} {...tab(i)} aria-controls="plugin-view" tabIndex={i === 0 ? undefined : -1} data-publisher={i}>
+          <button key={p.model} id={ids.tools?.[i]} {...tab(i)} aria-controls="plugin-view" tabIndex={i === 0 ? undefined : -1} data-publisher={i}>
             <span className="plugin-order" aria-hidden="true">
               {stepNumber(i)}
             </span>
@@ -35,7 +37,7 @@ export default function PlugIns() {
           </button>
         ))}
       </div>
-      <div className="plugin-view" id="plugin-view" role="tabpanel" tabIndex={0} aria-labelledby={`publisher-${firstPlugin.model}`}>
+      <div className="plugin-view" id="plugin-view" role="tabpanel" tabIndex={0} aria-labelledby={ids.tools?.[0]}>
         <div className="plugin-details">
           <div className="plugin-selected">
             <span className="plugin-source-label">{`${firstPlugin.name} → Verse Engine`}</span>
@@ -52,11 +54,11 @@ export default function PlugIns() {
               <small>Desktop browser benchmark</small>
             </div>
           </div>
-          <a className="plugin-transfer" href="/plugins" aria-label="See all plug-ins" id="lnk-see-all-plug-ins-2">
+          <a className="plugin-transfer" href="/plugins" aria-label="See all plug-ins">
             →
           </a>
         </div>
-        <figure className="plugin-scene plugin-workflow" id="fig-plugin-scene">
+        <figure className="plugin-scene plugin-workflow">
           <div className="plugin-publishing" data-plugin-visual="">
             <div className="publishing-heading">
               <span className="workflow-editor">{firstPlugin.name}</span>
@@ -124,9 +126,7 @@ export default function PlugIns() {
         <span>Coming soon</span>
         <p>
           {"Revit, SketchUp, Rhino, 3ds Max, Archicad, Maya, Cinema 4D, Houdini and more. BIM models arrive through IFC today. "}
-          <a href="/plugins#aec" id="lnk-explore-beta-plug-ins">
-            Explore beta plug-ins
-          </a>
+          <a href="/plugins#aec">Explore beta plug-ins</a>
         </p>
       </div>
     </section>

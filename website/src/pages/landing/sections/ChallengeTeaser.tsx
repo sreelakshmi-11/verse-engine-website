@@ -1,9 +1,11 @@
 // Home page: challenge section.
+import { useHomeButtonIds } from "../button-ids.ts";
 
 export default function ChallengeTeaser() {
+  const ids = useHomeButtonIds();
   return (
     <section className="challenge-section challenge-editorial" id="challenge" aria-labelledby="challenge-heading">
-      <header className="challenge-editorial-head" id="hdr-challenge-editorial-head">
+      <header className="challenge-editorial-head">
         <div>
           <p className="section-label">THE VERSE ENGINE CHALLENGE IS LIVE</p>
           <h2 id="challenge-heading">
@@ -21,7 +23,7 @@ export default function ChallengeTeaser() {
             A real 10.3-billion-triangle city already opens from a link. Think yours is bigger? Send your heaviest file. If Verse Engine fails to stream it, you
             win.
           </p>
-          <a className="button action" href="/challenge" id="lnk-take-the-challenge">
+          <a className="button action" href="/challenge" id={ids.challenge}>
             <span>Take the Challenge</span>
           </a>
         </div>

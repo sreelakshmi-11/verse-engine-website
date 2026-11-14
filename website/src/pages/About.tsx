@@ -31,14 +31,14 @@ export default function About() {
   return (
     <>
       <div className="about-switch content-width" role="tablist" aria-label="About">
-        <button id="about-ctruh" role="tab" aria-controls="about-company" data-about-tab="ctruh" {...tabProps("ctruh")}>
+        <button id="about_hero_about_ctruh" role="tab" aria-controls="about-company" data-about-tab="ctruh" {...tabProps("ctruh")}>
           About Ctruh
         </button>
-        <button id="about-verse" role="tab" aria-controls="about-engine" data-about-tab="verse-engine" {...tabProps("verse-engine")}>
+        <button id="about_hero_about_verse_engine" role="tab" aria-controls="about-engine" data-about-tab="verse-engine" {...tabProps("verse-engine")}>
           About Verse Engine
         </button>
       </div>
-      <div id="about-company" role="tabpanel" aria-labelledby="about-ctruh" tabIndex={0} hidden={tab !== "ctruh"}>
+      <div id="about-company" role="tabpanel" aria-labelledby="about_hero_about_ctruh" tabIndex={0} hidden={tab !== "ctruh"}>
         <PageHero eyebrow="ABOUT CTRUH" title="About Ctruh and" accent="Verse Engine by Ctruh">
           <p className="hero-description tagline">Building the spatial internet.</p>
           <p className="hero-description">
@@ -46,11 +46,11 @@ export default function About() {
             by Ctruh is our browser-native 3D engine: it lets anyone share a 3D world as a link.
           </p>
         </PageHero>
-        <figure className="about-panorama" id="fig-about-panorama">
+        <figure className="about-panorama">
           <img src="/assets/coastal-world.webp" width="1536" height="1024" alt="Photoreal coastal architectural environment" loading="eager" />
           <figcaption>Spatial environment · Concept visualization</figcaption>
         </figure>
-        <section className="about-story content-width section-space" id="sec-about-story">
+        <section className="about-story content-width section-space">
           <div>
             <p className="eyebrow">OUR STORY</p>
             <h2>
@@ -64,7 +64,7 @@ export default function About() {
             by Ctruh is our browser-native 3D engine: it lets anyone share a 3D world as a link.
           </p>
         </section>
-        <section className="ctruh-products content-width section-space" id="sec-ctruh-products">
+        <section className="ctruh-products content-width section-space">
           <h2>How Verse Engine by Ctruh fits with other Ctruh products</h2>
           <ul>
             <li>
@@ -81,8 +81,8 @@ export default function About() {
             </li>
           </ul>
         </section>
-        <section className="company-facts content-width section-space" id="sec-company-facts">
-          <article id="art-item">
+        <section className="company-facts content-width section-space">
+          <article>
             <p className="eyebrow">WHERE WE BUILD</p>
             <h3>
               {"Bengaluru &"}
@@ -91,7 +91,7 @@ export default function About() {
             </h3>
             <p>One team across two time zones, shipping around the clock.</p>
           </article>
-          <article id="art-item-2">
+          <article>
             <p className="eyebrow">THE ENGINE</p>
             <h3>
               Patents
@@ -100,10 +100,10 @@ export default function About() {
             </h3>
             <p>On the streaming engine that powers every Verse Engine link.</p>
           </article>
-          <article id="art-item-3">
+          <article>
             <p className="eyebrow">SAY HELLO</p>
             <h3>
-              <a href="mailto:hello@ctruh.com" id="lnk-hello-ctruh-com-2">
+              <a href="mailto:hello@ctruh.com">
                 hello@
                 <br />
                 ctruh.com
@@ -113,18 +113,16 @@ export default function About() {
           </article>
         </section>
       </div>
-      <div id="about-engine" role="tabpanel" aria-labelledby="about-verse" tabIndex={0} hidden={tab !== "verse-engine"}>
-        <PageHero id="hdr-page-hero-2" eyebrow="ABOUT VERSE ENGINE" title="Our own engine," accent="built for the browser." level={2}>
+      <div id="about-engine" role="tabpanel" aria-labelledby="about_hero_about_verse_engine" tabIndex={0} hidden={tab !== "verse-engine"}>
+        <PageHero eyebrow="ABOUT VERSE ENGINE" title="Our own engine," accent="built for the browser." level={2}>
           <p className="hero-description">Verse Engine streams huge 3D scenes to any device, with no app store and no cloud GPU.</p>
           <div className="page-actions">
-            <SiteButton href="/studio" id="lnk-explore-verse-engine-2">
-              Explore Verse Engine
-            </SiteButton>
+            <SiteButton href="/studio">Explore Verse Engine</SiteButton>
           </div>
         </PageHero>
-        <section className="engine-principles page-band" id="sec-engine-principles">
+        <section className="engine-principles page-band">
           <div className="content-width">
-            <article id="art-item-4">
+            <article>
               <span className="step-number">01</span>
               <h2>Modern browsers, every screen</h2>
               <p>
@@ -134,25 +132,25 @@ export default function About() {
                 </a>
               </p>
             </article>
-            <article id="art-item-5">
+            <article>
               <span className="step-number">02</span>
               <h2>Lower streaming cost</h2>
               <p>No rented cloud GPUs — the viewer’s own device does the drawing.</p>
             </article>
-            <article id="art-item-6">
+            <article>
               <span className="step-number">03</span>
               <h2>20+ file types</h2>
               <p>Models, scans, splats, point clouds and IFC.</p>
             </article>
-            <article id="art-item-7">
+            <article>
               <span className="step-number">04</span>
               <h2>Faithful materials</h2>
               <p>Glass, metal, car paint, fabric and real light.</p>
             </article>
           </div>
         </section>
-        <section className="stream-cost content-width section-space" id="sec-stream-cost">
-          <header id="hdr-item">
+        <section className="stream-cost content-width section-space">
+          <header>
             <p className="eyebrow">STREAMING COST</p>
             <h2>
               Per thousand
@@ -173,7 +171,7 @@ export default function About() {
             </div>
           </div>
         </section>
-        <section className="engine-benchmarks content-width section-space" id="sec-engine-benchmarks">
+        <section className="engine-benchmarks content-width section-space">
           <div>
             <strong>1.8B</strong>
             <span>Triangles in one scene</span>

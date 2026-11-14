@@ -84,7 +84,7 @@ export const storyChapters: StoryChapter[] = [
     stat: { value: "10.3B", label: "unique triangles in one file" },
     note: {
       text: "Lyon, Chrome on a laptop. ",
-      link: { href: "#benchmarks", id: "lnk-source", label: "Benchmarks" },
+      link: { href: "#benchmarks", label: "Benchmarks" },
       after: "Results vary by scene and device.",
     },
     callout: { mark: "+", text: "Geometry, uncompromised.", small: "Mesh → browser" },
@@ -98,7 +98,7 @@ export const storyChapters: StoryChapter[] = [
     stat: { value: "0.05%", label: "of the file draws the whole city" },
     note: {
       text: "A detailed interior shows its first picture in 0.9 s. ",
-      link: { href: "#lyon", id: "lnk-source-2", label: "See the city" },
+      link: { href: "#lyon", label: "See the city" },
       after: "Results vary by scene and connection.",
     },
     meta: { text: "Scene streaming ", bits: "010 / 110 / 001" },
@@ -128,19 +128,19 @@ export const storyChapters: StoryChapter[] = [
     title: ["The next world ", "starts with you."],
     body: ["Free to start. Viewers never pay.", "Live on 16 November 2026."],
     cta: {
-      button: { href: "/studio", id: "lnk-explore-verse-engine-3", label: "Try it free" },
-      link: { href: "#lyon", id: "lnk-explore-the-possibilities", label: "See the 10.3B-triangle city ↓" },
+      button: { href: "/studio", label: "Try it free" },
+      link: { href: "#lyon", label: "See the 10.3B-triangle city ↓" },
     },
   },
 ];
 
 export const chapterNav = [
-  { label: "Object", aria: "Chapter 0: Object", id: "btn-chapter-0-object" },
-  { label: "Table", aria: "Chapter 1: Object and table", id: "btn-chapter-1-object-and-table" },
-  { label: "Interior", aria: "Chapter 2: Furnished interior", id: "btn-chapter-2-furnished-interior" },
-  { label: "Building", aria: "Chapter 3: Apartment building", id: "btn-chapter-3-apartment-building" },
-  { label: "Township", aria: "Chapter 4: Neighbourhood", id: "btn-chapter-4-neighbourhood" },
-  { label: "Explore", aria: "Chapter 5: Complete scene", id: "btn-chapter-5-complete-scene" },
+  { label: "Object", aria: "Chapter 0: Object" },
+  { label: "Table", aria: "Chapter 1: Object and table" },
+  { label: "Interior", aria: "Chapter 2: Furnished interior" },
+  { label: "Building", aria: "Chapter 3: Apartment building" },
+  { label: "Township", aria: "Chapter 4: Neighbourhood" },
+  { label: "Explore", aria: "Chapter 5: Complete scene" },
 ];
 
 // ---------- Lyon ----------
@@ -152,13 +152,12 @@ export const lyonHeading: SectionHeading = {
   accent: "One file. One link.",
   text: "Lyon, France: 10.3 billion unique triangles of textured city in one 556 GB file, opened from a link in Chrome on a laptop and walkable at street level.",
   // Links this section to the Lyon demo page.
-  link: { href: "/demos/lyon", label: "How it was measured", id: "lnk-how-it-was-measured" },
+  link: { href: "/demos/lyon", label: "How it was measured" },
 };
 
 /** The three Lyon views: photo, tab label and the readout shown for it (sections.ts switches them). */
 export const lyonViews = [
   {
-    id: "tab-lyon-city-overview",
     src: "/media/city-hero.webp",
     alt: "Lyon from above, streamed by Verse Engine in Chrome",
     width: 2400,
@@ -169,7 +168,6 @@ export const lyonViews = [
     note: "unique triangles, from a single 556 GB file",
   },
   {
-    id: "tab-lyon-fourviere",
     src: "/media/city-fourviere.webp",
     alt: "Fourvière, looking across Lyon",
     width: 1600,
@@ -180,7 +178,6 @@ export const lyonViews = [
     note: "of the file is enough to draw the whole city",
   },
   {
-    id: "tab-lyon-street-level",
     src: "/media/city-terreaux.webp",
     alt: "Place des Terreaux at street level",
     width: 1600,
@@ -217,7 +214,6 @@ export const proofHeading: SectionHeading = {
 /** count/dec drive the count-up in sections.ts; prefix and suffix sit around the counted number. */
 export const proofStats = [
   {
-    id: "btn-proof-triangles",
     prefix: "",
     count: "10.3",
     dec: 1,
@@ -226,7 +222,6 @@ export const proofStats = [
     note: "Lyon: one 556 GB photomesh, opened from a link in Chrome on a laptop.",
   },
   {
-    id: "btn-proof-first-picture",
     prefix: "",
     count: "0.9",
     dec: 1,
@@ -235,7 +230,6 @@ export const proofStats = [
     note: "A detailed interior over the internet. It then sharpens wherever you look.",
   },
   {
-    id: "btn-proof-first-pixel",
     prefix: "",
     count: "1",
     dec: 0,
@@ -244,7 +238,6 @@ export const proofStats = [
     note: "Only the first view's worth of data arrives before anything is drawn.",
   },
   {
-    id: "btn-proof-mobile-data",
     prefix: "",
     count: "29",
     dec: 0,
@@ -253,7 +246,6 @@ export const proofStats = [
     note: "A large interior on an everyday phone over a typical mobile connection.",
   },
   {
-    id: "btn-proof-colour-gap",
     prefix: "ΔE ",
     count: "0.3",
     dec: 1,
@@ -262,7 +254,6 @@ export const proofStats = [
     note: "Below the difference the eye can see, so a product looks the same on every screen.",
   },
   {
-    id: "btn-proof-stability",
     prefix: "",
     count: "24",
     dec: 0,
@@ -271,7 +262,6 @@ export const proofStats = [
     note: "A continuous stability run in a desktop browser.",
   },
   {
-    id: "btn-proof-gpu-cost",
     prefix: "~$",
     count: "0",
     dec: 0,
@@ -280,7 +270,6 @@ export const proofStats = [
     note: "The viewer's own device draws the scene. No GPU server sits behind each viewer.",
   },
   {
-    id: "btn-proof-blender-to-link",
     prefix: "",
     count: "45",
     dec: 0,
@@ -307,7 +296,6 @@ export type BenchRow = [lo: number, hi: number, label: string] | null;
 
 /** Tabs of the bar chart. rows follow benchEngines; null = not compared; win = index of the winning bar. */
 export const benchMeasures: {
-  id: string;
   tab: string;
   question: string;
   max: number;
@@ -316,7 +304,6 @@ export const benchMeasures: {
   verdict: { strong: string; text: string };
 }[] = [
   {
-    id: "tab-bench-street-detail",
     tab: "Street detail",
     question: "Seconds until street detail appears after arriving. Lower is better.",
     max: 28,
@@ -329,7 +316,6 @@ export const benchMeasures: {
     verdict: { strong: "Verse is fastest to street detail", text: ", streaming straight from one 556 GB file." },
   },
   {
-    id: "tab-bench-triangles",
     tab: "Triangles on screen",
     question: "Millions of triangles drawn for the city overview. Higher is better.",
     max: 6.5,
@@ -338,7 +324,6 @@ export const benchMeasures: {
     verdict: { strong: "About 11× the detail on screen", text: " for the same view of Lyon." },
   },
   {
-    id: "tab-bench-frame-time",
     tab: "Frame time",
     question: "Frame time while walking, 95% of frames under. Lower is smoother.",
     max: 28,
@@ -351,7 +336,6 @@ export const benchMeasures: {
     verdict: { strong: "Verse holds a tight 14–15 ms band", text: " while CesiumJS swings between 10 and 20 ms." },
   },
   {
-    id: "tab-bench-first-picture",
     tab: "First picture",
     question: "Seconds to the first picture. Lower is better.",
     max: 13,
@@ -462,8 +446,6 @@ export const raceMatrix = {
 
 export const workflowCards = [
   {
-    id: "art-workflow-card",
-    headerId: "hdr-item",
     n: "[01]",
     title: "DROP IT IN.",
     sub: "BRING WHAT YOU ALREADY HAVE",
@@ -471,8 +453,6 @@ export const workflowCards = [
     visual: "upload",
   },
   {
-    id: "art-workflow-card-2",
-    headerId: "hdr-item-2",
     n: "[02]",
     title: "WE COOK IT ONCE.",
     sub: "VERSE ENGINE PREPARES IT",
@@ -480,8 +460,6 @@ export const workflowCards = [
     visual: "prepare",
   },
   {
-    id: "art-workflow-card-3",
-    headerId: "hdr-item-3",
     n: "[03]",
     title: "SEND IT FLYING.",
     sub: "SHARE ONE LINK",
@@ -506,7 +484,6 @@ export const createHeading: SectionHeading = {
 export const createRoutes = [
   {
     badge: { className: "live", label: "Available" },
-    id: "tab-create-ctruh-homes",
     title: "Ctruh Homes",
     text: "A floor plan becomes a walkable, furnished home in about a minute. Restyle it in a sentence.",
     image: { src: "/assets/sample-0.webp", alt: "A furnished apartment generated from a floor plan", width: 720, height: 450 },
@@ -516,7 +493,6 @@ export const createRoutes = [
   },
   {
     badge: { className: "live", label: "Available" },
-    id: "tab-create-verse-plugins",
     title: "Verse plug-ins",
     text: "One Publish button in Blender, Unity and Unreal, or drop any of 20+ file types into the app.",
     image: { src: "/assets/industrial-environment.webp", alt: "A factory scene published from a design tool", width: 1942, height: 809 },
@@ -526,7 +502,6 @@ export const createRoutes = [
   },
   {
     badge: { className: "beta", label: "Private beta" },
-    id: "tab-create-ctruh-capture",
     title: "Ctruh Capture",
     text: "Walk around a room with a camera and get a walkable space back as a link.",
     image: { src: "/assets/sofa-environment.webp", alt: "A living room captured from a walk-through video", width: 1448, height: 1086 },
@@ -536,7 +511,6 @@ export const createRoutes = [
   },
   {
     badge: { className: "soon", label: "Coming soon" },
-    id: "tab-create-ctruh-worlds",
     title: "Ctruh Worlds",
     text: "Describe a place or share a photo and get a 3D world to explore, on our own open models.",
     image: { src: "/assets/coastal-world.webp", alt: "A coastal world generated from a sentence", width: 1536, height: 1024 },
@@ -552,7 +526,6 @@ export const galleryCards = [
   {
     href: "https://verse.ctruh.com/view?vpk=ingest/demo-showflat-v2.vpk",
     label: "Walk the apartment",
-    id: "lnk-walk-the-apartment",
     image: "/assets/sample-0.webp",
     alt: "A furnished living room and dining area, rendered live in the browser",
     title: ["Verse for Real Estate"],
@@ -561,7 +534,6 @@ export const galleryCards = [
   {
     href: "https://verse.ctruh.com/view?vpk=ingest/demo-reception-v2.vpk",
     label: "Open the interior",
-    id: "lnk-open-the-interior",
     image: "/assets/sample-1.webp",
     alt: "A designed reception interior with lounge seating and floor-to-ceiling glazing",
     title: ["Architects &", "interior designers"],
@@ -570,7 +542,6 @@ export const galleryCards = [
   {
     href: "https://verse.ctruh.com/view?vpk=ingest/demo-antique-camera.vpk",
     label: "See a product",
-    id: "lnk-see-a-product",
     image: "/assets/sample-2.webp",
     alt: "An antique bellows camera on a wooden tripod, lit like a product shot",
     title: ["Verse for Commerce"],
@@ -579,7 +550,6 @@ export const galleryCards = [
   {
     href: "https://verse.ctruh.com/view?vpk=ingest/demo-bistro-v2.vpk",
     label: "Explore a world",
-    id: "lnk-explore-a-world",
     image: "/assets/sample-3.webp",
     alt: "A large game-world street scene with buildings, trees and a market square (Amazon Lumberyard Bistro, CC BY 4.0)",
     title: ["Verse Play"],
@@ -588,7 +558,6 @@ export const galleryCards = [
   {
     href: "/developers",
     label: "Build with Verse",
-    id: "lnk-build-with-verse",
     image: "/assets/sample-4.webp",
     alt: "A photo-scanned marble bust, streamed at full detail",
     title: ["Verse API,", "SDK & MCP"],
@@ -609,35 +578,30 @@ export const tryHeading: SectionHeading = {
 /** Live scenes: link (also the QR code) and preview image; an empty image shows the "no image" stage. */
 export const tryScenes = [
   {
-    id: "tab-try-show-flat",
     scene: "https://verse.ctruh.com/view?vpk=ingest/demo-showflat-v2.vpk",
     image: "/assets/sample-0.webp",
     title: "Show flat",
     text: "Real estate · walk the apartment",
   },
   {
-    id: "tab-try-reception-interior",
     scene: "https://verse.ctruh.com/view?vpk=ingest/demo-reception-v2.vpk",
     image: "/assets/sample-1.webp",
     title: "Reception interior",
     text: "Architecture · glass, light and stone",
   },
   {
-    id: "tab-try-antique-camera",
     scene: "https://verse.ctruh.com/view?vpk=ingest/demo-antique-camera.vpk",
     image: "/assets/sample-2.webp",
     title: "Antique camera",
     text: "Commerce · a product, in AR on your phone",
   },
   {
-    id: "tab-try-bistro-street",
     scene: "https://verse.ctruh.com/view?vpk=ingest/demo-bistro-v2.vpk",
     image: "/assets/sample-3.webp",
     title: "Bistro street",
     text: "Games · a full scene in a browser tab",
   },
   {
-    id: "tab-try-chess-set",
     scene: "https://verse.ctruh.com/view?vpk=ingest/demo-chess-set.vpk",
     image: "",
     title: "Chess set",
@@ -664,38 +628,32 @@ export const engineLayers = [
 /** The nine techniques: list buttons and the panel text sections.ts shows for each. */
 export const techniques = [
   {
-    id: "tab-tech-virtualized-geometry-streaming",
     title: "Virtualized geometry streaming",
     text: "Only what the camera sees, at the detail the screen can show. The rest waits until you move.",
   },
   {
-    id: "tab-tech-safe-paged-memory",
     title: "Safe paged memory",
     text: "Billions of triangles page in and out without holes or cracks, inside what the device can hold.",
   },
   {
-    id: "tab-tech-gpu-feed-controller",
     title: "GPU feed controller",
     text: "A closed loop paces data to the graphics card, so streaming does not fight the frame you are looking at.",
   },
   {
-    id: "tab-tech-adaptive-engine-router",
     title: "Adaptive engine router",
     text: "Reads each file and picks the best path: asset, interior, township or city. You upload; it decides.",
   },
-  { id: "tab-tech-streamed-textures", title: "Streamed textures", text: "Textures and materials arrive as you look, within each device's memory." },
+  { title: "Streamed textures", text: "Textures and materials arrive as you look, within each device's memory." },
   {
-    id: "tab-tech-device-adaptive-rendering",
     title: "Device-adaptive rendering",
     text: "WebGPU where it is available, WebGL2 elsewhere, tuned to each device. The link stays the same.",
   },
   {
-    id: "tab-tech-faithful-material-capture",
     title: "Faithful material capture",
     text: "Glass, brushed metal, car paint and fabric sheen from Blender, Unity and Unreal arrive as they were designed.",
   },
-  { id: "tab-tech-signed-scenes", title: "Signed scenes", text: "Every scene is signed, so it cannot be silently altered." },
-  { id: "tab-tech-instant-home", title: "Instant Home", text: "A floor plan becomes a walkable home in about a minute." },
+  { title: "Signed scenes", text: "Every scene is signed, so it cannot be silently altered." },
+  { title: "Instant Home", text: "A floor plan becomes a walkable home in about a minute." },
 ];
 
 // ---------- Delivery cost ----------
@@ -756,9 +714,9 @@ export const devHeading: SectionHeading = {
 };
 
 export const devTabs = [
-  { id: "tab-dev-embed", code: "embed", label: "Embed", badge: "" },
-  { id: "tab-dev-rest", code: "rest", label: "REST", badge: "" },
-  { id: "tab-dev-mcp", code: "mcp", label: "MCP ", badge: "EARLY" },
+  { code: "embed", label: "Embed", badge: "" },
+  { code: "rest", label: "REST", badge: "" },
+  { code: "mcp", label: "MCP ", badge: "EARLY" },
 ];
 
 export const devFeatures = [

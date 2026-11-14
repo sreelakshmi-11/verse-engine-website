@@ -58,18 +58,18 @@ export default function Signin() {
 
   return (
     <>
-      <a className="skip" href="#signin-main" id="lnk-skip-to-content">
+      <a className="skip" href="#signin-main">
         Skip to content
       </a>
-      <header className="st-top" id="hdr-st-top">
-        <a className="brand" href="/" aria-label="Verse Engine by Ctruh – Home" id="lnk-verse-engine-home-2">
+      <header className="st-top">
+        <a className="brand" href="/" aria-label="Verse Engine by Ctruh – Home">
           <Logo className="h-10" />
         </a>
         <div className="st-top-actions">
-          <a className="st-link" href="/pricing" id="lnk-pricing-4">
+          <a className="st-link" href="/pricing">
             Pricing
           </a>
-          <a className="st-link" href="/docs/what-is-verse-engine" id="lnk-docs-2">
+          <a className="st-link" href="/docs/what-is-verse-engine">
             Docs
           </a>
         </div>
@@ -134,7 +134,7 @@ export default function Signin() {
             {msg}
           </p>
           {"\n"}
-          <button className="btn si-submit" type="submit" id="btn-sign-in">
+          <button className="btn si-submit" type="submit">
             <span id="si-go">{signup ? "Create account" : "Sign in"}</span>
           </button>
           {"\n"}

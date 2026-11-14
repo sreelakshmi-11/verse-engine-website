@@ -1,8 +1,10 @@
 // Home page: pricing section.
 import { pricingHeading, plans, contactUrl } from "../data.ts";
 import { SectionHead } from "../parts.tsx";
+import { useHomeButtonIds } from "../button-ids.ts";
 
 export default function Pricing() {
+  const ids = useHomeButtonIds();
   return (
     <section className="mx-pricing section-pad" id="pricing" aria-labelledby="pricing-heading">
       <SectionHead heading={pricingHeading} />
@@ -23,10 +25,10 @@ export default function Pricing() {
         ))}
       </div>
       <div className="mx-pricing-foot">
-        <a className="button action" href="/pricing">
+        <a className="button action" href="/pricing" id={ids.pricingCompare}>
           <span>Compare plans</span>
         </a>
-        <a className="under-link" href={contactUrl}>
+        <a className="under-link" href={contactUrl} id={ids.pricingTalk}>
           Talk to us
         </a>
       </div>

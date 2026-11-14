@@ -30,7 +30,6 @@ export interface Plan {
   /** Seats included (and the seat picker's minimum); none on Free. */
   seats?: number;
   cta: string;
-  ctaId: string;
   popular?: boolean;
   /** What the plan includes; null is the seats line, which follows the seats chosen. */
   features: (string | null)[];
@@ -45,7 +44,6 @@ export const PLANS: Plan[] = [
     period: "Free forever",
     note: "",
     cta: "Start free",
-    ctaId: "lnk-start-free",
     features: [
       "1 GB storage, 2 GB bandwidth a month",
       "5,000 API calls a month",
@@ -65,7 +63,6 @@ export const PLANS: Plan[] = [
     note: "Billed monthly",
     seats: 1,
     cta: "Choose Starter",
-    ctaId: "lnk-choose-starter",
     features: [
       "10 GB storage, 20 GB bandwidth a month",
       "50,000 API calls a month",
@@ -85,7 +82,6 @@ export const PLANS: Plan[] = [
     note: "Billed monthly",
     seats: 3,
     cta: "Go Pro",
-    ctaId: "lnk-go-pro",
     popular: true,
     features: [
       "50 GB storage, 70 GB bandwidth a month",
@@ -107,7 +103,6 @@ export const PLANS: Plan[] = [
     note: "Billed monthly",
     seats: 10,
     cta: "Choose Scale",
-    ctaId: "lnk-choose-scale",
     features: [
       "250 GB storage, 400 GB bandwidth a month",
       "4,000,000 API calls a month",

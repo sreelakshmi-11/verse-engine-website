@@ -13,11 +13,14 @@ export interface BetaPlugin {
   guideName: string;
   /** The install steps. */
   steps: ReactNode[];
+  /** The download button's id (from the button ID sheet). */
+  downloadId: string;
 }
 
 export const BETA_PLUGINS: BetaPlugin[] = [
   {
     name: "SketchUp",
+    downloadId: "plugins_cad_tools_download_for_sketchup",
     requirement: (
       <>
         {"SketchUp 2021 or newer (GLB export on 2025+; OBJ / FBX on older needs Pro). Extension "}
@@ -46,6 +49,7 @@ export const BETA_PLUGINS: BetaPlugin[] = [
   },
   {
     name: "Revit",
+    downloadId: "plugins_cad_tools_download_for_revit",
     requirement: "Revit 2021–2024 and 2025+ (Windows). Add-in zip with both builds.",
     version: "4.0.0-beta.1",
     size: "31 KB",
@@ -77,6 +81,7 @@ export const BETA_PLUGINS: BetaPlugin[] = [
   },
   {
     name: "Rhino",
+    downloadId: "plugins_cad_tools_download_for_rhino",
     requirement: "Rhino 8 (script, Windows + Mac) or Rhino 7 / 8 (plug-in, Windows). Zip.",
     version: "4.0.0-beta.1",
     size: "34 KB",
@@ -102,6 +107,7 @@ export const BETA_PLUGINS: BetaPlugin[] = [
   },
   {
     name: "3ds Max",
+    downloadId: "plugins_cad_tools_download_for_3ds_max",
     requirement: "3ds Max 2023 or newer (Windows). Python script + MAXScript macros.",
     version: "4.0.0-beta.1",
     size: "18 KB",
@@ -128,6 +134,7 @@ export const BETA_PLUGINS: BetaPlugin[] = [
   },
   {
     name: "Archicad",
+    downloadId: "plugins_cad_tools_download_for_archicad",
     requirement: "Archicad 23 or newer (IFC). Python 3.8+ script.",
     version: "4.0.0-beta.1",
     size: "17 KB",
@@ -149,6 +156,7 @@ export const BETA_PLUGINS: BetaPlugin[] = [
   },
   {
     name: "Maya",
+    downloadId: "plugins_cad_tools_download_for_maya",
     requirement: "Maya 2022 or newer (Windows, Mac, Linux). Zip with a drag-to-install script.",
     version: "4.0.0-beta.1",
     size: "26 KB",
@@ -171,6 +179,7 @@ export const BETA_PLUGINS: BetaPlugin[] = [
   },
   {
     name: "Cinema 4D",
+    downloadId: "plugins_cad_tools_download_for_cinema_4d",
     requirement: "Cinema 4D 2023 or newer. Python plug-in folder.",
     version: "4.0.0-beta.1",
     size: "26 KB",
@@ -195,6 +204,7 @@ export const BETA_PLUGINS: BetaPlugin[] = [
   },
   {
     name: "Houdini",
+    downloadId: "plugins_cad_tools_download_for_houdini",
     requirement: "Houdini 19.5 or newer. Houdini package + shelf.",
     version: "4.0.0-beta.1",
     size: "25 KB",
@@ -221,6 +231,7 @@ export const BETA_PLUGINS: BetaPlugin[] = [
   },
   {
     name: "SolidWorks",
+    downloadId: "plugins_cad_tools_download_for_solidworks",
     requirement: "SolidWorks 2019 or newer (Windows). Add-in source: build it against your SolidWorks install.",
     version: "4.0.0-beta.1",
     size: "26 KB",
@@ -247,6 +258,7 @@ export const BETA_PLUGINS: BetaPlugin[] = [
   },
   {
     name: "Figma (+ Spline)",
+    downloadId: "plugins_cad_tools_download_for_figma_plus_spline",
     requirement: "Figma desktop app. Development plug-in; publishes a GLB such as a Spline export.",
     version: "4.0.0-beta.1",
     size: "11 KB",

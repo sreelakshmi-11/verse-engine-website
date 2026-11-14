@@ -23,10 +23,7 @@ export default function PluginUnity() {
           {"Open "}
           <b>Tools › Verse › Publish Scene</b>
           {"; optionally paste an account token from "}
-          <a href="/studio" id="lnk-studio">
-            Studio
-          </a>
-          .<span>The window remembers it.</span>
+          <a href="/studio">Studio</a>.<span>The window remembers it.</span>
         </>,
         <>
           {"Press "}

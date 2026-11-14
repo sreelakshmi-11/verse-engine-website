@@ -9,6 +9,8 @@ export interface Sample {
   text: string;
   /** The call to action shown on the card. */
   action: string;
+  /** The card link's id (from the button ID sheet). */
+  id: string;
 }
 
 export const SAMPLES: Sample[] = [
@@ -19,6 +21,7 @@ export const SAMPLES: Sample[] = [
     title: "Verse for Real Estate",
     text: "Sell homes before they're built. A walkable home on every buyer's phone, from a floor plan, in a minute.",
     action: "Walk the apartment",
+    id: "samples_real_scenes_walk_the_apartment",
   },
   {
     href: "/docs/guides/publish-from-ifc",
@@ -27,6 +30,7 @@ export const SAMPLES: Sample[] = [
     title: "Architects and interior designers",
     text: "Share the whole design at full detail, straight from your design tool with a Verse plug-in.",
     action: "Read the IFC guide",
+    id: "samples_real_scenes_read_the_ifc_guide",
   },
   {
     href: "https://verse.ctruh.com/view?vpk=ingest/demo-antique-camera.vpk",
@@ -35,6 +39,7 @@ export const SAMPLES: Sample[] = [
     title: "Verse for Commerce",
     text: "Products that look exactly as designed, on any store, any phone.",
     action: "See a product",
+    id: "samples_real_scenes_see_a_product",
   },
   {
     href: "/docs/guides/publish-from-unreal",
@@ -43,6 +48,7 @@ export const SAMPLES: Sample[] = [
     title: "Verse Play",
     text: "Your Blender, Unity or Unreal world in a browser tab, not a download. Host web games on a fast, isolated domain.",
     action: "Read the Unreal guide",
+    id: "samples_real_scenes_read_the_unreal_guide",
   },
   {
     href: "/developers",
@@ -51,5 +57,6 @@ export const SAMPLES: Sample[] = [
     title: "Verse API, SDK and MCP",
     text: "For developers and AI agents. One line of code, or one AI tool call, turns any 3D into a link.",
     action: "Build with Verse",
+    id: "samples_real_scenes_build_with_verse",
   },
 ];

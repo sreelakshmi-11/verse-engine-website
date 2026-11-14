@@ -127,14 +127,17 @@ export async function mount() {
     });
     $("#reality-description").textContent = modes[name].copy;
     $("#mode-description").textContent = modes[name].note;
-    $("#mode-description").setAttribute("aria-labelledby", "mode-" + name);
+    // the tab's id is the button id of the address shown (some addresses have none)
+    const tab = $(`.reality-tabs [data-mode="${name}"]`);
+    if (tab.id) $("#mode-description").setAttribute("aria-labelledby", tab.id);
+    else $("#mode-description").removeAttribute("aria-labelledby");
     $(".device-status").textContent = modes[name].status;
   }
   function selectMode(name: string, focus = false, instant = false) {
     const value = ["web", "ar", "xr"].indexOf(name);
     if (storyTrigger) {
       seekStory(4 + value, instant);
-      if (focus) $("#mode-" + name).focus();
+      if (focus) $(`.reality-tabs [data-mode="${name}"]`).focus();
     } else {
       setMode(name, focus);
       deviceMorph.to(value, instant || reduced);

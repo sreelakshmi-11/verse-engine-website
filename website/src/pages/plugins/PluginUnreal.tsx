@@ -16,9 +16,7 @@ export default function PluginUnreal() {
         </>,
         <>
           {"Optional: paste an account token from "}
-          <a href="/studio" id="lnk-studio">
-            Studio
-          </a>
+          <a href="/studio">Studio</a>
           {" in "}
           <b>Project Settings › Plugins › Verse Publish</b>.<span>Your scenes become permanent and are listed in your library.</span>
         </>,

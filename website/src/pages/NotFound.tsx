@@ -11,7 +11,7 @@ export default function NotFound() {
         has moved on.
       </h1>
       <p>There’s a whole world waiting at the beginning.</p>
-      <SiteButton arrow href="/" id="lnk-return-to-verse-engine">
+      <SiteButton arrow href="/">
         Return to Verse Engine
       </SiteButton>
     </>

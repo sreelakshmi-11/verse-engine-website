@@ -17,6 +17,9 @@ export interface Editor {
   file: string;
   /** SHA-256 of the package. */
   hash: string;
+  /** Button ids on /plugins (from the button ID sheet). */
+  downloadId: string;
+  installGuideId: string;
 }
 
 export const EDITORS: Editor[] = [
@@ -31,6 +34,8 @@ export const EDITORS: Editor[] = [
     size: "3.0 MB",
     file: "verse_publish-blender-3.0.0-beta.1.zip",
     hash: "2ff2dd7074cf3073b0e68e78af5ee2dcb6047b701824a84e8823930f0ba4f545",
+    downloadId: "plugins_blender_download",
+    installGuideId: "plugins_blender_install_guide",
   },
   {
     id: "unity",
@@ -43,6 +48,8 @@ export const EDITORS: Editor[] = [
     size: "3.0 MB",
     file: "com.ctruh.verse-publish-3.0.0-beta.1.tgz",
     hash: "24741c9d4736784af4ed7ac9240d928d90d6cefd8c773a92dfc48df55a4d8505",
+    downloadId: "plugins_unity_download",
+    installGuideId: "plugins_unity_install_guide",
   },
   {
     id: "unreal",
@@ -56,6 +63,8 @@ export const EDITORS: Editor[] = [
     size: "3.0 MB",
     file: "VersePublish-UE5.8-3.0.0-beta.1.zip",
     hash: "32385ecc8f96b71d04034f940b497a10432e5e680926727881e33c36a5a49ea3",
+    downloadId: "plugins_unreal_engine_download",
+    installGuideId: "plugins_unreal_engine_install_guide",
   },
 ];
 

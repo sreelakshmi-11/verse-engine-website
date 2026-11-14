@@ -26,7 +26,7 @@ export default function OldWay() {
             </div>
           </div>
         ))}
-        <button className="mx-race-replay" type="button" data-race-replay="" id="btn-race-replay">
+        <button className="mx-race-replay" type="button" data-race-replay="">
           ↻ Run it again
         </button>
       </div>

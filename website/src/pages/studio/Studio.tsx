@@ -500,23 +500,23 @@ export default function Studio() {
 
   return (
     <>
-      <a className="skip" href="#studio-main" id="lnk-skip-to-content">
+      <a className="skip" href="#studio-main">
         Skip to content
       </a>
       <h1 className="visually-hidden">Verse Engine Playground</h1>
       <div className="st-shell">
-        <aside className="st-side" aria-label="Playground" id="asd-playground">
-          <a className="brand" href="/" aria-label="Verse Engine by Ctruh – Home" id="lnk-verse-engine-home-2">
+        <aside className="st-side" aria-label="Playground">
+          <a className="brand" href="/" aria-label="Verse Engine by Ctruh – Home">
             <span>
               <Logo className="h-9" />
               <small>PLAYGROUND</small>
             </span>
           </a>
-          <a className="btn st-new" href="/studio/new" id="lnk-new-scene">
+          <a className="btn st-new" href="/studio/new">
             + New scene
           </a>
-          <nav className="st-nav" aria-label="Playground sections" id="nav-playground-sections">
-            <a href="/studio/scenes" data-nav="scenes" id="lnk-scenes" aria-current={current("scenes")}>
+          <nav className="st-nav" aria-label="Playground sections">
+            <a href="/studio/scenes" data-nav="scenes" aria-current={current("scenes")}>
               <svg
                 viewBox="0 0 20 20"
                 width="18"
@@ -535,7 +535,7 @@ export default function Studio() {
               </svg>
               <span>Scenes</span>
             </a>
-            <a href="/studio/analytics" data-nav="analytics" id="lnk-analytics" aria-current={current("analytics")}>
+            <a href="/studio/analytics" data-nav="analytics" aria-current={current("analytics")}>
               <svg
                 viewBox="0 0 20 20"
                 width="18"
@@ -551,7 +551,7 @@ export default function Studio() {
               </svg>
               <span>Analytics</span>
             </a>
-            <a href="/studio/webhooks" data-nav="webhooks" id="lnk-webhooks" aria-current={current("webhooks")}>
+            <a href="/studio/webhooks" data-nav="webhooks" aria-current={current("webhooks")}>
               <svg
                 viewBox="0 0 20 20"
                 width="18"
@@ -567,7 +567,7 @@ export default function Studio() {
               </svg>
               <span>Webhooks</span>
             </a>
-            <a href="/studio/plugins" data-nav="plugins" id="lnk-plug-ins-api" aria-current={current("plugins")}>
+            <a href="/studio/plugins" data-nav="plugins" aria-current={current("plugins")}>
               <svg
                 viewBox="0 0 20 20"
                 width="18"
@@ -585,11 +585,11 @@ export default function Studio() {
             </a>
           </nav>
           <p className="st-eyebrow">HELP</p>
-          <nav className="st-nav st-help" aria-label="Help" id="nav-help">
-            <a href="/docs/what-is-verse-engine" id="lnk-documentation-3">
+          <nav className="st-nav st-help" aria-label="Help">
+            <a href="/docs/what-is-verse-engine">
               <span>Documentation</span>
             </a>
-            <a href="/developers" id="lnk-api-sdk-2">
+            <a href="/developers">
               <span>{"API & SDK"}</span>
             </a>
           </nav>
@@ -601,11 +601,11 @@ export default function Studio() {
                   <small>FREE PLAN · LOCAL</small>
                 </div>
               </div>
-              <button className="st-reset" data-action="reset-all" id="btn-reset" onClick={handle}>
+              <button className="st-reset" data-action="reset-all" onClick={handle}>
                 Reset
               </button>
             </div>
-            <a className="btn ghost sm st-upgrade" href="/pricing" id="lnk-upgrade-plan">
+            <a className="btn ghost sm st-upgrade" href="/pricing">
               Upgrade plan
             </a>
             <div className="st-account-actions">

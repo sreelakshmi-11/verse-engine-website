@@ -1,8 +1,10 @@
 // Home page: developers section.
 import { devHeading, devTabs, devFeatures } from "../data.ts";
 import { SectionHead, tab } from "../parts.tsx";
+import { useHomeButtonIds } from "../button-ids.ts";
 
 export default function Developers() {
+  const ids = useHomeButtonIds();
   return (
     <section className="mx-dev section-pad" id="developers" aria-labelledby="dev-heading">
       <SectionHead heading={devHeading} />
@@ -11,13 +13,13 @@ export default function Developers() {
           <div className="mx-console-top">
             <div className="mx-console-tabs" role="tablist" aria-label="Code samples">
               {devTabs.map((t, i) => (
-                <button key={t.code} id={t.id} {...tab(i)} data-code={t.code}>
+                <button key={t.code} {...tab(i)} data-code={t.code}>
                   {t.label}
                   {t.badge && <em>{t.badge}</em>}
                 </button>
               ))}
             </div>
-            <button className="mx-copy" type="button" data-copy-code="" id="btn-dev-copy-code">
+            <button className="mx-copy" type="button" data-copy-code="">
               Copy
             </button>
           </div>
@@ -69,7 +71,7 @@ export default function Developers() {
             </li>
           ))}
           <li>
-            <a className="under-link" href="/developers">
+            <a className="under-link" href="/developers" id={ids.buildersReadTheDocs}>
               Read the docs →
             </a>
           </li>

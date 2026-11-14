@@ -4,8 +4,10 @@ import { heroAside, realityModes, storyChapters, chapterNav } from "../data.ts";
 import type { StoryChapter as StoryChapterData } from "../data.ts";
 import { Lines, tab } from "../parts.tsx";
 import { twoDigits } from "../../../utils/format.ts";
+import { useHomeButtonIds } from "../button-ids.ts";
 
 function StoryChapter({ c }: { c: StoryChapterData }) {
+  const ids = useHomeButtonIds();
   return (
     <article className={`story-panel ${c.className}`} id={`chapter-${c.chapter}`} data-chapter={c.chapter}>
       <div className="panel-copy">
@@ -43,19 +45,26 @@ function StoryChapter({ c }: { c: StoryChapterData }) {
           <>
             <div className="reality-tabs" role="tablist" aria-label="Experience types">
               {realityModes.map((m, i) => (
-                <button key={m.mode} {...tab(i)} id={`mode-${m.mode}`} aria-controls="mode-description" data-mode={m.mode} tabIndex={i === 0 ? undefined : -1}>
+                <button
+                  key={m.mode}
+                  {...tab(i)}
+                  id={ids.experience?.[i]}
+                  aria-controls="mode-description"
+                  data-mode={m.mode}
+                  tabIndex={i === 0 ? undefined : -1}
+                >
                   {m.label}
                 </button>
               ))}
             </div>
-            <div id="mode-description" role="tabpanel" aria-labelledby={`mode-${realityModes[0].mode}`}>
+            <div id="mode-description" role="tabpanel" aria-labelledby={ids.experience?.[0]}>
               {realityModes[0].note}
             </div>
           </>
         )}
         {c.cta && (
           <>
-            <a className="button action" href={c.cta.button.href} id={c.cta.button.id}>
+            <a className="button action" href={c.cta.button.href} id={ids.nextDimensionTryItFree}>
               <span>{c.cta.button.label}</span>
             </a>
             <a className="under-link" href={c.cta.link.href} id={c.cta.link.id}>
@@ -93,6 +102,7 @@ function StoryChapter({ c }: { c: StoryChapterData }) {
 }
 
 export default function Story() {
+  const ids = useHomeButtonIds();
   return (
     <section className="story" id="story" aria-label="From a 3D model to every reality">
       <div className="story-stage">
@@ -187,7 +197,7 @@ export default function Story() {
               From a product to a whole city. Turn any 3D file, scan, floor plan or Blender, Unity or Unreal project into one link that opens in the browser on
               phones, laptops and headsets. No app. No download.
             </p>
-            <a className="button action" href="/studio" id="lnk-explore-verse-engine-2">
+            <a className="button action" href="/studio" id={ids.heroTryItFree}>
               <span>Try it free</span>
             </a>
             <div className="hero-aside">
@@ -205,7 +215,7 @@ export default function Story() {
             </p>
             <small>Product → interior → city</small>
           </div>
-          <a className="scroll-invitation" href="#chapter-1" data-jump="1" id="lnk-scroll-to-cross-the-boundary">
+          <a className="scroll-invitation" href="#chapter-1" data-jump="1">
             <span className="scroll-track">
               <i />
             </span>
@@ -216,7 +226,7 @@ export default function Story() {
         {storyChapters.map((c) => (
           <StoryChapter key={c.chapter} c={c} />
         ))}
-        <a className="button action story-cta" href="/studio" id="lnk-explore-verse-engine-4">
+        <a className="button action story-cta" href="/studio">
           <span>Try it free</span>
         </a>
         <div className="story-rail">
@@ -227,21 +237,14 @@ export default function Story() {
           <div className="rail-progress">
             <i />
           </div>
-          <nav className="chapter-nav" aria-label="Story chapters" id="nav-story-chapters">
+          <nav className="chapter-nav" aria-label="Story chapters">
             {chapterNav.map((c, i) => (
-              <button
-                key={c.id}
-                className={i === 0 ? "selected" : undefined}
-                data-jump={i}
-                aria-label={c.aria}
-                aria-current={i === 0 ? "step" : undefined}
-                id={c.id}
-              >
+              <button key={c.label} className={i === 0 ? "selected" : undefined} data-jump={i} aria-label={c.aria} aria-current={i === 0 ? "step" : undefined}>
                 <span>{c.label}</span>
               </button>
             ))}
           </nav>
-          <button className="motion-toggle" aria-label="Pause ambient animation" aria-pressed="false" id="btn-pause-ambient-animation">
+          <button className="motion-toggle" aria-label="Pause ambient animation" aria-pressed="false">
             <span>Ⅱ</span>
             <small>Pause motion</small>
           </button>

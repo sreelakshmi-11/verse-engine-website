@@ -36,6 +36,8 @@ export type Rich = RichPart | RichPart[];
 
 export interface Action {
   label: string;
+  /** Button id for analytics (from the button ID sheet). */
+  id?: string;
   href: string;
   event: string;
   outline?: boolean;
@@ -60,7 +62,10 @@ export interface LiveDemoProps {
   openLabel: string;
   embedClaim?: ClaimId;
   note: string;
-  buttonId: string;
+  /** Ids of the poster (the "Open the live 3D scene" link, or the load button once embedding is confirmed) and of
+      the "Open … in a new tab" link. */
+  posterId?: string;
+  openId?: string;
 }
 export interface TableProps {
   head: string[];

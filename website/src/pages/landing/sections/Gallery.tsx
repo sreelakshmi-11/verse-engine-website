@@ -7,7 +7,7 @@ export default function Gallery() {
   return (
     <section className="possibility-gallery" id="possibilities" aria-labelledby="gallery-heading">
       <div className="gallery-stage">
-        <header className="gallery-heading" id="hdr-gallery-heading">
+        <header className="gallery-heading">
           <div>
             <span className="section-number">USE CASES / OPEN POSSIBILITIES</span>
             <h2 id="gallery-heading">
@@ -26,12 +26,11 @@ export default function Gallery() {
           <div className="gallery-track" id="gallery-track">
             {galleryCards.map((card, i) => (
               <a
-                key={card.id}
+                key={card.href}
                 className={card.long ? "possibility-card long-title" : "possibility-card"}
                 href={card.href}
                 data-gallery-index={i}
                 aria-label={card.label}
-                id={card.id}
                 aria-current={i === 0 ? "true" : undefined}
               >
                 <div className="gallery-picture">
@@ -62,10 +61,10 @@ export default function Gallery() {
             </div>
           </div>
           <div className="gallery-arrows">
-            <button data-gallery-prev="" aria-label="Previous possibility" id="btn-previous-possibility" disabled>
+            <button data-gallery-prev="" aria-label="Previous possibility" disabled>
               ←
             </button>
-            <button data-gallery-next="" aria-label="Next possibility" id="btn-next-possibility">
+            <button data-gallery-next="" aria-label="Next possibility">
               →
             </button>
           </div>

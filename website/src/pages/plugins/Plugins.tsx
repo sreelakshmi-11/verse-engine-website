@@ -1,7 +1,6 @@
 // Plug-ins catalogue (/plugins).
 import SiteButton from "../../components/ui/SiteButton.tsx";
 import { EDITORS, downloadUrl } from "../../data/plugins.ts";
-import { nth } from "../../utils/ids.ts";
 import BetaCard from "./BetaCard.tsx";
 import PackageFile from "./PackageFile.tsx";
 import ToolArt from "./ToolArt.tsx";
@@ -17,10 +16,10 @@ export default function Plugins() {
           101.
         </p>
         <div className="page-actions">
-          <SiteButton href="/studio" id="lnk-explore-verse-engine-2">
+          <SiteButton href="/studio" id="plugins_plugins_hero_explore_verse_engine">
             Explore Verse Engine
           </SiteButton>
-          <a className="text-link" href="#aec" id="lnk-architecture-design-tools">
+          <a className="text-link" href="#aec" id="plugins_plugins_hero_architecture_and_design_tools">
             {"Architecture & design tools "}
           </a>
         </div>
@@ -30,16 +29,16 @@ export default function Plugins() {
         <span>Resumable uploads</span>
         <span>We optimise it for you</span>
       </div>
-      <section className="page-band plugin-catalog" id="sec-page-band">
+      <section className="page-band plugin-catalog">
         <div className="content-width">
-          <header className="catalog-heading" id="hdr-catalog-heading">
+          <header className="catalog-heading">
             <h2>Available now.</h2>
             <p>Real packages. One guide for every editor.</p>
           </header>
           <div className="plugin-card-grid">
-            {EDITORS.map((editor, i) => (
-              <article className="plugin-card" id={nth("art-plugin-card", i)} key={editor.id}>
-                <figure id={nth("fig-item", i)}>
+            {EDITORS.map((editor) => (
+              <article className="plugin-card" key={editor.id}>
+                <figure>
                   <ToolArt editor={editor} id={"mesh-production-" + editor.id} />
                   <figcaption>Workflow illustration</figcaption>
                 </figure>
@@ -52,10 +51,10 @@ export default function Plugins() {
                   <p className="plugin-requirement">{editor.requirement}</p>
                   <p>{editor.description}</p>
                   <div className="page-actions">
-                    <SiteButton href={downloadUrl(editor.file)} id={nth("lnk-download", i)}>
+                    <SiteButton href={downloadUrl(editor.file)} id={editor.downloadId}>
                       Download
                     </SiteButton>
-                    <a className="text-link" href={"/plugins/" + editor.id} id={nth("lnk-install-guide", i)}>
+                    <a className="text-link" href={"/plugins/" + editor.id} id={editor.installGuideId}>
                       {"Install guide "}
                     </a>
                   </div>
@@ -67,7 +66,7 @@ export default function Plugins() {
         </div>
       </section>
       <section className="beta-catalog content-width section-space" id="aec">
-        <header className="section-heading" id="hdr-section-heading">
+        <header className="section-heading">
           <p className="eyebrow">4.0 BETA</p>
           <h2>
             Architecture, design
@@ -81,19 +80,19 @@ export default function Plugins() {
           </p>
         </header>
         <div className="beta-grid">
-          {BETA_PLUGINS.map((plugin, i) => (
-            <BetaCard plugin={plugin} index={i} key={plugin.name} />
+          {BETA_PLUGINS.map((plugin) => (
+            <BetaCard plugin={plugin} key={plugin.name} />
           ))}
         </div>
       </section>
-      <section className="download-check page-band" id="sec-download-check">
+      <section className="download-check page-band">
         <div className="content-width">
           <div>
             <p className="eyebrow">EVERY FILE IS LISTED</p>
             <h2>Check a download.</h2>
             <p>
               {"Every file's SHA-256 is shown with it and listed in "}
-              <a className="text-link" href="https://verse.ctruh.com/downloads/SHA256SUMS" id="lnk-sha256sums">
+              <a className="text-link" href="https://verse.ctruh.com/downloads/SHA256SUMS">
                 {"SHA256SUMS "}
               </a>
               .
@@ -103,7 +102,7 @@ export default function Plugins() {
                 "Each package bundles verse-prepare (the optimiser) for macOS (Apple silicon and Intel), Windows and Linux. To publish to your own server instead, change the server URL in the plug-in's settings."
               }
             </p>
-            <a className="text-link" href="/docs/guides/run-your-own-server" id="lnk-run-your-own-server">
+            <a className="text-link" href="/docs/guides/run-your-own-server" id="plugins_files_run_your_own_server">
               {"Run your own server "}
             </a>
           </div>

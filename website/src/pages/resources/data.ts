@@ -75,15 +75,15 @@ export const CRUMB = {
 /** The header's "Resources" menu (desktop dropdown and mobile menu group).
     `id` is the desktop link's id, `mobileId` the mobile menu link's. */
 export const RESOURCES_MENU = [
-  { href: EXISTING.samples, label: "Samples", id: "lnk-samples", mobileId: "lnk-samples-2" },
-  { href: ROUTES.commerce.path, label: "3D commerce", id: "lnk-3d-commerce", mobileId: "lnk-3d-commerce-2" },
-  { href: ROUTES.archRe.path, label: "Architecture and real estate", id: "lnk-architecture-real-estate", mobileId: "lnk-architecture-real-estate-2" },
-  { href: ROUTES.aiInfra.path, label: "AI and 3D infrastructure", id: "lnk-ai-3d-infrastructure", mobileId: "lnk-ai-3d-infrastructure-2" },
-  { href: ROUTES.lyon.path, label: "Lyon demo", id: "lnk-lyon-demo", mobileId: "lnk-lyon-demo-2" },
+  { href: EXISTING.samples, label: "Samples" },
+  { href: ROUTES.commerce.path, label: "3D commerce" },
+  { href: ROUTES.archRe.path, label: "Architecture and real estate" },
+  { href: ROUTES.aiInfra.path, label: "AI and 3D infrastructure" },
+  { href: ROUTES.lyon.path, label: "Lyon demo" },
   // Planned pages link to their home page section until they exist.
-  { href: href("howItWorks"), label: "How Verse Engine works", id: "lnk-how-verse-engine-works-3", mobileId: "lnk-how-verse-engine-works-4" },
-  { href: href("formats"), label: "Supported formats", id: "lnk-supported-formats-3", mobileId: "lnk-supported-formats-4" },
-  { href: href("faq"), label: "FAQs", id: "lnk-faqs-3", mobileId: "lnk-faqs-4" },
+  { href: href("howItWorks"), label: "How Verse Engine works" },
+  { href: href("formats"), label: "Supported formats" },
+  { href: href("faq"), label: "FAQs" },
 ];
 
 /** Main navigation links shared by the desktop header and mobile menu. */
@@ -91,8 +91,7 @@ const HEADER_ACTIONS = {
   challenge: {
     href: "/challenge",
     label: "Take the Challenge",
-    id: "btn-header-challenge",
-    mobileId: "btn-menu-challenge",
+    id: "home_navbar_take_the_challenge",
     className: "header-cta header-challenge",
     mobileClassName: "menu-challenge",
     mobileArrow: false,
@@ -100,51 +99,46 @@ const HEADER_ACTIONS = {
   explore: {
     href: "/studio",
     label: "Explore Verse Engine",
-    id: "btn-header-explore",
-    mobileId: "btn-menu-explore",
+    id: "home_navbar_explore_verse_engine",
     className: "header-cta",
     mobileClassName: "site-button",
     mobileArrow: true,
   },
 };
 export const HEADER_NAV = {
-  resources: { label: "Resources", mobileId: "dtl-m-group-3", mobileSummaryId: "sum-resources" },
+  resources: { label: "Resources" },
   desktopBeforeResources: [
-    { href: "/story", label: "The engine", id: "lnk-the-engine", current: "/story" },
-    { href: "/developers", label: "Developers", id: "lnk-developers", current: "/developers" },
-    { href: "/pricing", label: "Pricing", id: "lnk-pricing", current: "/pricing" },
-    { href: "/plugins", label: "Plug-ins", id: "lnk-plug-ins", current: "/plugins" },
+    { href: "/story", label: "The engine", current: "/story" },
+    { href: "/developers", label: "Developers", current: "/developers" },
+    { href: "/pricing", label: "Pricing", current: "/pricing" },
+    { href: "/plugins", label: "Plug-ins", current: "/plugins" },
   ],
   desktopAfterResources: [
-    { href: "/about", label: "About", id: "lnk-about", current: "/about" },
-    { href: "/docs/what-is-verse-engine", label: "Docs", id: "lnk-docs", current: "/docs/what-is-verse-engine" },
+    { href: "/about", label: "About", current: "/about" },
+    { href: "/docs/what-is-verse-engine", label: "Docs", current: "/docs/what-is-verse-engine" },
   ],
   mobilePrimary: {
-    engine: { href: "/story", label: "The engine", id: "lnk-the-engine-2" },
-    pricing: { href: "/pricing", label: "Pricing", id: "lnk-pricing-2" },
-    about: { href: "/about", label: "About", id: "lnk-about-2" },
+    engine: { href: "/story", label: "The engine" },
+    pricing: { href: "/pricing", label: "Pricing" },
+    about: { href: "/about", label: "About" },
   },
   mobileGroups: {
     developers: {
-      id: "dtl-m-group",
-      summaryId: "sum-developers",
       label: "Developers",
       links: [
-        { href: "/developers", label: "Developer hub", id: "lnk-developer-hub" },
-        { href: "/docs/what-is-verse-engine", label: "Documentation", id: "lnk-documentation" },
-        { href: "/docs/scenes-api", label: "REST API", id: "lnk-rest-api" },
-        { href: "/docs/sdk", label: "SDK", id: "lnk-sdk" },
+        { href: "/developers", label: "Developer hub" },
+        { href: "/docs/what-is-verse-engine", label: "Documentation" },
+        { href: "/docs/scenes-api", label: "REST API" },
+        { href: "/docs/sdk", label: "SDK" },
       ],
     },
     plugins: {
-      id: "dtl-m-group-2",
-      summaryId: "sum-plug-ins",
       label: "Plug-ins",
       links: [
-        { href: "/plugins", label: "All plug-ins", id: "lnk-all-plug-ins" },
-        { href: "/plugins/blender", label: "Blender", id: "lnk-blender" },
-        { href: "/plugins/unity", label: "Unity", id: "lnk-unity" },
-        { href: "/plugins/unreal", label: "Unreal", id: "lnk-unreal" },
+        { href: "/plugins", label: "All plug-ins" },
+        { href: "/plugins/blender", label: "Blender" },
+        { href: "/plugins/unity", label: "Unity" },
+        { href: "/plugins/unreal", label: "Unreal" },
       ],
     },
   },
@@ -155,40 +149,40 @@ export const HEADER_NAV = {
 /** All footer links, grouped by the column or row where they appear. */
 export const FOOTER_LINKS = {
   explore: [
-    { href: "/", label: "The engine", id: "lnk-the-engine-3" },
-    { href: "/pricing", label: "Pricing", id: "lnk-pricing-3" },
-    { href: "/about", label: "About Ctruh", id: "lnk-about-ctruh" },
-    { href: "/about#verse-engine", label: "About Verse Engine", id: "lnk-about-verse-engine" },
-    { href: href("commerce"), label: "3D commerce", id: "lnk-3d-commerce-3" },
-    { href: href("archRe"), label: "Architecture and real estate", id: "lnk-architecture-real-estate-3" },
-    { href: href("aiInfra"), label: "AI and 3D infrastructure", id: "lnk-ai-3d-infrastructure-3" },
-    { href: href("lyon"), label: "Lyon 3D city demo", id: "lnk-lyon-3d-city-demo" },
-    { href: href("howItWorks"), label: "How Verse Engine works", id: "lnk-how-verse-engine-works" },
+    { href: "/", label: "The engine" },
+    { href: "/pricing", label: "Pricing" },
+    { href: "/about", label: "About Ctruh" },
+    { href: "/about#verse-engine", label: "About Verse Engine" },
+    { href: href("commerce"), label: "3D commerce" },
+    { href: href("archRe"), label: "Architecture and real estate" },
+    { href: href("aiInfra"), label: "AI and 3D infrastructure" },
+    { href: href("lyon"), label: "Lyon 3D city demo" },
+    { href: href("howItWorks"), label: "How Verse Engine works" },
   ],
   build: [
-    { href: "/developers", label: "API & SDK", id: "lnk-api-sdk" },
-    { href: "/docs/what-is-verse-engine", label: "Documentation", id: "lnk-documentation-2" },
-    { href: "/studio/plugins", label: "Get an API key", id: "lnk-get-an-api-key" },
-    { href: "/signin", label: "Sign in", id: "lnk-sign-in" },
-    { href: href("formats"), label: "Supported formats", id: "lnk-supported-formats" },
+    { href: "/developers", label: "API & SDK" },
+    { href: "/docs/what-is-verse-engine", label: "Documentation" },
+    { href: "/studio/plugins", label: "Get an API key" },
+    { href: "/signin", label: "Sign in" },
+    { href: href("formats"), label: "Supported formats" },
   ],
   plugins: [
-    { href: "/plugins/blender", label: "Blender", id: "lnk-blender-2" },
-    { href: "/plugins/unity", label: "Unity", id: "lnk-unity-2" },
-    { href: "/plugins/unreal", label: "Unreal Engine", id: "lnk-unreal-engine" },
-    { href: "/plugins", label: "All plug-ins", id: "lnk-all-plug-ins-2" },
+    { href: "/plugins/blender", label: "Blender" },
+    { href: "/plugins/unity", label: "Unity" },
+    { href: "/plugins/unreal", label: "Unreal Engine" },
+    { href: "/plugins", label: "All plug-ins" },
   ],
   connect: [
-    { href: "mailto:hello@ctruh.com", label: "hello@ctruh.com", id: "lnk-hello-ctruh-com" },
-    { href: "https://www.ctruh.com/", label: "Ctruh", id: "lnk-ctruh" },
-    { href: "https://www.linkedin.com/company/ctruh/", label: "LinkedIn", id: "lnk-linkedin" },
-    { href: "/docs/blog/index", label: "Blogs, research & events", id: "lnk-blogs-research-events" },
-    { href: href("faq"), label: "FAQs", id: "lnk-faqs" },
+    { href: "mailto:hello@ctruh.com", label: "hello@ctruh.com" },
+    { href: "https://www.ctruh.com/", label: "Ctruh" },
+    { href: "https://www.linkedin.com/company/ctruh/", label: "LinkedIn" },
+    { href: "/docs/blog/index", label: "Blogs, research & events" },
+    { href: href("faq"), label: "FAQs" },
   ],
   bottom: [
-    { href: "https://verse.ctruh.com/privacy", label: "Privacy", id: "lnk-privacy" },
-    { href: "https://verse.ctruh.com/terms", label: "Terms", id: "lnk-terms" },
-    { href: "#main", label: "Back to top ↑", id: "lnk-back-to-top" },
+    { href: "https://verse.ctruh.com/privacy", label: "Privacy" },
+    { href: "https://verse.ctruh.com/terms", label: "Terms" },
+    { href: "#main", label: "Back to top ↑" },
   ],
 };
 
@@ -351,8 +345,13 @@ const COMMERCE: ResourcePageData = {
     title: "Interactive 3D Product Experiences for E-commerce",
     sub: "Turn a product's 3D file into one link that shoppers can rotate, zoom and, on a phone, place in their room. Verse Engine by Ctruh streams it in the browser, so there is no app to install, and you can embed it on any product page with one tag.",
     actions: [
-      { label: "Discuss your 3D commerce use case", href: "#cta", event: "hero_discuss" },
-      { label: "See a product in 3D", href: "#demo", event: "hero_see_demo", outline: true },
+      {
+        label: "Discuss your 3D commerce use case",
+        href: "#cta",
+        event: "hero_discuss",
+        id: "use_cases_3d_commerce_use_case_discuss_your_3d_commerce_use_case",
+      },
+      { label: "See a product in 3D", href: "#demo", event: "hero_see_demo", outline: true, id: "use_cases_3d_commerce_use_case_see_a_product_in_3d" },
     ],
     points: ["No app or plug-in for shoppers", "One-tag embed, plus Shopify, WordPress and more", "View in AR on phones"],
     figure: {
@@ -630,10 +629,11 @@ const COMMERCE: ResourcePageData = {
       blocks: [
         {
           type: "demo",
-          buttonId: "btn-load-camera-demo",
           src: EXISTING.demoCamera,
           title: "Antique camera: Verse Engine product demo",
           openLabel: "Open the camera in a new tab",
+          posterId: "use_cases_3d_commerce_demonstration_open_the_live_3d_scene",
+          openId: "use_cases_3d_commerce_demonstration_open_the_camera_in_a_new_tab",
           poster: "/assets/sample-2.webp",
           posterAlt: "Antique bellows camera, Verse Engine 3D product sample, before loading",
           note: "Real Verse sample · Works on phones, laptops and headsets.",
@@ -723,7 +723,10 @@ const COMMERCE: ResourcePageData = {
   cta: {
     title: "Discuss your 3D commerce use case",
     body: "Tell us about your catalogue, your store platform and the products you want shoppers to explore. Ctruh's team will show you the right route, from a single embed to an automated catalogue pipeline.",
-    actions: [ACTIONS.talk, ACTIONS.tryFree],
+    actions: [
+      { ...ACTIONS.talk, id: "use_cases_3d_commerce_discuss_talk_to_ctruh" },
+      { ...ACTIONS.tryFree, id: "use_cases_3d_commerce_discuss_try_it_free" },
+    ],
   },
 };
 
@@ -738,8 +741,13 @@ const ARCH_RE: ResourcePageData = {
     title: "Explore Architectural and Real Estate Spaces in 3D",
     sub: "Share a walkable apartment, a BIM model, a laser scan or a whole township as one link. Buyers and clients open it in their browser, on a phone or laptop, with no app. Built on Verse Engine by Ctruh.",
     actions: [
-      { label: "Talk to us about your project", href: "#cta", event: "hero_talk" },
-      { label: "Walk a show flat", href: "#demo", event: "hero_walk_flat", outline: true },
+      {
+        label: "Talk to us about your project",
+        href: "#cta",
+        event: "hero_talk",
+        id: "use_cases_architecture_real_estate_use_case_talk_to_us_about_your_project",
+      },
+      { label: "Walk a show flat", href: "#demo", event: "hero_walk_flat", outline: true, id: "use_cases_architecture_real_estate_use_case_walk_a_show_flat" },
     ],
     points: ["Floor plan to furnished 3D home in about a minute", "BIM through IFC, scans and splats", "From one room to a whole city"],
     figure: {
@@ -958,6 +966,7 @@ const ARCH_RE: ResourcePageData = {
                 {
                   type: "p",
                   text: link("Explore the Lyon 3D city demo →", href("lyon"), {
+                    id: "use_cases_architecture_real_estate_large_scenes_explore_the_lyon_3d_city_demo",
                     className: "site-button rs-outline rs-sm",
                     "data-event": "internal_link",
                     "data-target": "lyon",
@@ -1043,10 +1052,11 @@ const ARCH_RE: ResourcePageData = {
       blocks: [
         {
           type: "demo",
-          buttonId: "btn-load-show-flat-demo",
           src: EXISTING.demoShowflat,
           title: "Show flat: Verse Engine real estate demo",
           openLabel: "Open the show flat in a new tab",
+          posterId: "use_cases_architecture_real_estate_demonstration_open_the_live_3d_scene",
+          openId: "use_cases_architecture_real_estate_demonstration_open_the_show_flat_in_a_new_tab",
           poster: showFlat,
           posterAlt: "Show flat living room, Verse Engine real estate sample, before loading",
           note: "Real Verse sample · No app, no sign-up.",
@@ -1121,8 +1131,8 @@ const AI_INFRA: ResourcePageData = {
       " for preparing, streaming, rendering and deploying 3D in the browser. This page explains how they fit together.",
     ],
     actions: [
-      { label: "Explore Verse Engine", href: EXISTING.landing, event: "hero_explore_verse" },
-      { label: "See the workflow", href: "#workflow", event: "hero_see_workflow", outline: true },
+      { label: "Explore Verse Engine", href: EXISTING.landing, event: "hero_explore_verse", id: "ai_3d_infrastructure_infrastructure_explore_verse_engine" },
+      { label: "See the workflow", href: "#workflow", event: "hero_see_workflow", outline: true, id: "ai_3d_infrastructure_infrastructure_see_the_workflow" },
     ],
   },
 
@@ -1553,8 +1563,8 @@ const LYON: ResourcePageData = {
     title: "Explore a Large-Scale 3D City in Your Browser",
     sub: "10.3 billion triangles of real, textured city in one 556 GB file, opened from a link and walkable at street level. No app, no download: Verse Engine by Ctruh streams only what you can see.",
     actions: [
-      { label: "Open the live city", href: "#live", event: "hero_open_demo" },
-      { label: "How it was measured", href: "#measured", event: "hero_how_measured", outline: true },
+      { label: "Open the live city", href: "#live", event: "hero_open_demo", id: "demos_lyon_hero_open_the_live_city" },
+      { label: "How it was measured", href: "#measured", event: "hero_how_measured", outline: true, id: "demos_lyon_hero_how_it_was_measured" },
     ],
   },
 
@@ -1587,11 +1597,12 @@ const LYON: ResourcePageData = {
       blocks: [
         {
           type: "demo",
-          buttonId: "btn-load-lyon-demo",
           src: EXISTING.lyonLive,
           embedClaim: "lyon-url",
           title: "Lyon 3D city: Verse Engine live demo",
           openLabel: "Open Lyon in a new tab",
+          posterId: "demos_lyon_live_demo_open_the_live_3d_scene",
+          openId: "demos_lyon_live_demo_open_lyon_in_a_new_tab",
           poster: cityHero,
           posterAlt: "Aerial view of Lyon streamed in Chrome by Verse Engine, before the live scene loads",
           note: "Best on a recent laptop in Chrome. The scene streams as you move.",

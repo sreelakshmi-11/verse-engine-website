@@ -46,16 +46,16 @@ export default function Developers() {
 
   return (
     <>
-      <section className="developer-hero content-width" id="sec-developer-hero">
-        <header id="hdr-item">
+      <section className="developer-hero content-width">
+        <header>
           <p className="eyebrow">FOR DEVELOPERS · REST API + EMBED SDK</p>
           <h1>Build with Verse Engine</h1>
           <p>Upload, publish, embed and track 3D scenes with a REST API — or skip the backend and drop in one script tag.</p>
           <div className="page-actions">
-            <SiteButton href="/studio/plugins" id="lnk-get-an-api-key-2">
+            <SiteButton href="/studio/plugins" id="developers_hero_get_an_api_key">
               Get an API key
             </SiteButton>
-            <a className="text-link" href="/docs/scenes-api" id="lnk-api-reference">
+            <a className="text-link" href="/docs/scenes-api" id="developers_hero_api_reference">
               {"API reference "}
             </a>
           </div>
@@ -73,7 +73,7 @@ export default function Developers() {
                 JavaScript
               </button>
             </div>
-            <button className="copy-code" data-copy-code="" aria-label="Copy code sample" id="btn-copy-code-sample" onClick={copy}>
+            <button className="copy-code" data-copy-code="" aria-label="Copy code sample" onClick={copy}>
               Copy ⧉
             </button>
           </div>
@@ -88,7 +88,7 @@ export default function Developers() {
           </span>
         </div>
       </section>
-      <section className="round-trip page-band" id="sec-round-trip">
+      <section className="round-trip page-band">
         <div className="content-width">
           <p className="eyebrow">THE ROUND TRIP</p>
           <ol>
@@ -115,9 +115,9 @@ export default function Developers() {
           </ol>
         </div>
       </section>
-      <section className="content-width section-space" id="sec-content-width">
+      <section className="content-width section-space">
         <div className="developer-capabilities">
-          <article id="art-item">
+          <article>
             <p className="eyebrow">API</p>
             <h2>{"API management & docs"}</h2>
             <p>A REST API for everything you can do in Studio.</p>
@@ -128,11 +128,11 @@ export default function Developers() {
               <li>Track views, sessions and watch time</li>
               <li>Webhooks when a scene is ready</li>
             </ul>
-            <SiteButton secondary arrow href="/docs/scenes-api" id="lnk-api-docs">
+            <SiteButton secondary arrow href="/docs/scenes-api" id="developers_api_api_docs">
               API docs
             </SiteButton>
           </article>
-          <article id="art-item-2">
+          <article>
             <p className="eyebrow">SDK</p>
             <h2>{"SDK install & docs"}</h2>
             <p>Embed a scene on any site with one script tag or a web component.</p>
@@ -143,14 +143,14 @@ export default function Developers() {
               <li>Works on phones, laptops and headsets</li>
               <li>Run your own server</li>
             </ul>
-            <SiteButton secondary arrow href="/docs/embed-sdk" id="lnk-sdk-install-guide">
+            <SiteButton secondary arrow href="/docs/embed-sdk" id="developers_sdk_sdk_install_guide">
               SDK install guide
             </SiteButton>
           </article>
         </div>
       </section>
-      <section className="quickstart content-width section-space" id="sec-quickstart">
-        <header className="section-heading" id="hdr-section-heading">
+      <section className="quickstart content-width section-space">
+        <header className="section-heading">
           <p className="eyebrow">START BUILDING</p>
           <h2>
             Quickstart,
@@ -163,7 +163,7 @@ export default function Developers() {
             <span className="step-number">01</span>
             <h3>Create an API key</h3>
             <p>{"Sign in to Studio and create a key under Plug-ins & API."}</p>
-            <a className="text-link" href="/studio" id="lnk-open-studio">
+            <a className="text-link" href="/studio" id="developers_start_building_open_studio">
               {"Open Studio "}
             </a>
           </li>
@@ -171,7 +171,7 @@ export default function Developers() {
             <span className="step-number">02</span>
             <h3>Upload your first scene</h3>
             <p>POST a file, then wait for the job to finish.</p>
-            <a className="text-link" href="/docs/scenes-api" id="lnk-set-up-webhooks">
+            <a className="text-link" href="/docs/scenes-api" id="developers_start_building_set_up_webhooks">
               {"Set up webhooks "}
             </a>
           </li>
@@ -179,7 +179,7 @@ export default function Developers() {
             <span className="step-number">03</span>
             <h3>Embed it</h3>
             <p>Add the SDK script and drop in the scene ID.</p>
-            <a className="text-link" href="/docs/embed-sdk" id="lnk-sdk-guide">
+            <a className="text-link" href="/docs/embed-sdk" id="developers_start_building_sdk_guide">
               {"SDK guide "}
             </a>
           </li>

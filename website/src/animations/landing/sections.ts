@@ -373,6 +373,9 @@ export function mount() {
       if (!b) return;
       const href = b.dataset.scene!;
       open.href = href;
+      if (b.dataset.openId)
+        open.id = b.dataset.openId; // each scene's link has its own id
+      else open.removeAttribute("id");
       url.textContent = href.replace("https://", "");
       stage.classList.toggle("no-img", !b.dataset.img);
       if (b.dataset.img) img.src = b.dataset.img;

@@ -6,7 +6,6 @@ import { flushSync } from "react-dom";
 import type { FormEvent } from "react";
 import PageHero from "../../components/ui/PageHero.tsx";
 import SiteButton from "../../components/ui/SiteButton.tsx";
-import { nth } from "../../utils/ids.ts";
 import { COMPARISON, PLANS } from "./data.ts";
 import type { Currency, Period, PlanId, PlanView, PricingConfig, SeatPlan } from "./data.ts";
 
@@ -151,40 +150,37 @@ export default function Pricing() {
           off your first year on annual. Viewers never pay: every published scene opens for everyone.
         </p>
       </PageHero>
-      <section className="pricing-content page-band" id="sec-pricing-content">
+      <section className="pricing-content page-band">
         <div className="content-width">
           <div className="billing-controls">
             <div className="billing-switch" role="group" aria-label="Billing period">
-              <button data-billing="month" aria-pressed={period === "month"} id="btn-monthly" onClick={() => choosePeriod("month")}>
+              <button data-billing="month" aria-pressed={period === "month"} onClick={() => choosePeriod("month")}>
                 Monthly
               </button>
-              <button data-billing="year" aria-pressed={period === "year"} id="btn-annual" onClick={() => choosePeriod("year")}>
+              <button data-billing="year" aria-pressed={period === "year"} onClick={() => choosePeriod("year")}>
                 Annual
               </button>
             </div>
             <div className="billing-switch currency-switch" role="group" aria-label="Currency">
-              <button data-currency="USD" aria-pressed={pressed("USD")} id="btn-usd" onClick={() => chooseCurrency("USD")}>
+              <button data-currency="USD" aria-pressed={pressed("USD")} onClick={() => chooseCurrency("USD")}>
                 USD $
               </button>
-              <button data-currency="INR" aria-pressed={pressed("INR")} id="btn-inr" onClick={() => chooseCurrency("INR")}>
+              <button data-currency="INR" aria-pressed={pressed("INR")} onClick={() => chooseCurrency("INR")}>
                 INR ₹
               </button>
             </div>
             <span>Annual billing: 2 months free</span>
-            <a className="text-link" href="https://verse.ctruh.com/pricing#code-form" id="lnk-have-a-code">
+            <a className="text-link" href="https://verse.ctruh.com/pricing#code-form">
               {"Have a code? "}
             </a>
           </div>
           <div className="pricing-grid">
-            {PLANS.map((plan, i) => {
+            {PLANS.map((plan) => {
               const id = plan.id;
               // The free plan links straight to the Playground; the others go to checkout (attributes in the page's order).
-              const cta =
-                id === "free"
-                  ? { href: "/studio", id: plan.ctaId }
-                  : { id: plan.ctaId, ...checkout(id, "https://verse.ctruh.com/pricing?plan=" + id + "&period=month") };
+              const cta = id === "free" ? { href: "/studio" } : checkout(id, "https://verse.ctruh.com/pricing?plan=" + id + "&period=month");
               return (
-                <article className={plan.popular ? "plan popular" : "plan"} data-plan-card={id} id={nth("art-plan", i)} key={id}>
+                <article className={plan.popular ? "plan popular" : "plan"} data-plan-card={id} key={id}>
                   {plan.popular && <span className="popular-label">Most popular</span>}
                   <h2>{plan.name}</h2>
                   <p className="plan-audience">{plan.audience}</p>
@@ -208,7 +204,6 @@ export default function Pricing() {
                         defaultValue={String(plan.seats)}
                         data-plan-seats=""
                         aria-label={plan.name + " seats"}
-                        id={"inp-" + id + "-seats"}
                         {...seatInput(id)}
                       />
                       <span data-seat-note="">{show(id, "seatNote", plan.seats + " included, then $15 / seat / month")}</span>
@@ -228,7 +223,7 @@ export default function Pricing() {
             })}
           </div>
           <p className="source-note">{sourceNote}</p>
-          <article className="enterprise-plan" id="art-enterprise-plan">
+          <article className="enterprise-plan">
             <div>
               <p className="eyebrow">ENTERPRISE</p>
               <h2>
@@ -249,14 +244,14 @@ export default function Pricing() {
                 <li>SLA</li>
               </ul>
             </div>
-            <SiteButton arrow href="#enterprise" id="lnk-talk-to-us">
+            <SiteButton arrow href="#enterprise">
               Talk to us
             </SiteButton>
           </article>
         </div>
       </section>
-      <section className="comparison-section content-width section-space" id="sec-comparison-section">
-        <header className="section-heading" id="hdr-section-heading">
+      <section className="comparison-section content-width section-space">
+        <header className="section-heading">
           <p className="eyebrow">COMPARE</p>
           <h2>
             What each plan
@@ -291,9 +286,9 @@ export default function Pricing() {
           </table>
         </div>
       </section>
-      <section className="usage-pricing page-band" id="sec-usage-pricing">
+      <section className="usage-pricing page-band">
         <div className="content-width">
-          <header className="section-heading" id="hdr-section-heading-2">
+          <header className="section-heading">
             <p className="eyebrow">PAY AS YOU GO · COMING SOON</p>
             <h2>
               Go past your allowance,
@@ -338,7 +333,7 @@ export default function Pricing() {
         </div>
       </section>
       <section className="broker-packs content-width section-space" id="packs">
-        <header className="section-heading" id="hdr-section-heading-3">
+        <header className="section-heading">
           <p className="eyebrow">BROKER PACKS</p>
           <h2>
             Prepaid homes and films,
@@ -348,25 +343,25 @@ export default function Pricing() {
           <p>One-time packs, used after your plan’s monthly allowance. They never expire.</p>
         </header>
         <div className="pack-grid">
-          <article id="art-item">
+          <article>
             <h3>Broker pack 10</h3>
             <p>10 Verse Homes + 10 films, one payment.</p>
             <strong>
               $12
               <small>{" once"}</small>
             </strong>
-            <SiteButton secondary href="https://verse.ctruh.com/pricing#packs" id="lnk-buy-pack">
+            <SiteButton secondary href="https://verse.ctruh.com/pricing#packs">
               Buy pack
             </SiteButton>
           </article>
-          <article id="art-item-2">
+          <article>
             <h3>Broker pack 50</h3>
             <p>50 Verse Homes + 50 films, one payment.</p>
             <strong>
               $59
               <small>{" once"}</small>
             </strong>
-            <SiteButton secondary href="https://verse.ctruh.com/pricing#packs" id="lnk-buy-pack-2">
+            <SiteButton secondary href="https://verse.ctruh.com/pricing#packs">
               Buy pack
             </SiteButton>
           </article>
@@ -383,12 +378,10 @@ export default function Pricing() {
           <p>
             Custom allowances and seats: SSO, a custom domain, a white-label viewer and an SLA. Tell us a little about your team and a specialist will call you.
           </p>
-          <SiteButton href="https://verse.ctruh.com/pricing#enterprise" id="lnk-request-a-callback">
-            Request a callback
-          </SiteButton>
+          <SiteButton href="https://verse.ctruh.com/pricing#enterprise">Request a callback</SiteButton>
           <p className="form-note">Continue on Verse to submit your callback request.</p>
         </div>
-        <aside id="asd-item">
+        <aside>
           <h3>
             A real person.
             <br />
@@ -408,8 +401,8 @@ export default function Pricing() {
           <span>Monday – Friday</span>
         </aside>
       </section>
-      <section className="faq-layout content-width section-space" id="sec-faq-layout">
-        <header className="section-heading" id="hdr-section-heading-4">
+      <section className="faq-layout content-width section-space">
+        <header className="section-heading">
           <p className="eyebrow">FAQ</p>
           <h2>
             Questions,
@@ -418,8 +411,8 @@ export default function Pricing() {
           </h2>
         </header>
         <div className="page-faq">
-          <details open id="dtl-item">
-            <summary id="sum-can-i-try-verse-without-paying">
+          <details open>
+            <summary>
               Can I try Verse without paying?
               <span aria-hidden="true">+</span>
             </summary>
@@ -428,8 +421,8 @@ export default function Pricing() {
               limit: 1 GB storage, 1 Verse Home and 1 film a month.
             </p>
           </details>
-          <details id="dtl-item-2">
-            <summary id="sum-what-happens-when-my-trial-ends">
+          <details>
+            <summary>
               What happens when my trial ends?
               <span aria-hidden="true">+</span>
             </summary>
@@ -438,8 +431,8 @@ export default function Pricing() {
               months on monthly plans or 20% off your first year on annual plans.
             </p>
           </details>
-          <details id="dtl-item-3">
-            <summary id="sum-what-happens-when-i-reach-an-allowance">
+          <details>
+            <summary>
               What happens when I reach an allowance?
               <span aria-hidden="true">+</span>
             </summary>
@@ -448,8 +441,8 @@ export default function Pricing() {
               runs out on Free, viewers get a lighter version and you see a notice.
             </p>
           </details>
-          <details id="dtl-item-4">
-            <summary id="sum-what-is-pay-as-you-go">
+          <details>
+            <summary>
               What is pay-as-you-go?
               <span aria-hidden="true">+</span>
             </summary>
@@ -458,8 +451,8 @@ export default function Pricing() {
               to upgrade and nothing extra is charged.
             </p>
           </details>
-          <details id="dtl-item-5">
-            <summary id="sum-what-are-broker-packs">
+          <details>
+            <summary>
               What are broker packs?
               <span aria-hidden="true">+</span>
             </summary>
@@ -468,50 +461,50 @@ export default function Pricing() {
               plan’s monthly allowance and do not expire.
             </p>
           </details>
-          <details id="dtl-item-6">
-            <summary id="sum-what-does-annual-billing-save">
+          <details>
+            <summary>
               What does annual billing save?
               <span aria-hidden="true">+</span>
             </summary>
             <p>Annual is billed as 10 months: two months free on every plan.</p>
           </details>
-          <details id="dtl-item-7">
-            <summary id="sum-how-do-extra-seats-work">
+          <details>
+            <summary>
               How do extra seats work?
               <span aria-hidden="true">+</span>
             </summary>
             <p>Starter includes 1 seat, Pro 3 and Scale 10. Each extra seat is $15 a month (10× that billed annually).</p>
           </details>
-          <details id="dtl-item-8">
-            <summary id="sum-do-my-viewers-need-a-plan">
+          <details>
+            <summary>
               Do my viewers need a plan?
               <span aria-hidden="true">+</span>
             </summary>
             <p>No. Anyone can open a published scene on any phone or laptop, whatever plan its owner is on.</p>
           </details>
-          <details id="dtl-item-9">
-            <summary id="sum-what-happens-if-i-cancel-or-downgrade">
+          <details>
+            <summary>
               What happens if I cancel or downgrade?
               <span aria-hidden="true">+</span>
             </summary>
             <p>You keep your plan until the end of the period you paid for, then move to the lower plan. Your scenes stay online.</p>
           </details>
-          <details id="dtl-item-10">
-            <summary id="sum-what-if-a-payment-fails">
+          <details>
+            <summary>
               What if a payment fails?
               <span aria-hidden="true">+</span>
             </summary>
             <p>We retry, and your plan keeps working for 7 days while you update your card. After that the account moves to Free.</p>
           </details>
-          <details id="dtl-item-11">
-            <summary id="sum-i-subscribed-before-these-plans-what-cha">
+          <details>
+            <summary>
               I subscribed before these plans. What changes?
               <span aria-hidden="true">+</span>
             </summary>
             <p>Nothing you pay. Existing subscriptions keep their plan and price, and get the new allowances wherever those are higher.</p>
           </details>
-          <details id="dtl-item-12">
-            <summary id="sum-which-currency-will-i-pay-in">
+          <details>
+            <summary>
               Which currency will I pay in?
               <span aria-hidden="true">+</span>
             </summary>
@@ -520,15 +513,15 @@ export default function Pricing() {
               Payments, the merchant of record, which adds the right sales tax, VAT or GST for your country and issues the invoice.
             </p>
           </details>
-          <details id="dtl-item-13">
-            <summary id="sum-can-i-use-a-discount-code">
+          <details>
+            <summary>
               Can I use a discount code?
               <span aria-hidden="true">+</span>
             </summary>
             <p>Yes. Enter it at checkout, or open a link with the code in it. One code per purchase unless the code says it can be combined.</p>
           </details>
-          <details id="dtl-item-14">
-            <summary id="sum-can-i-get-a-refund">
+          <details>
+            <summary>
               Can I get a refund?
               <span aria-hidden="true">+</span>
             </summary>
@@ -540,18 +533,11 @@ export default function Pricing() {
         {
           "Prices exclude taxes, which are added at checkout where they apply. Payments are processed by Dodo Payments, our merchant of record. Subscribing means you agree to the "
         }
-        <a href="https://verse.ctruh.com/terms" id="lnk-terms-2">
-          Terms
-        </a>
+        <a href="https://verse.ctruh.com/terms">Terms</a>
         {", the "}
-        <a href="https://verse.ctruh.com/privacy" id="lnk-privacy-policy">
-          Privacy policy
-        </a>
+        <a href="https://verse.ctruh.com/privacy">Privacy policy</a>
         {" and the "}
-        <a href="https://verse.ctruh.com/refunds" id="lnk-refund-policy">
-          Refund policy
-        </a>
-        .
+        <a href="https://verse.ctruh.com/refunds">Refund policy</a>.
       </p>
     </>
   );

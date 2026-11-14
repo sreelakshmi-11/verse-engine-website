@@ -8,7 +8,7 @@ export default function Proof() {
       <SectionHead heading={proofHeading} />
       <div className="mx-proof-grid">
         {proofStats.map((s) => (
-          <button key={s.label} id={s.id} className="mx-stat" type="button">
+          <button key={s.label} className="mx-stat" type="button">
             <strong>
               {s.prefix || null}
               <span data-count={s.count} data-dec={s.dec}>

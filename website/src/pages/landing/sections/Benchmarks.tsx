@@ -1,8 +1,10 @@
 // Home page: benchmarks section.
 import { benchHeading, benchEngines, benchMeasures, benchTable } from "../data.ts";
 import { SectionHead, tab } from "../parts.tsx";
+import { useHomeButtonIds } from "../button-ids.ts";
 
 export default function Benchmarks() {
+  const ids = useHomeButtonIds();
   const firstMeasure = benchMeasures[0];
   return (
     <section className="mx-bench section-pad" id="benchmarks" aria-labelledby="bench-heading">
@@ -10,7 +12,7 @@ export default function Benchmarks() {
       <div className="mx-bench-board" data-bench="">
         <div className="mx-bench-tabs" role="tablist" aria-label="Benchmark measures">
           {benchMeasures.map((m, i) => (
-            <button key={m.tab} id={m.id} {...tab(i)} data-m={i}>
+            <button key={m.tab} id={ids.benchmarks?.[i]} {...tab(i)} data-m={i}>
               {m.tab}
             </button>
           ))}

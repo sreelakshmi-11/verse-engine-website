@@ -11,7 +11,7 @@ export default function Faq() {
           <br />
           before you go.
         </h2>
-        <a className="under-link" href="/docs/what-is-verse-engine" id="lnk-read-the-documentation">
+        <a className="under-link" href="/docs/what-is-verse-engine">
           Read the documentation
         </a>
       </div>
