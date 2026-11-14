@@ -180,8 +180,9 @@ export const FOOTER_LINKS = {
     { href: href("faq"), label: "FAQs" },
   ],
   bottom: [
-    { href: "https://verse.ctruh.com/privacy", label: "Privacy" },
-    { href: "https://verse.ctruh.com/terms", label: "Terms" },
+    { href: "/privacy", label: "Privacy" },
+    { href: "/terms", label: "Terms" },
+    { href: "/refunds", label: "Refunds" },
     { href: "#app-main", label: "Back to top ↑" },
   ],
 };
