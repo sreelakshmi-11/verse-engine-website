@@ -1,14 +1,14 @@
 // Pieces shared by the legal pages.
 
 /** The page heading with its "Legal" label and effective date. */
-export function LegalHeader({ title }: { title: string }) {
+export function LegalHeader({ title, effective = "20 October 2026" }: { title: string; effective?: string }) {
   return (
     <>
       <p className="mono" style={{ marginTop: "28px" }}>
         Legal
       </p>
       <h1>{title}</h1>
-      <p className="meta">Effective 20 October 2026 · Ctruh Technologies Private Limited</p>
+      <p className="meta">Effective {effective} · Ctruh Technologies Private Limited</p>
     </>
   );
 }

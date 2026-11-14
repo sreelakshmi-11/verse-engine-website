@@ -4,17 +4,19 @@ import { LegalHeader, LegalAddress } from "./LegalParts.tsx";
 export default function Refunds() {
   return (
     <>
-      <LegalHeader title="Refund Policy" />
+      <LegalHeader title="Refund Policy" effective="9 November 2026" />
       <h2>Summary</h2>
       <ul>
         <li>
           <strong>New subscriptions:</strong>
           {" if Verse is not right for you, ask within "}
           <strong>
-            <span data-refund-days="">7</span>
-            {" days"}
+            <span data-refund-days="">24</span>
+            {" hours"}
           </strong>
-          {" of your first payment for a paid plan (Pro or Studio, monthly or annual) and we refund that payment in full."}
+          {
+            " of your first payment for a paid plan (monthly or annual) and we refund that payment in full, as long as the account has made no more than 3 uploads and used no more than 5 GB of bandwidth."
+          }
         </li>
         <li>
           <strong>Annual renewals:</strong>
