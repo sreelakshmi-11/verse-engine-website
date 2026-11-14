@@ -182,7 +182,7 @@ export const FOOTER_LINKS = {
   bottom: [
     { href: "https://verse.ctruh.com/privacy", label: "Privacy" },
     { href: "https://verse.ctruh.com/terms", label: "Terms" },
-    { href: "#main", label: "Back to top ↑" },
+    { href: "#app-main", label: "Back to top ↑" },
   ],
 };
 

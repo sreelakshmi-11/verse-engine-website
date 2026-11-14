@@ -79,6 +79,26 @@ export async function mount() {
       applyStory(0);
     }
   }
+  // Phones (no smooth-scroll library): a long smooth scroll can stop early when sections resize on the way,
+  // so an in-page link keeps going until its target is reached (a touch, wheel or key stops it).
+  const keepScrolling = (target: string) => {
+    if (lenis || reduced) return;
+    let tries = 4;
+    const inputs = ["touchstart", "wheel", "keydown"];
+    const stop = () => {
+      removeEventListener("scrollend", check);
+      inputs.forEach((type) => removeEventListener(type, stop));
+    };
+    const check = () => {
+      const el = document.querySelector(target),
+        top = el ? el.getBoundingClientRect().top : 0,
+        atEnd = scrollY >= document.documentElement.scrollHeight - innerHeight - 2;
+      if (!el || Math.abs(top) <= 2 || (top > 0 && atEnd) || tries-- <= 0) return stop();
+      el.scrollIntoView({ behavior: "smooth" });
+    };
+    addEventListener("scrollend", check);
+    inputs.forEach((type) => addEventListener(type, stop, { passive: true }));
+  };
   const onHashClick = (e: MouseEvent) => {
     const a = (e.target as Element).closest('a[href^="#"]');
     if (!a || a.hasAttribute("data-jump")) return;
@@ -91,6 +111,7 @@ export async function mount() {
     } else if ($(target)) {
       e.preventDefault();
       scrollToTarget(target);
+      keepScrolling(target);
       history.replaceState(null, "", target);
     }
   };

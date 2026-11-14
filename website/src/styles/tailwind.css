@@ -21,3 +21,24 @@ body::-webkit-scrollbar,
   width: 0;
   height: 0;
 }
+
+/* Phones and small tablets: a thin scrollbar on the areas that scroll sideways, so it's clear they can be swiped. */
+@media (max-width: 800px) {
+  :root :is(.gallery-viewport, .mx-table-box, .mx-matrix-box, .comparison-scroll, .table-wrap, .rs-table, pre) {
+    scrollbar-width: thin;
+    scrollbar-color: #0066cc80 #0066cc14;
+    padding-bottom: 6px;
+  }
+  :root :is(.gallery-viewport, .mx-table-box, .mx-matrix-box, .comparison-scroll, .table-wrap, .rs-table, pre)::-webkit-scrollbar {
+    display: block;
+    height: 4px;
+  }
+  :root :is(.gallery-viewport, .mx-table-box, .mx-matrix-box, .comparison-scroll, .table-wrap, .rs-table, pre)::-webkit-scrollbar-track {
+    background: #0066cc14;
+    border-radius: 4px;
+  }
+  :root :is(.gallery-viewport, .mx-table-box, .mx-matrix-box, .comparison-scroll, .table-wrap, .rs-table, pre)::-webkit-scrollbar-thumb {
+    background: #0066cc80;
+    border-radius: 4px;
+  }
+}

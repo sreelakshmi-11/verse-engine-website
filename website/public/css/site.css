@@ -180,3 +180,6 @@ a.inline-link{color:var(--brand-blue);text-decoration:underline;text-underline-o
 .growth-header .nav-drop-menu a{display:block;padding:10px 12px;border-radius:9px;font:500 15px/1.35 Metropolis,sans-serif;color:var(--ink);white-space:nowrap;opacity:1}
 .growth-header .nav-drop-menu a:hover,.growth-header .nav-drop-menu a:focus-visible{background:var(--paper)}
 .growth-header .nav-drop-menu a[aria-current=page]{color:var(--brand-blue);font-weight:600}
+
+.about-panorama{width:calc(100% - var(--gutter)*2);max-width:1440px;margin-inline:auto}.about-panorama figcaption{left:22px}
+@media(max-width:650px){.about-panorama figcaption{left:16px;bottom:14px;max-width:calc(100% - 32px)}}

@@ -457,3 +457,21 @@
   .device-frame,
   .device-frame[data-mode="xr"] { height: clamp(44px, calc(100% - 640px), 22%); }
 }
+
+/* Benchmarks on phones: each bar uses the full width, with its value underneath. */
+@media (max-width: 600px) {
+  .mx-bar { grid-template-columns: minmax(0, 1fr); row-gap: 8px; }
+  .mx-bar b { text-align: left; }
+}
+
+/* Phones and small tablets: one column of tabs, with the selected tab's preview right under it
+   (TryLive.tsx and Engine.tsx place the preview after the selected tab). */
+@media (max-width: 800px) {
+  .mx-try, .mx-tech { display: flex; flex-direction: column; }
+  .mx-try { gap: 8px; }
+  .mx-tech { gap: 0; }
+  .mx-try-list, .mx-tech-list { display: contents; }
+  .mx-tech-list button:first-child { border-top: 1px solid var(--line); }
+  .mx-try .mx-try-stage { min-height: 420px; margin: 4px 0 8px; }
+  .mx-tech .mx-tech-view { margin: 14px 0 18px; }
+}
