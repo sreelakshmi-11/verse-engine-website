@@ -86,6 +86,71 @@ export const RESOURCES_MENU = [
   { href: href("faq"), label: "FAQs", id: "lnk-faqs-3", mobileId: "lnk-faqs-4" },
 ];
 
+/** Main navigation links shared by the desktop header and mobile menu. */
+const HEADER_ACTIONS = {
+  challenge: {
+    href: "/challenge",
+    label: "Take the Challenge",
+    id: "btn-header-challenge",
+    mobileId: "btn-menu-challenge",
+    className: "header-cta header-challenge",
+    mobileClassName: "menu-challenge",
+  },
+  explore: {
+    href: "/studio",
+    label: "Explore Verse Engine",
+    id: "btn-header-explore",
+    mobileId: "btn-menu-explore",
+    className: "header-cta",
+    mobileClassName: "site-button",
+    mobileArrow: true,
+  },
+};
+export const HEADER_NAV = {
+  resources: { label: "Resources", mobileId: "dtl-m-group-3", mobileSummaryId: "sum-resources" },
+  desktopBeforeResources: [
+    { href: "/story", label: "The engine", id: "lnk-the-engine", current: "/story" },
+    { href: "/developers", label: "Developers", id: "lnk-developers", current: "/developers" },
+    { href: "/pricing", label: "Pricing", id: "lnk-pricing", current: "/pricing" },
+    { href: "/plugins", label: "Plug-ins", id: "lnk-plug-ins", current: "/plugins" },
+  ],
+  desktopAfterResources: [
+    { href: "/about", label: "About", id: "lnk-about", current: "/about" },
+    { href: "/docs/what-is-verse-engine", label: "Docs", id: "lnk-docs", current: "/docs/what-is-verse-engine" },
+  ],
+  mobilePrimary: {
+    engine: { href: "/story", label: "The engine", id: "lnk-the-engine-2" },
+    pricing: { href: "/pricing", label: "Pricing", id: "lnk-pricing-2" },
+    about: { href: "/about", label: "About", id: "lnk-about-2" },
+  },
+  mobileGroups: {
+    developers: {
+      id: "dtl-m-group",
+      summaryId: "sum-developers",
+      label: "Developers",
+      links: [
+        { href: "/developers", label: "Developer hub", id: "lnk-developer-hub" },
+        { href: "/docs/what-is-verse-engine", label: "Documentation", id: "lnk-documentation" },
+        { href: "/docs/scenes-api", label: "REST API", id: "lnk-rest-api" },
+        { href: "/docs/sdk", label: "SDK", id: "lnk-sdk" },
+      ],
+    },
+    plugins: {
+      id: "dtl-m-group-2",
+      summaryId: "sum-plug-ins",
+      label: "Plug-ins",
+      links: [
+        { href: "/plugins", label: "All plug-ins", id: "lnk-all-plug-ins" },
+        { href: "/plugins/blender", label: "Blender", id: "lnk-blender" },
+        { href: "/plugins/unity", label: "Unity", id: "lnk-unity" },
+        { href: "/plugins/unreal", label: "Unreal", id: "lnk-unreal" },
+      ],
+    },
+  },
+  desktopActions: [HEADER_ACTIONS.challenge, HEADER_ACTIONS.explore],
+  mobileActions: [HEADER_ACTIONS.explore, HEADER_ACTIONS.challenge],
+};
+
 /** All footer links, grouped by the column or row where they appear. */
 export const FOOTER_LINKS = {
   explore: [

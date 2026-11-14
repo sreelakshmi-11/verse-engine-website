@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { FocusEvent, MouseEvent, PointerEvent } from "react";
 import Chevron from "../ui/Chevron.tsx";
-import { RESOURCES_MENU } from "../../pages/resources/data.ts";
+import { HEADER_NAV, RESOURCES_MENU } from "../../pages/resources/data.ts";
 
 export default function ResourcesNav({ current }: { current?: string | null }) {
   const [open, setOpen] = useState(false);
@@ -72,7 +72,7 @@ export default function ResourcesNav({ current }: { current?: string | null }) {
         data-current={active ? "true" : undefined}
         onClick={onToggle}
       >
-        {"Resources"}
+        {HEADER_NAV.resources.label}
         <Chevron className="nav-drop-chev" />
       </button>
       <div className="nav-drop-menu" id="nav-resources-menu" hidden={!open} onClick={onMenuClick}>

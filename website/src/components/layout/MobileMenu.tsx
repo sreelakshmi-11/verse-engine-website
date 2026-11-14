@@ -1,13 +1,29 @@
 // Mobile navigation dialog: opened by the header button; closed by the close button, Escape or a link click.
 // Emits `verse:menu` ({open}) for page modules and returns focus to the menu button.
-import { RESOURCES_MENU } from "../../pages/resources/data.ts";
+import { HEADER_NAV, RESOURCES_MENU } from "../../pages/resources/data.ts";
 import Chevron from "../ui/Chevron.tsx";
 import type { Dispatch, MouseEvent, RefObject, SetStateAction } from "react";
 
 type DialogRef = RefObject<HTMLDialogElement | null>;
 type SetOpen = Dispatch<SetStateAction<boolean>>;
+type MenuGroup = (typeof HEADER_NAV.mobileGroups)[keyof typeof HEADER_NAV.mobileGroups];
 
 const emit = (open: boolean) => document.dispatchEvent(new CustomEvent("verse:menu", { detail: { open } }));
+const menuGroup = (group: MenuGroup) => (
+  <details className="m-group" id={group.id} key={group.id}>
+    <summary id={group.summaryId}>
+      {group.label}
+      <Chevron className="m-chev" />
+    </summary>
+    <div>
+      {group.links.map(({ href, label, id }) => (
+        <a key={id} href={href} id={id}>
+          {label}
+        </a>
+      ))}
+    </div>
+  </details>
+);
 
 export function openMenu(dialogRef: DialogRef, setMenuOpen: SetOpen) {
   dialogRef.current!.showModal();
@@ -42,55 +58,17 @@ export default function MobileMenu({
         </button>
       </div>
       <nav id="nav-mobile" aria-label="Mobile navigation">
-        <a href="/story" id="lnk-the-engine-2">
-          {"The engine"}
+        <a href={HEADER_NAV.mobilePrimary.engine.href} id={HEADER_NAV.mobilePrimary.engine.id}>
+          {HEADER_NAV.mobilePrimary.engine.label}
         </a>
-        <details className="m-group" id="dtl-m-group">
-          <summary id="sum-developers">
-            {"Developers"}
-            <Chevron className="m-chev" />
-          </summary>
-          <div>
-            <a href="/developers" id="lnk-developer-hub">
-              {"Developer hub"}
-            </a>
-            <a href="/docs/what-is-verse-engine" id="lnk-documentation">
-              {"Documentation"}
-            </a>
-            <a href="/docs/scenes-api" id="lnk-rest-api">
-              {"REST API"}
-            </a>
-            <a href="/docs/sdk" id="lnk-sdk">
-              {"SDK"}
-            </a>
-          </div>
-        </details>
-        <a href="/pricing" id="lnk-pricing-2">
-          {"Pricing"}
+        {menuGroup(HEADER_NAV.mobileGroups.developers)}
+        <a href={HEADER_NAV.mobilePrimary.pricing.href} id={HEADER_NAV.mobilePrimary.pricing.id}>
+          {HEADER_NAV.mobilePrimary.pricing.label}
         </a>
-        <details className="m-group" id="dtl-m-group-2">
-          <summary id="sum-plug-ins">
-            {"Plug-ins"}
-            <Chevron className="m-chev" />
-          </summary>
-          <div>
-            <a href="/plugins" id="lnk-all-plug-ins">
-              {"All plug-ins"}
-            </a>
-            <a href="/plugins/blender" id="lnk-blender">
-              {"Blender"}
-            </a>
-            <a href="/plugins/unity" id="lnk-unity">
-              {"Unity"}
-            </a>
-            <a href="/plugins/unreal" id="lnk-unreal">
-              {"Unreal"}
-            </a>
-          </div>
-        </details>
-        <details className="m-group" id="dtl-m-group-3">
-          <summary id="sum-resources">
-            {"Resources"}
+        {menuGroup(HEADER_NAV.mobileGroups.plugins)}
+        <details className="m-group" id={HEADER_NAV.resources.mobileId}>
+          <summary id={HEADER_NAV.resources.mobileSummaryId}>
+            {HEADER_NAV.resources.label}
             <Chevron className="m-chev" />
           </summary>
           <div>
@@ -101,16 +79,15 @@ export default function MobileMenu({
             ))}
           </div>
         </details>
-        <a href="/about" id="lnk-about-2">
-          {"About"}
+        <a href={HEADER_NAV.mobilePrimary.about.href} id={HEADER_NAV.mobilePrimary.about.id}>
+          {HEADER_NAV.mobilePrimary.about.label}
         </a>
-        <a id="btn-menu-explore" className="site-button" href="/studio">
-          {"Explore Verse Engine"}
-          <span aria-hidden="true" />
-        </a>
-        <a id="btn-menu-challenge" className="menu-challenge" href="/challenge">
-          {"Take the Challenge"}
-        </a>
+        {HEADER_NAV.mobileActions.map(({ href, label, mobileId, mobileClassName, mobileArrow }) => (
+          <a key={mobileId} id={mobileId} className={mobileClassName} href={href}>
+            {label}
+            {mobileArrow && <span aria-hidden="true" />}
+          </a>
+        ))}
       </nav>
       <p>{"A new dimension is one link away."}</p>
     </dialog>
