@@ -95,6 +95,7 @@ const HEADER_ACTIONS = {
     mobileId: "btn-menu-challenge",
     className: "header-cta header-challenge",
     mobileClassName: "menu-challenge",
+    mobileArrow: false,
   },
   explore: {
     href: "/studio",
