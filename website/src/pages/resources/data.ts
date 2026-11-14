@@ -86,18 +86,44 @@ export const RESOURCES_MENU = [
   { href: href("faq"), label: "FAQs", id: "lnk-faqs-3", mobileId: "lnk-faqs-4" },
 ];
 
-/** Links the footers add to their columns: the four pages, plus how it works, supported formats and FAQ
-    (home page sections until those pages exist). */
+/** All footer links, grouped by the column or row where they appear. */
 export const FOOTER_LINKS = {
   explore: [
+    { href: "/", label: "The engine", id: "lnk-the-engine-3" },
+    { href: "/pricing", label: "Pricing", id: "lnk-pricing-3" },
+    { href: "/about", label: "About Ctruh", id: "lnk-about-ctruh" },
+    { href: "/about#verse-engine", label: "About Verse Engine", id: "lnk-about-verse-engine" },
     { href: href("commerce"), label: "3D commerce", id: "lnk-3d-commerce-3" },
     { href: href("archRe"), label: "Architecture and real estate", id: "lnk-architecture-real-estate-3" },
     { href: href("aiInfra"), label: "AI and 3D infrastructure", id: "lnk-ai-3d-infrastructure-3" },
     { href: href("lyon"), label: "Lyon 3D city demo", id: "lnk-lyon-3d-city-demo" },
     { href: href("howItWorks"), label: "How Verse Engine works", id: "lnk-how-verse-engine-works" },
   ],
-  build: [{ href: href("formats"), label: "Supported formats", id: "lnk-supported-formats" }],
-  connect: [{ href: href("faq"), label: "FAQs", id: "lnk-faqs" }],
+  build: [
+    { href: "/developers", label: "API & SDK", id: "lnk-api-sdk" },
+    { href: "/docs/what-is-verse-engine", label: "Documentation", id: "lnk-documentation-2" },
+    { href: "/studio/plugins", label: "Get an API key", id: "lnk-get-an-api-key" },
+    { href: "/signin", label: "Sign in", id: "lnk-sign-in" },
+    { href: href("formats"), label: "Supported formats", id: "lnk-supported-formats" },
+  ],
+  plugins: [
+    { href: "/plugins/blender", label: "Blender", id: "lnk-blender-2" },
+    { href: "/plugins/unity", label: "Unity", id: "lnk-unity-2" },
+    { href: "/plugins/unreal", label: "Unreal Engine", id: "lnk-unreal-engine" },
+    { href: "/plugins", label: "All plug-ins", id: "lnk-all-plug-ins-2" },
+  ],
+  connect: [
+    { href: "mailto:hello@ctruh.com", label: "hello@ctruh.com", id: "lnk-hello-ctruh-com" },
+    { href: "https://www.ctruh.com/", label: "Ctruh", id: "lnk-ctruh" },
+    { href: "https://www.linkedin.com/company/ctruh/", label: "LinkedIn", id: "lnk-linkedin" },
+    { href: "/docs/blog/index", label: "Blogs, research & events", id: "lnk-blogs-research-events" },
+    { href: href("faq"), label: "FAQs", id: "lnk-faqs" },
+  ],
+  bottom: [
+    { href: "https://verse.ctruh.com/privacy", label: "Privacy", id: "lnk-privacy" },
+    { href: "https://verse.ctruh.com/terms", label: "Terms", id: "lnk-terms" },
+    { href: "#main", label: "Back to top ↑", id: "lnk-back-to-top" },
+  ],
 };
 
 // ── Claims ──
